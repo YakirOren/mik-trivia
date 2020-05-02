@@ -14,6 +14,9 @@ def main():
         print(data.decode())   
         if data.decode() == "hello":
             client_socket.send('hello'.encode())
+        
+        while(True):
+            pass
 
 
 if __name__ == "__main__":
