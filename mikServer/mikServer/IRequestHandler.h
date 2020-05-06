@@ -1,14 +1,26 @@
 #pragma once
 #include <WinSock2.h>
 #include <iostream>
-#include "helper.h"
+#include <ctime>
+#include <vector>
+//#include "helper.h"
 
 class IRequestHandler
 {
 public:
-	virtual ~IRequestHandler() = default;
-	IRequestHandler() = default;
+	virtual bool isRequestRelevant(struct RequestInfo request) = 0;
+	virtual struct RequestResult handleRequest(struct RequestInfo request) = 0;
+};
 
-private:
+struct RequestResult
+{
+	std::vector<unsigned char> response;
+	IRequestHandler* newHandler;
+};
 
+struct RequestInfo
+{
+	int id;
+	std::time_t recievalTime;
+	std::vector<unsigned char> buffer;
 };

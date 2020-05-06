@@ -4,9 +4,9 @@
 void Communicator::accept()
 {
 	// notice that we step out to the global namespace
-// for the resolution of the function accept
+	// for the resolution of the function accept
 
-// this accepts the client and create a specific socket from server to this client
+	// this accepts the client and create a specific socket from server to this client
 	SOCKET client_socket = ::accept(_serverSocket, NULL, NULL);
 
 	if (client_socket == INVALID_SOCKET)
@@ -16,13 +16,14 @@ void Communicator::accept()
 
 	std::cout << "client_socket: " << client_socket << std::endl;
 
+	// Creates a thread for the client
 	std::thread new_client(&Communicator::handleNewClient, this, client_socket);
 	new_client.detach();
 
-	LoginRequestHandler* a = new LoginRequestHandler();
+	LoginRequestHandler* loginRequest = new LoginRequestHandler();
 
-	m_clients.insert(std::pair<SOCKET, IRequestHandler*>(client_socket, a));
-
+	// Inserts the client's data into the client's map
+	m_clients.insert(std::pair<SOCKET, IRequestHandler*>(client_socket, loginRequest));
 
 }
 
@@ -45,30 +46,49 @@ void Communicator::bindAndListen()
 		throw std::exception(__FUNCTION__ " - listen");
 	std::cout << "Listening on port " << port << std::endl;
 
-
+	while (true)
+	{
+		startHandleRequests();
+	}
 
 }
 
+/*
+	Handle's 
+*/
 void Communicator::handleNewClient(SOCKET clientSocket)
 {
-
+	unsigned int lengthOfBuffer = 0;
+	int result;
+	std::vector<unsigned char> buffer;
+	//std::string message;
+	RequestInfo requestInfo;
+	RequestResult requestResult;
+	
 	try
 	{
 		Helper::sendData(clientSocket, "hello");
 
-		int result;
-		char buffer[200] = { 0 };
+		recieveData(clientSocket, buffer, 5);
+		//buffer.resize(5000);
+		//result = recv(clientSocket, (char*)&buffer, buffer.size(), NULL);
+		std::string message(buffer.begin(), buffer.end());
 
-		result = recv(clientSocket, buffer, 200, NULL);
-
-		if (result > 0)
+		if (message == "hello")
 		{
-			std::cout << "Message from client: " << std::string(buffer);
+			std::cout << "Message from client: " << std::endl;
+			for (auto& i : buffer)
+			{
+				std::cout << i;
+			}
 
 		}
 		while (true)
 		{
-
+			recieveData(clientSocket, buffer, 5); // Recieving the first 5 bytes in order to find the message code and the data length
+			time(&(requestInfo.recievalTime)); // Getting the recieval time
+			//Helper::binaryToString(buffer[0]);
+			std::cout << "BRUH" << int(buffer[0]) << std::endl;
 		}
 		removeClient(clientSocket);
 	}
@@ -164,25 +184,55 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 
 }
 
+/*
+	Removes a client from the client's map
+	Input:
+		SOCKET clientSocket: The socket between the server and the client
+	Output:
+		None
+*/
 void Communicator::removeClient(SOCKET clientSocket)
 {
 	m_clients.erase(clientSocket);
-
 }
 
+/*
+	Handles all of the client's requests
+	Input:
+		None
+	Output:
+		None
+*/
 void Communicator::startHandleRequests()
 {
-	bindAndListen();
+	std::cout << "Waiting for client connection request" << std::endl;
+	accept();
+}
 
+void Communicator::recieveData(SOCKET clientSocket, std::vector<unsigned char>& buffer, unsigned int size)
+{
+	/*char* data = {};
+	int index = 1;
+	buffer.clear();
+	buffer.resize(size);
 	while (true)
 	{
-		std::cout << "Waiting for client connection request" << std::endl;
-		accept();
+		recv(clientSocket, data, index, 0);
+		if (data[strlen(data)] != " ")
+		{
 
+		}
+	}*/
+	if (!recv(clientSocket, (char*)&buffer[0], size, 0) || buffer[0] == 0)
+	{
+		throw std::exception("Error while recieving data");
 	}
 
 }
 
+/*
+	Constructor
+*/
 Communicator::Communicator()
 {
 	// this server use TCP. that why SOCK_STREAM & IPPROTO_TCP
@@ -193,6 +243,9 @@ Communicator::Communicator()
 		throw std::exception(__FUNCTION__ " - socket");
 }
 
+/*
+	Destructor
+*/
 Communicator::~Communicator()
 {
 	try

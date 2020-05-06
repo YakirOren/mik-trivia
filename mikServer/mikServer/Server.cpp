@@ -15,7 +15,7 @@ Server::~Server()
 
 void Server::run()
 {
-	std::thread t_connector(&Communicator::startHandleRequests, m_communicator);
+	std::thread t_connector(&Communicator::bindAndListen, m_communicator);
 	
 	
 	////std::cin();
