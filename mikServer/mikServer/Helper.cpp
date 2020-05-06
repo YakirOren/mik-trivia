@@ -22,26 +22,6 @@ int Helper::getMessageTypeCode(SOCKET sc)
 }
 
 
-void Helper::send_update_message_to_client(SOCKET sc, const string& file_content, const string& second_username, const string &all_users)
-{
-	//TRACE("all users: %s\n", all_users.c_str())
-	const string code = std::to_string(MT_SERVER_UPDATE);
-	const string current_file_size = getPaddedNumber(file_content.size(), 5);
-	const string username_size = getPaddedNumber(second_username.size(), 2);
-	const string all_users_size = getPaddedNumber(all_users.size(), 5);
-	const string res = code + current_file_size + file_content + username_size + second_username + all_users_size + all_users;
-	//TRACE("message: %s\n", res.c_str());
-	sendData(sc, res);
-}
-
-// recieve data from socket according byteSize
-// returns the data as int
-int Helper::getIntPartFromSocket(SOCKET sc, int bytesNum)
-{
-	char* s = getPartFromSocket(sc, bytesNum, 0);
-	return atoi(s);
-}
-
 // recieve data from socket according byteSize
 // returns the data as string
 string Helper::getStringPartFromSocket(SOCKET sc, int bytesNum)
@@ -51,14 +31,26 @@ string Helper::getStringPartFromSocket(SOCKET sc, int bytesNum)
 	return res;
 }
 
-// return string after padding zeros if necessary
-string Helper::getPaddedNumber(int num, int digits)
+std::string Helper::vectorToString(std::vector<unsigned char> buffer)
 {
-	std::ostringstream ostr;
-	ostr << std::setw(digits) << std::setfill('0') << num;
-	return ostr.str();
-
+	std::string bufferAsString(buffer.begin(), buffer.end());
+	std::cout << "vector as string: " << bufferAsString << std::endl;
+	return bufferAsString;
 }
+
+std::string Helper::binaryToString(std::string binaryString)
+{
+	std::string buffer = binaryString, data = "";
+	std::istringstream stream(buffer);
+	std::bitset<8> set;
+	while (stream >> set)
+	{
+		data += (set.to_ulong());
+	}
+	std::cout << "Binary as string: " << data << std::endl;
+	return std::string();
+}
+
 
 // recieve data from socket according byteSize
 // this is private function
@@ -88,8 +80,6 @@ char* Helper::getPartFromSocket(SOCKET sc, int bytesNum, int flags)
 	return data;
 }
 
-// send data to socket
-// this is private function
 void Helper::sendData(SOCKET sc, std::string message)
 {
 	const char* data = message.c_str();
