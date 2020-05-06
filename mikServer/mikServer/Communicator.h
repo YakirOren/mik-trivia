@@ -17,6 +17,7 @@ private:
 	void removeClient(SOCKET clientSocket);
 	void startHandleRequests();
 	void recieveData(SOCKET clientSocket, std::vector<unsigned char>& buffer, unsigned int size);
+	std::vector<std::string> recieveData(SOCKET clientSocket);
 
 public:
 	void bindAndListen();

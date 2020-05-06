@@ -59,36 +59,32 @@ void Communicator::bindAndListen()
 void Communicator::handleNewClient(SOCKET clientSocket)
 {
 	unsigned int lengthOfBuffer = 0;
-	int result;
-	std::vector<unsigned char> buffer;
+	std::vector<std::string> buffer;
 	//std::string message;
 	RequestInfo requestInfo;
 	RequestResult requestResult;
 	
+	std::string temp;
+
 	try
 	{
-		Helper::sendData(clientSocket, "hello");
+		Helper::sendData(clientSocket, "0b10100");
 
-		recieveData(clientSocket, buffer, 5);
-		//buffer.resize(5000);
-		//result = recv(clientSocket, (char*)&buffer, buffer.size(), NULL);
-		std::string message(buffer.begin(), buffer.end());
+		buffer = recieveData(clientSocket);
 
-		if (message == "hello")
+		std::cout << "Message from client: " << std::endl;
+		for (auto& i : buffer)
 		{
-			std::cout << "Message from client: " << std::endl;
-			for (auto& i : buffer)
-			{
-				std::cout << i;
-			}
-
+			std::cout << i << "\n";
 		}
+
+		requestInfo.buffer = buffer;
+		time(&(requestInfo.recievalTime)); // Getting the recieval time
+		m_clients.at(clientSocket)->handleRequest(requestInfo);
+
 		while (true)
 		{
-			recieveData(clientSocket, buffer, 5); // Recieving the first 5 bytes in order to find the message code and the data length
-			time(&(requestInfo.recievalTime)); // Getting the recieval time
-			//Helper::binaryToString(buffer[0]);
-			std::cout << "BRUH" << int(buffer[0]) << std::endl;
+
 		}
 		removeClient(clientSocket);
 	}
@@ -223,11 +219,44 @@ void Communicator::recieveData(SOCKET clientSocket, std::vector<unsigned char>& 
 
 		}
 	}*/
+
 	if (!recv(clientSocket, (char*)&buffer[0], size, 0) || buffer[0] == 0)
 	{
 		throw std::exception("Error while recieving data");
 	}
 
+}
+
+std::vector<std::string> Communicator::recieveData(SOCKET clientSocket)
+{
+	std::vector<std::string> bin_data;
+	std::string temp;
+
+	int result = 0;
+	char buffer[1] = { 0 };
+
+	result = recv(clientSocket, buffer, 1, NULL);
+	while (result != 0)
+	{
+		if (result > 0)
+		{
+			if (buffer[0] != ' ')
+			{
+				temp += buffer[0];
+			}
+			else
+			{
+				bin_data.push_back(temp);
+				temp = "";
+			}
+
+		}
+		result = recv(clientSocket, buffer, 1, NULL);
+
+	}
+
+
+	return bin_data;
 }
 
 /*

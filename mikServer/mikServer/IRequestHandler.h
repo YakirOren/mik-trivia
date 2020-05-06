@@ -14,7 +14,7 @@ public:
 
 struct RequestResult
 {
-	std::vector<unsigned char> response;
+	std::vector<std::string> response;
 	IRequestHandler* newHandler;
 };
 
@@ -22,5 +22,5 @@ struct RequestInfo
 {
 	int id;
 	std::time_t recievalTime;
-	std::vector<unsigned char> buffer;
+	std::vector<std::string> buffer;
 };
