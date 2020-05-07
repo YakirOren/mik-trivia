@@ -3,6 +3,7 @@
 #include <iostream>
 #include <ctime>
 #include <vector>
+#include "ResponseSerializer.h"
 //#include "helper.h"
 
 class IRequestHandler
@@ -14,7 +15,7 @@ public:
 
 struct RequestResult
 {
-	std::vector<std::string> response;
+	std::string response;
 	IRequestHandler* newHandler;
 };
 

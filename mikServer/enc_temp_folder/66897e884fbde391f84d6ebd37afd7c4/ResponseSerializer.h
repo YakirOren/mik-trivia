@@ -31,5 +31,6 @@ public:
 	static std::string serializeResponse(SignupResponse res);
 	static std::string to_bin(std::string str);
 
+
 };
 

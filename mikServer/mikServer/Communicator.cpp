@@ -72,16 +72,13 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 
 		buffer = recieveData(clientSocket);
 
-		std::cout << "Message from client: " << std::endl;
-		for (auto& i : buffer)
-		{
-			std::cout << i << "\n";
-		}
+		std::cout << "got message" << std::endl;
 
 		requestInfo.buffer = buffer;
 		time(&(requestInfo.recievalTime)); // Getting the recieval time
-		m_clients.at(clientSocket)->handleRequest(requestInfo);
-
+		requestResult = m_clients.at(clientSocket)->handleRequest(requestInfo);
+		Helper::sendData(clientSocket, requestResult.response);
+		
 		while (true)
 		{
 
@@ -234,23 +231,31 @@ std::vector<std::string> Communicator::recieveData(SOCKET clientSocket)
 
 	int result = 0;
 	char buffer[1] = { 0 };
+	int count = 0;
 
 	result = recv(clientSocket, buffer, 1, NULL);
 	while (result != 0)
 	{
-		if (result > 0)
+		if (buffer[0] != ' ')
 		{
-			if (buffer[0] != ' ')
-			{
-				temp += buffer[0];
-			}
-			else
-			{
-				bin_data.push_back(temp);
-				temp = "";
-			}
-
+			temp += buffer[0];
 		}
+		else
+		{
+			bin_data.push_back(temp);
+			temp = "";
+			if (count > 2)
+			{
+				int len = std::stoi(bin_data[1], nullptr, 2);
+
+				if (count == len) {
+					break;
+				}
+
+			}
+			count++;
+		}
+
 		result = recv(clientSocket, buffer, 1, NULL);
 
 	}

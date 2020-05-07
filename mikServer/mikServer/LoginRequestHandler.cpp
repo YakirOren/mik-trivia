@@ -33,19 +33,21 @@ RequestResult LoginRequestHandler::handleRequest(RequestInfo request)
 	{
 		if (request.id == CLIENT_LOGIN)
 		{
-			//LoginResponse loginResponse = {1};
-			//result.response = responseSerializer::serializeResponse(loginResponse);
+			LoginResponse loginResponse = {(unsigned) 1};
+			result.response = ResponseSerializer::serializeResponse(loginResponse);
 		}
 		else
 		{
-			//SignupResponse signupResponse = {1};
-			//result.response = responseSerializer::serializeResponse(signupResponse);
+			SignupResponse signupResponse = {(unsigned) 1};
+			result.response = ResponseSerializer::serializeResponse(signupResponse);
 		}
 	}
 	else
 	{
-		//ErrorResponse errorResponse = {"ERROR"};
-		//result.respose = responseSerializer::serializeResponse(errorResponse)
+		ErrorResponse errorResponse = {"ERROR"};
+		result.response = ResponseSerializer::serializeResponse(errorResponse);
 	}
+
+	
 	return result;
 }

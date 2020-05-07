@@ -3,7 +3,7 @@
 
 std::string ResponseSerializer::serializeResponse(ErrorResponse res)
 {
-	return to_bin(std::to_string(SERVER_ERROR)+ " {\"message:\":\""+ res.message +"\"}");
+	return to_bin(SERVER_ERROR+ " {\"message:\":\""+ res.message +"\"}");
 }
 
 std::string ResponseSerializer::serializeResponse(LoginResponse res)

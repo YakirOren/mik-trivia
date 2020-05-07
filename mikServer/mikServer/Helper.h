@@ -16,10 +16,17 @@
 //};
 
 
+enum MessageType
+{
+	CLIENT_LOGIN = 200,
+	CLIENT_SIGNUP = 204,
+	SERVER_ERROR = 500
+
+};
+ 
 class Helper
 {
 public:
-	
 	static int getMessageTypeCode(SOCKET sc);
 	static std::string getStringPartFromSocket(SOCKET sc, int bytesNum);
 	static std::string vectorToString(std::vector<unsigned char> buffer);

@@ -1,11 +1,6 @@
 #pragma once
 #include "IRequestHandler.h"
 
-enum MessageType
-{
-	CLIENT_LOGIN = 200,
-	CLIENT_SIGNUP = 204
-};
 
 class LoginRequestHandler : public IRequestHandler
 {
