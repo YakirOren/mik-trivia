@@ -32,6 +32,7 @@ public:
 	static std::string vectorToString(std::vector<unsigned char> buffer);
 	static std::string binaryToString(std::string binaryString);
 	static void sendData(SOCKET sc, std::string message);
+	static void sendData(SOCKET sc, unsigned char* message);
 private:
 	static char* getPartFromSocket(SOCKET sc, int bytesNum);
 	static char* getPartFromSocket(SOCKET sc, int bytesNum, int flags);

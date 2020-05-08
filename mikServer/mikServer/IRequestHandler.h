@@ -15,7 +15,7 @@ public:
 
 struct RequestResult
 {
-	std::string response;
+	unsigned char* response;
 	IRequestHandler* newHandler;
 };
 

@@ -1,29 +1,93 @@
 #include "ResponseSerializer.h"
 
 
-std::string ResponseSerializer::serializeResponse(ErrorResponse res)
+unsigned char* ResponseSerializer::serializeResponse(ErrorResponse res)
 {
-	return to_bin(std::to_string(SERVER_ERROR)+ " {\"message:\":\""+ res.message +"\"}");
+	json data;
+	data["message"] = res.message;
+
+	return to_data(data, MessageType::SERVER_ERROR);
+
 }
 
-std::string ResponseSerializer::serializeResponse(LoginResponse res)
+unsigned char* ResponseSerializer::serializeResponse(LoginResponse res)
 {
-	return to_bin(std::to_string(CLIENT_LOGIN) + " {\"status\":" + std::to_string(res.status) + "}");
+	json data;
+	data["status"] = res.status;
+
+	return to_data(data, MessageType::CLIENT_LOGIN);
+
 
 }
 
-std::string ResponseSerializer::serializeResponse(SignupResponse res)
+unsigned char* ResponseSerializer::serializeResponse(SignupResponse res)
 {
-	return to_bin(std::to_string(CLIENT_SIGNUP) + " {\"status\":" + std::to_string(res.status) + "}");
+	json data;
+	data["status"] = res.status;
+
+	return to_data(data, MessageType::CLIENT_SIGNUP);
+
 }
 
 
-std::string ResponseSerializer::to_bin(std::string str){
+unsigned char* ResponseSerializer::to_data(json data, MessageType type){
 	
-	std::string binary;
-	for (char& _char : str) {
-		 binary += (std::bitset<8>(_char).to_string()) + " ";
+
+	int bytes = 0;
+	int msgSize = data.dump().size();
+
+
+	if (msgSize < 0x10000)
+	{
+		if (msgSize < 0x100)
+		{
+			bytes = 1;
+		}
+		else
+		{
+			bytes = 2;
+		}
+	}
+	else
+	{
+		if (msgSize < 0x1000000)
+		{
+			bytes = 3;
+
+		}
+		else
+		{
+			bytes = 4;
+		}
+
+
 	}
 
-	return binary;
+
+	std::string str = { 0 };
+
+	char currChar = '\0';
+
+	for (int i = 0; i <= bytes; i++)
+	{
+		currChar - msgSize >> i * 8;
+		str[3 - i] = currChar;
+
+	}
+
+	std::string returnStr = (char)(type) + str + data.dump();
+
+	return to_array(str);
+
+
+}
+
+
+
+
+unsigned char(&ResponseSerializer::to_array(std::string const& str))[]
+{
+	static thread_local std::vector<unsigned char> result;
+	result.assign(str.data(), str.data() + str.length() + 1);
+	return reinterpret_cast<unsigned char(&)[]>(*result.data());
 }

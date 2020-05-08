@@ -89,3 +89,11 @@ void Helper::sendData(SOCKET sc, std::string message)
 		throw std::exception("Error while sending message to client");
 	}
 }
+
+void Helper::sendData(SOCKET sc, unsigned char* message)
+{
+	if (send(sc, (char*)message, strlen((char*)message) , 0) == INVALID_SOCKET)
+	{
+		throw std::exception("Error while sending message to client");
+	}
+}
