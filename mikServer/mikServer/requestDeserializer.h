@@ -5,12 +5,13 @@
 #include "json.hpp"
 #include "Helper.h"
 
+#define START_OF_DATA 5
 
 class requestDeserializer
 {
 public:
-	static struct LoginRequest deserializeLoginRequest(std::vector<unsigned char> data);
-	static struct SignupRequest deserializeSignupRequest(std::vector<unsigned char> data);
+	static struct LoginRequest deserializeLoginRequest(unsigned char* data);
+	static struct SignupRequest deserializeSignupRequest(unsigned char* data);
 };
 
 struct LoginRequest
