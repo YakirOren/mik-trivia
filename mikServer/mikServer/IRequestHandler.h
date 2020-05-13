@@ -23,5 +23,5 @@ struct RequestInfo
 {
 	int id;
 	std::time_t recievalTime;
-	std::vector<std::string> buffer;
+	unsigned char* buffer;
 };

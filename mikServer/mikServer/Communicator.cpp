@@ -58,31 +58,38 @@ void Communicator::bindAndListen()
 */
 void Communicator::handleNewClient(SOCKET clientSocket)
 {
-	unsigned int lengthOfBuffer = 0;
-	std::vector<std::string> buffer;
-	//std::string message;
 	RequestInfo requestInfo;
 	RequestResult requestResult;
 	
-	std::string temp;
+	int type = 0;
+	std::string data;
+	int name_len = 0;
 
 	try
 	{
-		Helper::sendData(clientSocket, "0b10100");
+		type = Helper::getMessageTypeCode(clientSocket);
+				
+		name_len = Helper::getMessageLen(clientSocket, 4);
 
-		buffer = recieveData(clientSocket);
+		data = Helper::getStringPartFromSocket(clientSocket, name_len);
 
 		std::cout << "got message" << std::endl;
 
-		requestInfo.buffer = buffer;
+		std::cout << data << std::endl;
+
+		requestInfo.id = type;
+		requestInfo.buffer = Helper::to_array(data);
+
 		time(&(requestInfo.recievalTime)); // Getting the recieval time
 		requestResult = m_clients.at(clientSocket)->handleRequest(requestInfo);
+
 		Helper::sendData(clientSocket, requestResult.response);
 		
 		while (true)
 		{
 
 		}
+
 		removeClient(clientSocket);
 	}
 	catch (const std::exception&)
@@ -224,45 +231,6 @@ void Communicator::recieveData(SOCKET clientSocket, std::vector<unsigned char>& 
 
 }
 
-std::vector<std::string> Communicator::recieveData(SOCKET clientSocket)
-{
-	std::vector<std::string> bin_data;
-	std::string temp;
-
-	int result = 0;
-	char buffer[1] = { 0 };
-	int count = 0;
-
-	result = recv(clientSocket, buffer, 1, NULL);
-	while (result != 0)
-	{
-		if (buffer[0] != ' ')
-		{
-			temp += buffer[0];
-		}
-		else
-		{
-			bin_data.push_back(temp);
-			temp = "";
-			if (count > 2)
-			{
-				int len = std::stoi(bin_data[1], nullptr, 2);
-
-				if (count == len) {
-					break;
-				}
-
-			}
-			count++;
-		}
-
-		result = recv(clientSocket, buffer, 1, NULL);
-
-	}
-
-
-	return bin_data;
-}
 
 /*
 	Constructor

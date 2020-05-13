@@ -35,7 +35,7 @@ unsigned char* ResponseSerializer::to_data(json data, MessageType type){
 
 	int bytes = 0;
 	int msgSize = data.dump().size();
-
+	
 
 	if (msgSize < 0x10000)
 	{
@@ -60,7 +60,6 @@ unsigned char* ResponseSerializer::to_data(json data, MessageType type){
 			bytes = 4;
 		}
 
-
 	}
 
 
@@ -70,24 +69,15 @@ unsigned char* ResponseSerializer::to_data(json data, MessageType type){
 
 	for (int i = 0; i <= bytes; i++)
 	{
-		currChar - msgSize >> i * 8;
+		currChar = msgSize >> i * 8;
 		str[3 - i] = currChar;
 
 	}
 
 	std::string returnStr = (char)(type) + str + data.dump();
-
-	return to_array(str);
-
+	
+	return Helper::to_array(str);
+	
 
 }
 
-
-
-
-unsigned char(&ResponseSerializer::to_array(std::string const& str))[]
-{
-	static thread_local std::vector<unsigned char> result;
-	result.assign(str.data(), str.data() + str.length() + 1);
-	return reinterpret_cast<unsigned char(&)[]>(*result.data());
-}

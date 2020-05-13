@@ -33,6 +33,9 @@ public:
 	static std::string binaryToString(std::string binaryString);
 	static void sendData(SOCKET sc, std::string message);
 	static void sendData(SOCKET sc, unsigned char* message);
+	static unsigned char(&to_array(std::string const& str))[];
+	static int getMessageLen(SOCKET sc, int bytesNum);
+
 private:
 	static char* getPartFromSocket(SOCKET sc, int bytesNum);
 	static char* getPartFromSocket(SOCKET sc, int bytesNum, int flags);

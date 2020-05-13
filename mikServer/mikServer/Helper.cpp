@@ -10,7 +10,7 @@ using std::string;
 // and returns the code. if no message found in the socket returns 0 (which means the client disconnected)
 int Helper::getMessageTypeCode(SOCKET sc)
 {
-	char* s = getPartFromSocket(sc, 3);
+	char* s = getPartFromSocket(sc, 1);
 	std::string msg(s);
 
 	if (msg == "")
@@ -30,6 +30,27 @@ string Helper::getStringPartFromSocket(SOCKET sc, int bytesNum)
 	string res(s);
 	return res;
 }
+
+
+// recieve data from socket according byteSize
+// returns the data as string
+int Helper::getMessageLen(SOCKET sc, int bytesNum)
+{
+	char* buffer = getPartFromSocket(sc, bytesNum, 0);
+
+	int a = int((unsigned char)(buffer[0]) << 24 |
+		(unsigned char)(buffer[1]) << 16 |
+		(unsigned char)(buffer[2]) << 8 |
+		(unsigned char)(buffer[3]));
+
+	std::cout << "msg len: " << a << std::endl;
+
+	return a;
+}
+
+
+
+
 
 std::string Helper::vectorToString(std::vector<unsigned char> buffer)
 {
@@ -92,8 +113,15 @@ void Helper::sendData(SOCKET sc, std::string message)
 
 void Helper::sendData(SOCKET sc, unsigned char* message)
 {
-	if (send(sc, (char*)message, strlen((char*)message) , 0) == INVALID_SOCKET)
+	if (send(sc, (char*)message, strlen((char*)message), 0) == INVALID_SOCKET)
 	{
 		throw std::exception("Error while sending message to client");
 	}
+}
+
+unsigned char(&Helper::to_array(std::string const& str))[]
+{
+	static thread_local std::vector<unsigned char> result;
+	result.assign(str.data(), str.data() + str.length() + 1);
+	return reinterpret_cast<unsigned char(&)[]>(*result.data());
 }

@@ -33,7 +33,5 @@ public:
 	
 private:
 	static unsigned char* to_data(json data, MessageType type);
-
-	static unsigned char(&to_array(std::string const& str))[];
 };
 
