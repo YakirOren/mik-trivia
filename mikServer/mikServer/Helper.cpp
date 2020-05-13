@@ -11,14 +11,8 @@ using std::string;
 int Helper::getMessageTypeCode(SOCKET sc)
 {
 	char* s = getPartFromSocket(sc, 1);
-	std::string msg(s);
-
-	if (msg == "")
-		return 0;
-
-	int res = std::atoi(s);
-	delete s;
-	return  res;
+	
+	return (int)s;
 }
 
 
@@ -34,22 +28,18 @@ string Helper::getStringPartFromSocket(SOCKET sc, int bytesNum)
 
 // recieve data from socket according byteSize
 // returns the data as string
-int Helper::getMessageLen(SOCKET sc, int bytesNum)
+int Helper::getMessageLen(SOCKET sc)
 {
-	char* buffer = getPartFromSocket(sc, bytesNum, 0);
+	char* buffer = getPartFromSocket(sc, 4, 0);
 
 	int a = int((unsigned char)(buffer[0]) << 24 |
 		(unsigned char)(buffer[1]) << 16 |
 		(unsigned char)(buffer[2]) << 8 |
 		(unsigned char)(buffer[3]));
 
-	std::cout << "msg len: " << a << std::endl;
 
 	return a;
 }
-
-
-
 
 
 std::string Helper::vectorToString(std::vector<unsigned char> buffer)

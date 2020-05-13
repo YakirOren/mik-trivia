@@ -69,7 +69,7 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 	{
 		type = Helper::getMessageTypeCode(clientSocket);
 				
-		name_len = Helper::getMessageLen(clientSocket, 4);
+		name_len = Helper::getMessageLen(clientSocket);
 
 		data = Helper::getStringPartFromSocket(clientSocket, name_len);
 

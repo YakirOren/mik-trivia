@@ -32,7 +32,6 @@ unsigned char* ResponseSerializer::serializeResponse(SignupResponse res)
 
 unsigned char* ResponseSerializer::to_data(json data, MessageType type){
 	
-
 	int bytes = 0;
 	int msgSize = data.dump().size();
 	
@@ -63,20 +62,20 @@ unsigned char* ResponseSerializer::to_data(json data, MessageType type){
 	}
 
 
-	std::string str = { 0 };
+	std::string str = {'\0','\0','\0','\0'};
 
 	char currChar = '\0';
 
 	for (int i = 0; i <= bytes; i++)
 	{
 		currChar = msgSize >> i * 8;
-		str[3 - i] = currChar;
+		str[3 - i] = currChar; 
 
 	}
 
-	std::string returnStr = (char)(type) + str + data.dump();
+	std::string returnStr = std::to_string(type) + str + data.dump();
 	
-	return Helper::to_array(str);
+	return Helper::to_array(returnStr);
 	
 
 }
