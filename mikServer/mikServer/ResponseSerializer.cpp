@@ -1,7 +1,7 @@
 #include "ResponseSerializer.h"
 
 
-unsigned char* ResponseSerializer::serializeResponse(ErrorResponse res)
+std::string ResponseSerializer::serializeResponse(ErrorResponse res)
 {
 	json data;
 	data["message"] = res.message;
@@ -10,7 +10,7 @@ unsigned char* ResponseSerializer::serializeResponse(ErrorResponse res)
 
 }
 
-unsigned char* ResponseSerializer::serializeResponse(LoginResponse res)
+std::string ResponseSerializer::serializeResponse(LoginResponse res)
 {
 	json data;
 	data["status"] = res.status;
@@ -20,7 +20,7 @@ unsigned char* ResponseSerializer::serializeResponse(LoginResponse res)
 
 }
 
-unsigned char* ResponseSerializer::serializeResponse(SignupResponse res)
+std::string ResponseSerializer::serializeResponse(SignupResponse res)
 {
 	json data;
 	data["status"] = res.status;
@@ -30,7 +30,7 @@ unsigned char* ResponseSerializer::serializeResponse(SignupResponse res)
 }
 
 
-unsigned char* ResponseSerializer::to_data(json data, MessageType type){
+std::string ResponseSerializer::to_data(json data, MessageType type){
 	
 	int bytes = 0;
 	int msgSize = data.dump().size();
@@ -73,9 +73,9 @@ unsigned char* ResponseSerializer::to_data(json data, MessageType type){
 
 	}
 
-	std::string returnStr = std::to_string(type) + str + data.dump();
+	std::string returnStr = (char)(type) + str + data.dump();
 	
-	return Helper::to_array(returnStr);
+	return returnStr;
 	
 
 }

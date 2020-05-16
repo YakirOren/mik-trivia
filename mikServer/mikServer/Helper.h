@@ -35,6 +35,8 @@ public:
 	static void sendData(SOCKET sc, unsigned char* message);
 	static unsigned char(&to_array(std::string const& str))[];
 	static int getMessageLen(SOCKET sc);
+	static int byteToInt(char* buffer);
+	static unsigned char* intToByte(const int& number);
 
 private:
 	static char* getPartFromSocket(SOCKET sc, int bytesNum);

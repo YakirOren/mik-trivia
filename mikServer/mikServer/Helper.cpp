@@ -115,3 +115,24 @@ unsigned char(&Helper::to_array(std::string const& str))[]
 	result.assign(str.data(), str.data() + str.length() + 1);
 	return reinterpret_cast<unsigned char(&)[]>(*result.data());
 }
+
+int Helper::byteToInt(char* buffer)
+{
+	int number = int((unsigned char)(buffer[0]) << 24 |
+		(unsigned char)(buffer[1]) << 16 |
+		(unsigned char)(buffer[2]) << 8 |
+		(unsigned char)(buffer[3]));
+
+	return number;
+}
+
+unsigned char* Helper::intToByte(const int& number) {
+	unsigned char* byte = new unsigned char[4];
+
+	byte[0] = (number >> 24) & 0xFF;
+	byte[1] = (number >> 16) & 0xFF;
+	byte[2] = (number >> 8) & 0xFF;
+	byte[3] = number & 0xFF;
+
+	return byte;
+}

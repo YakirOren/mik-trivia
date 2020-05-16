@@ -89,7 +89,7 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 		{
 
 		}
-
+		
 		removeClient(clientSocket);
 	}
 	catch (const std::exception&)
@@ -98,88 +98,7 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 	}
 
 
-
-	//int name_len;
-	//int second_name_len;
-
-	//std::string name;
-	//std::string second_name;
-	//std::string file_name;
-
-	//try
-	//{
-	//	while (true)
-	//	{
-	//		int type = Helper::getMessageTypeCode(clientSocket);
-
-
-	//		switch (type)
-	//		{
-
-	//		case MessageType::MT_CLIENT_LOG_IN:
-	//			std::cout << "login!" << std::endl;
-	//			name_len = stoi(Helper::getStringPartFromSocket(clientSocket, 2));
-	//			name = Helper::getStringPartFromSocket(clientSocket, name_len);
-
-	//			connected_clients.emplace_back(clientSocket, name, name_len);
-
-	//			std::cout << name << std::endl;
-
-	//			Helper::send_update_message_to_client(clientSocket, "", "", getAll_usernames());
-
-	//			break;
-
-	//		case MessageType::MT_CLIENT_UPDATE:
-
-	//			second_name_len = stoi(Helper::getStringPartFromSocket(clientSocket, 2));
-	//			second_name = Helper::getStringPartFromSocket(clientSocket, second_name_len);
-
-	//			int msg_len = stoi(Helper::getStringPartFromSocket(clientSocket, 5));
-	//			std::string msg = Helper::getStringPartFromSocket(clientSocket, msg_len);
-
-
-
-	//			if (name < second_name) // sorting the names
-	//			{
-	//				file_name = name + "&" + second_name + ".txt";
-	//			}
-	//			else
-	//			{
-	//				file_name = second_name + "&" + name + ".txt";
-	//			}
-
-	//			std::ofstream file(file_name, std::ofstream::out | std::ofstream::app);
-
-	//			if (msg != "")
-	//			{
-	//				std::cout << file_name << std::endl;
-	//				file << "&MAGSH_MESSAGE&&Author&" << name << "&DATA&" << msg << "\n";
-	//			}
-
-	//			file.close();
-
-	//			std::ifstream ifs(file_name);
-	//			std::string str(std::istreambuf_iterator<char>{ifs}, {});
-
-	//			Helper::send_update_message_to_client(clientSocket, str, second_name, getAll_usernames());
-	//			break;
-
-	//		}
-
-	//	}
-	//closesocket(clientSocket);
-	//}
-	//catch (const std::exception & e)
-	//{
-	//	
-	//	std::cout << clientSocket << " disconnected" << std::endl;
-	//	removeClient(clientSocket);
-	//	std::cout << clientSocket <<"removed from list" << std::endl;
-
-	//	//std::cout << e.what() << std::endl;
-	//	closesocket(clientSocket);
-	//}
-
+	closesocket(clientSocket);
 
 
 }

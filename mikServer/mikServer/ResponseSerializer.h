@@ -26,12 +26,11 @@ struct SignupResponse
 class ResponseSerializer
 {
 public:
-	static unsigned char* serializeResponse(ErrorResponse res);
-	static unsigned char* serializeResponse(LoginResponse res);
-	static unsigned char* serializeResponse(SignupResponse res);
-	
-	
-private:
-	static unsigned char* to_data(json data, MessageType type);
+	static std::string serializeResponse(ErrorResponse res);
+	static std::string serializeResponse(LoginResponse res);
+	static std::string serializeResponse(SignupResponse res);
+		   
+private:   
+	static std::string to_data(json data, MessageType type);
 };
 
