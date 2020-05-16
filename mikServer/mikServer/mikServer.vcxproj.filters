@@ -42,10 +42,13 @@
     <ClCompile Include="requestDeserializer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LoginManager.cpp">
+    <ClCompile Include="IDatabase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LoggedUser.cpp">
+    <ClCompile Include="sqlite3.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sqlDatabase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -80,10 +83,13 @@
     <ClInclude Include="requestDeserializer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LoginManager.h">
+    <ClInclude Include="IDatabase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LoggedUser.h">
+    <ClInclude Include="sqlite3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sqlDatabase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
