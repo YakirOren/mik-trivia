@@ -141,6 +141,7 @@
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Communicator.cpp" />
     <ClCompile Include="Helper.cpp" />
+    <ClCompile Include="LoginManager.cpp" />
     <ClCompile Include="LoginRequestHandler.cpp" />
     <ClCompile Include="requestDeserializer.cpp" />
     <ClCompile Include="ResponseSerializer.cpp" />
@@ -154,6 +155,7 @@
     <ClInclude Include="Helper.h" />
     <ClInclude Include="IRequestHandler.h" />
     <ClInclude Include="json.hpp" />
+    <ClInclude Include="LoginManager.h" />
     <ClInclude Include="LoginRequestHandler.h" />
     <ClInclude Include="requestDeserializer.h" />
     <ClInclude Include="ResponseSerializer.h" />
