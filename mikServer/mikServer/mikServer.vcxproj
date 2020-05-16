@@ -138,6 +138,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Client.cpp" />
+    <ClCompile Include="Communicator.cpp" />
+    <ClCompile Include="Helper.cpp" />
+    <ClCompile Include="LoginRequestHandler.cpp" />
+    <ClCompile Include="requestDeserializer.cpp" />
+    <ClCompile Include="ResponseSerializer.cpp" />
+    <ClCompile Include="Server.cpp" />
+    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="WSAInitializer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Client.h" />
+    <ClInclude Include="Communicator.h" />
+    <ClInclude Include="Helper.h" />
+    <ClInclude Include="IRequestHandler.h" />
+    <ClInclude Include="json.hpp" />
+    <ClInclude Include="LoginRequestHandler.h" />
+    <ClInclude Include="requestDeserializer.h" />
+    <ClInclude Include="ResponseSerializer.h" />
+    <ClInclude Include="Server.h" />
+    <ClInclude Include="WSAInitializer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
