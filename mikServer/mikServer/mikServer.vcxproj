@@ -142,6 +142,7 @@
     <ClCompile Include="Communicator.cpp" />
     <ClCompile Include="Helper.cpp" />
     <ClCompile Include="IDatabase.cpp" />
+    <ClCompile Include="LoginManager.cpp" />
     <ClCompile Include="LoginRequestHandler.cpp" />
     <ClCompile Include="requestDeserializer.cpp" />
     <ClCompile Include="ResponseSerializer.cpp" />

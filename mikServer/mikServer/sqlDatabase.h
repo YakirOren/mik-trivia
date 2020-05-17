@@ -10,11 +10,11 @@ public:
 	sqlDatabase();
 	virtual ~sqlDatabase();
 
-	bool doesUserExists(int userId) override;
+	bool doesUserExists(std::string name) override;
+	bool doesUserExists(std::string name, std::string password) override;
 	void createUser(std::string name, std::string password, std::string email) override;
 
-	bool isValidPassword(std::string) override;
-
+	bool isValidPassword(std::string password) override;
 
 
 	bool open();

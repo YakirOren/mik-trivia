@@ -3,7 +3,8 @@
 #include <vector>
 #include <iostream>
 #include "LoggedUser.h"
-#include "IDatabase"
+#include "IDatabase.h"
+#include <algorithm>
 
 class LoginManager
 {
