@@ -2,10 +2,12 @@
 #include <WinSock2.h>
 #include "IRequestHandler.h"
 #include "LoginRequestHandler.h"
+#include "RequestHandlerFactory.h"
 #include "Helper.h"
 #include <thread>
 #include <map>
-#include<set>
+#include <mutex>
+#include <set>
 
 class Communicator
 {
@@ -20,7 +22,9 @@ private:
 
 public:
 	void bindAndListen();
-	Communicator();
+	Communicator(IDatabase* database, RequestHandlerFactory* handerFactory);
 	~Communicator();
+	RequestHandlerFactory* _handlerFactory;
+	IDatabase* _database;
 };
 

@@ -11,6 +11,8 @@ class Server
 {
 private:
 	Communicator* m_communicator;
+	IDatabase* _database;
+	RequestHandlerFactory* _handlerFactory;
 	
 public:
 	Server();

@@ -142,9 +142,12 @@
     <ClCompile Include="Communicator.cpp" />
     <ClCompile Include="Helper.cpp" />
     <ClCompile Include="IDatabase.cpp" />
+    <ClCompile Include="LoggedUser.cpp" />
     <ClCompile Include="LoginManager.cpp" />
     <ClCompile Include="LoginRequestHandler.cpp" />
+    <ClCompile Include="MenuRequestHandler.cpp" />
     <ClCompile Include="requestDeserializer.cpp" />
+    <ClCompile Include="RequestHandlerFactory.cpp" />
     <ClCompile Include="ResponseSerializer.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="Source.cpp" />
@@ -162,7 +165,9 @@
     <ClInclude Include="LoggedUser.h" />
     <ClInclude Include="LoginManager.h" />
     <ClInclude Include="LoginRequestHandler.h" />
+    <ClInclude Include="MenuRequestHandler.h" />
     <ClInclude Include="requestDeserializer.h" />
+    <ClInclude Include="RequestHandlerFactory.h" />
     <ClInclude Include="ResponseSerializer.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="sqlDatabase.h" />

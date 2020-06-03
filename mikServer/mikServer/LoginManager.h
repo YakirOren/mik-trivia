@@ -16,7 +16,6 @@ public:
 	bool signup(std::string name, std::string password, std::string email);
 	bool login(std::string name, std::string password);
 	bool logout(std::string name);
-
-
+	LoginManager(IDatabase* database);
+	~LoginManager();
 };
-

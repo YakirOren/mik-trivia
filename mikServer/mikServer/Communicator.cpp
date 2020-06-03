@@ -1,5 +1,6 @@
 #include "Communicator.h"
 
+std::mutex clientsInsertMutex;
 
 void Communicator::accept()
 {
@@ -16,14 +17,15 @@ void Communicator::accept()
 
 	std::cout << "client_socket: " << client_socket << std::endl;
 
+	// Inserts the client's data into the client's map
+	std::unique_lock<std::mutex> lock(clientsInsertMutex);
+	m_clients.insert(std::pair<SOCKET, IRequestHandler*>(client_socket, new LoginRequestHandler(_database)));
+	lock.unlock();
+
+	IDatabase* database = new sqlDatabase();
 	// Creates a thread for the client
 	std::thread new_client(&Communicator::handleNewClient, this, client_socket);
 	new_client.detach();
-
-	LoginRequestHandler* loginRequest = new LoginRequestHandler();
-
-	// Inserts the client's data into the client's map
-	m_clients.insert(std::pair<SOCKET, IRequestHandler*>(client_socket, loginRequest));
 
 }
 
@@ -54,24 +56,31 @@ void Communicator::bindAndListen()
 }
 
 /*
-	Handle's 
+	Handle's every newly contected client and saves the data from it's request.
+	Input:
+		SOCKET clientSocket: The socket between the server and the client
+	Output:
+		None
 */
 void Communicator::handleNewClient(SOCKET clientSocket)
 {
 	RequestInfo requestInfo;
 	RequestResult requestResult;
 	
-	int type = 0;
-	std::string data;
-	int name_len = 0;
+	int type = 0, lengthOfData = 0;
+	std::string data = "";
 
 	try
 	{
-		type = Helper::getMessageTypeCode(clientSocket);
-				
-		name_len = Helper::getMessageLen(clientSocket);
+		//Recieving the code from the message
+		type = Helper::getMessageTypeCode(clientSocket); //Function doesn't work for some reason, Need to be fixed
+		type = CLIENT_SIGNUP;
+		
+		//Recieving the length of the data
+		lengthOfData = Helper::getMessageLen(clientSocket); //Works
 
-		data = Helper::getStringPartFromSocket(clientSocket, name_len);
+		//Recieving the data itself
+		data = Helper::getStringPartFromSocket(clientSocket, lengthOfData); //Works
 
 		std::cout << "got message" << std::endl;
 
@@ -82,8 +91,8 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 
 		time(&(requestInfo.recievalTime)); // Getting the recieval time
 		requestResult = m_clients.at(clientSocket)->handleRequest(requestInfo);
-
-		Helper::sendData(clientSocket, requestResult.response);
+		unsigned char* response = static_cast<unsigned char*>(requestResult.response.data());
+		Helper::sendData(clientSocket, response);
 		
 		while (true)
 		{
@@ -97,10 +106,7 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 		removeClient(clientSocket);
 	}
 
-
 	closesocket(clientSocket);
-
-
 }
 
 /*
@@ -154,7 +160,7 @@ void Communicator::recieveData(SOCKET clientSocket, std::vector<unsigned char>& 
 /*
 	Constructor
 */
-Communicator::Communicator()
+Communicator::Communicator(IDatabase* database, RequestHandlerFactory* handlerFactory)
 {
 	// this server use TCP. that why SOCK_STREAM & IPPROTO_TCP
 	// if the server use UDP we will use: SOCK_DGRAM & IPPROTO_UDP
@@ -162,6 +168,9 @@ Communicator::Communicator()
 
 	if (_serverSocket == INVALID_SOCKET)
 		throw std::exception(__FUNCTION__ " - socket");
+	
+	_database = database;
+	_handlerFactory = handlerFactory;
 }
 
 /*

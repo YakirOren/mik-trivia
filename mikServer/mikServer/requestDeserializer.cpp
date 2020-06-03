@@ -14,20 +14,26 @@
 	Output:
 		LoginRequest (struct): The request from the user after being deserialized.
 */
-LoginRequest requestDeserializer::deserializeLoginRequest(unsigned char* data)
+LoginRequest requestDeserializer::deserializeLoginRequest(std::vector<unsigned char> data)
 {
 	LoginRequest loginRequest;
 	nlohmann::json json;
 
-	std::string dataAsAstring(reinterpret_cast<char*>(data));
+	//std::string dataAsAstring(reinterpret_cast<char*>(data));
 
-	std::cout << "Data: " << dataAsAstring << "\n";
+	std::string dataAsString = Helper::vectorToString(data);
 
-	dataAsAstring = dataAsAstring.substr(START_OF_DATA);
+	//std::cout << "Data: " << dataAsAstring << "\n";
+	for (auto& i : dataAsString)
+	{
+		std::cout << i;
+	}
 
-	std::cout << "Data: " << dataAsAstring << "\n";
+	dataAsString = dataAsString.substr(START_OF_DATA);
 
-	json = nlohmann::json::parse(dataAsAstring);
+	std::cout << "Data: " << dataAsString << "\n";
+
+	json = nlohmann::json::parse(dataAsString);
 
 	loginRequest = {
 		loginRequest.password = json["password"].get<std::string>(),
@@ -57,20 +63,25 @@ LoginRequest requestDeserializer::deserializeLoginRequest(unsigned char* data)
 	Output: 
 		SignupRequest (struct): The request from the user after being deserialized.		
 */
-SignupRequest requestDeserializer::deserializeSignupRequest(unsigned char* data)
+SignupRequest requestDeserializer::deserializeSignupRequest(std::vector<unsigned char> data)
 {
 	SignupRequest signupRequest;
 	nlohmann::json json;
+	//std::string dataAsAstring(reinterpret_cast<char*>(data));
 
-	std::string dataAsAstring(reinterpret_cast<char*>(data));
+	std::string dataAsString = Helper::vectorToString(data);
 
-	std::cout << "Data: " << dataAsAstring << "\n";
+	//std::cout << "Data: " << dataAsAstring << "\n";
+	for (auto& i : dataAsString)
+	{
+		std::cout << i;
+	}
 
-	dataAsAstring = dataAsAstring.substr(START_OF_DATA);
+	dataAsString = dataAsString.substr(START_OF_DATA);
 
-	std::cout << "Data: " << dataAsAstring << "\n";
+	std::cout << "Data: " << dataAsString << "\n";
 
-	json = nlohmann::json::parse(dataAsAstring);
+	json = nlohmann::json::parse(dataAsString);
 
 	signupRequest = {
 		json["username"].get<std::string>(),
