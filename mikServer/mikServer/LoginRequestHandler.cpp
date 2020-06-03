@@ -1,10 +1,18 @@
 #include "LoginRequestHandler.h"
 
-//LoginRequestHandler::LoginRequestHandler(IDatabase* database) : IRequestHandler(), _handlerFactory(new RequestHandlerFactory(database))
-//{
-//
-//}
+std::mutex databaseMutex;
 
+/*
+	Constructor
+*/
+LoginRequestHandler::LoginRequestHandler(IDatabase* database) : IRequestHandler(), _handlerFactory(new RequestHandlerFactory(database))
+{
+
+}
+
+/*
+	Destructor
+*/
 LoginRequestHandler::~LoginRequestHandler()
 {
 }
@@ -36,19 +44,32 @@ bool LoginRequestHandler::isRequestRelevant(RequestInfo request)
 */
 RequestResult LoginRequestHandler::handleRequest(RequestInfo request)
 {
-	struct RequestResult result = {};
-	
+	RequestResult result = {};
+	LoginRequest loginRequest = {};
+	SignupRequest signupRequest = {};
+	_handlerFactory->createLoginHandler();
+
 	if (isRequestRelevant(request))
 	{
 		if (request.id == CLIENT_LOGIN)
 		{
-			LoginResponse loginResponse = {(unsigned) 1};
-			result.response = ResponseSerializer::serializeResponse(loginResponse);
+			// Deserializing the request of the client
+			std::vector<unsigned char> buffer(request.buffer, request.buffer + strlen((char*)request.buffer));
+			loginRequest = requestDeserializer::deserializeLoginRequest(buffer);
+			databaseMutex.lock();
+			result = login(loginRequest);
+			databaseMutex.unlock();
+			//result.response = ResponseSerializer::serializeResponse(loginResponse);
 		}
 		else if (request.id == CLIENT_SIGNUP)
 		{
-			SignupResponse signupResponse = {(unsigned) 1};
-			result.response = ResponseSerializer::serializeResponse(signupResponse);
+			//SignupResponse signupResponse = {(unsigned) 1};
+			//result.response = ResponseSerializer::serializeResponse(signupResponse);
+			std::vector<unsigned char> buffer(request.buffer, request.buffer + strlen((char*)request.buffer));
+			signupRequest = requestDeserializer::deserializeSignupRequest(buffer);
+			databaseMutex.lock();
+			result = signup(signupRequest);
+			databaseMutex.unlock();
 		}
 		else
 		{
@@ -65,12 +86,34 @@ RequestResult LoginRequestHandler::handleRequest(RequestInfo request)
 	return result;
 }
 
-RequestResult LoginRequestHandler::login(RequestInfo request)
+RequestResult LoginRequestHandler::login(LoginRequest request)
 {
-	return RequestResult();
+	RequestResult result = {};
+	LoginResponse loginResponse = {1};
+	try
+	{
+		_handlerFactory->getLoginManager().login(request.username, request.password);
+		result.response = ResponseSerializer::serializeResponse(loginResponse);
+	}
+	catch (std::exception error)
+	{
+		result.response = ResponseSerializer::serializeResponse(ErrorResponse{ error.what() });
+	}
+	return result;
 }
 
-RequestResult LoginRequestHandler::signup(RequestInfo request)
+RequestResult LoginRequestHandler::signup(SignupRequest request)
 {
-	return RequestResult();
+	RequestResult result = {};
+	LoginResponse signupResponse = { 1 };
+	try
+	{
+		_handlerFactory->getLoginManager().login(request.username, request.password);
+		result.response = ResponseSerializer::serializeResponse(signupResponse);
+	}
+	catch (std::exception error)
+	{
+		result.response = ResponseSerializer::serializeResponse(ErrorResponse{ error.what() });
+	}
+	return result;
 }

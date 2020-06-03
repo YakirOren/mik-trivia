@@ -1,6 +1,7 @@
 #pragma once
 #include "IRequestHandler.h"
 #include "RequestHandlerFactory.h"
+#include <mutex>
 
 class RequestHandlerFactory;
 
@@ -12,9 +13,9 @@ public:
 	virtual bool isRequestRelevant(struct RequestInfo request);
 	virtual struct RequestResult handleRequest(struct RequestInfo request);
 private:
-	LoginManager _loginManager;
-	RequestHandlerFactory _handlerFactory;
-	RequestResult login(RequestInfo request);
-	RequestResult signup(RequestInfo request);
+	LoginManager *_loginManager;
+	RequestHandlerFactory *_handlerFactory;
+	RequestResult login(LoginRequest request);
+	RequestResult signup(SignupRequest request);
 };
 

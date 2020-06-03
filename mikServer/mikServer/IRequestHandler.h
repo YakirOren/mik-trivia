@@ -16,7 +16,7 @@ public:
 struct RequestResult
 {
 	std::vector<unsigned char> response;
-	IRequestHandler* newHandler;
+	IRequestHandler* newHandler = {};
 };
 
 struct RequestInfo
