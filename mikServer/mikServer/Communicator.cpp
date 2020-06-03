@@ -54,24 +54,28 @@ void Communicator::bindAndListen()
 }
 
 /*
-	Handle's 
+	Handle's every newly contected client and saves the data from it's request.
+	Input:
+		SOCKET clientSocket: The socket between the server and the client
+	Output:
+		None
 */
 void Communicator::handleNewClient(SOCKET clientSocket)
 {
 	RequestInfo requestInfo;
 	RequestResult requestResult;
 	
-	int type = 0;
-	std::string data;
-	int name_len = 0;
+	int type = 0, lengthOfData = 0;
+	std::string data = "";
 
 	try
 	{
 		type = Helper::getMessageTypeCode(clientSocket);
-				
-		name_len = Helper::getMessageLen(clientSocket);
+		type = CLIENT_SIGNUP;
+		
+		lengthOfData = Helper::getMessageLen(clientSocket);
 
-		data = Helper::getStringPartFromSocket(clientSocket, name_len);
+		data = Helper::getStringPartFromSocket(clientSocket, lengthOfData);
 
 		std::cout << "got message" << std::endl;
 
@@ -82,8 +86,8 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 
 		time(&(requestInfo.recievalTime)); // Getting the recieval time
 		requestResult = m_clients.at(clientSocket)->handleRequest(requestInfo);
-
-		Helper::sendData(clientSocket, requestResult.response);
+		unsigned char* response = static_cast<unsigned char*>(requestResult.response.data());
+		Helper::sendData(clientSocket, response);
 		
 		while (true)
 		{
@@ -97,10 +101,7 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 		removeClient(clientSocket);
 	}
 
-
 	closesocket(clientSocket);
-
-
 }
 
 /*

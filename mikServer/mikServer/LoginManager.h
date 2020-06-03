@@ -3,7 +3,8 @@
 #include <vector>
 #include <iostream>
 #include "LoggedUser.h"
-#include "IDatabase"
+#include "IDatabase.h"
+#include <algorithm>
 
 class LoginManager
 {
@@ -12,10 +13,9 @@ private:
 	std::vector<LoggedUser> m_loggedUsers;
 
 public:
-	void signup(std::string name, std::string password, std::string email);
-	void login(std::string name, std::string password);
-	void logout(std::string name);
-
-
+	bool signup(std::string name, std::string password, std::string email);
+	bool login(std::string name, std::string password);
+	bool logout(std::string name);
+	LoginManager(IDatabase* database);
+	~LoginManager();
 };
-

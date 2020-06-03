@@ -1,82 +1,83 @@
 #include "ResponseSerializer.h"
 
-
-std::string ResponseSerializer::serializeResponse(ErrorResponse res)
+/*
+	Serializes the error response using generatePacket
+	Input:
+		SignupResponse res: The error response the function serializes
+	Output:
+		a vector of unsigned char containing the serialized response
+*/
+std::vector<unsigned char> ResponseSerializer::serializeResponse(ErrorResponse res)
 {
 	json data;
 	data["message"] = res.message;
 
-	return to_data(data, MessageType::SERVER_ERROR);
-
+	return generatePacket(data, MessageType::SERVER_ERROR);
 }
 
-std::string ResponseSerializer::serializeResponse(LoginResponse res)
+/*
+	Serializes the login response using generatePacket
+	Input:
+		SignupResponse res: The login response the function serializes
+	Output:
+		a vector of unsigned char containing the serialized response
+*/
+std::vector<unsigned char> ResponseSerializer::serializeResponse(LoginResponse res)
 {
 	json data;
 	data["status"] = res.status;
 
-	return to_data(data, MessageType::CLIENT_LOGIN);
-
-
+	return generatePacket(data, MessageType::CLIENT_LOGIN);
 }
 
-std::string ResponseSerializer::serializeResponse(SignupResponse res)
+/*
+	Serializes the signup response using generatePacket
+	Input: 
+		SignupResponse res: The signup response the function serializes
+	Output: 
+		a vector of unsigned char containing the serialized response
+*/
+std::vector<unsigned char> ResponseSerializer::serializeResponse(SignupResponse res)
 {
 	json data;
 	data["status"] = res.status;
 
-	return to_data(data, MessageType::CLIENT_SIGNUP);
-
+	return generatePacket(data, MessageType::CLIENT_SIGNUP);
 }
 
-
-std::string ResponseSerializer::to_data(json data, MessageType type){
-	
+/*
+	Generates the response that will be retured to the user.
+	Input:
+		json data: The data that we wish to send to the user.
+		MessageType type: The type of the message (CLIENT_SIGNUP, CLIENT_LOGIN ect...).
+	Output:
+		a vector of unsigned char containing the response to the user.
+*/
+std::vector<unsigned char> ResponseSerializer::generatePacket(json data, MessageType type)
+{
 	int bytes = 0;
-	int msgSize = data.dump().size();
+	int messageSize = data.dump().size();
+
+	std::cout << messageSize << std::endl; 
+
+	unsigned char* sizeAsBytes = Helper::intToByte(messageSize);
+
+	printf("%d %d %d %d \n", sizeAsBytes[0], sizeAsBytes[1], sizeAsBytes[2], sizeAsBytes[3]);
+
+	std::vector<unsigned char> packet;
+
+	packet.push_back((unsigned char)type);
 	
-
-	if (msgSize < 0x10000)
+	for (int i = 0; i < 4; i++)
 	{
-		if (msgSize < 0x100)
-		{
-			bytes = 1;
-		}
-		else
-		{
-			bytes = 2;
-		}
-	}
-	else
-	{
-		if (msgSize < 0x1000000)
-		{
-			bytes = 3;
-
-		}
-		else
-		{
-			bytes = 4;
-		}
-
+		packet.push_back(sizeAsBytes[i]);
 	}
 
-
-	std::string str = {'\0','\0','\0','\0'};
-
-	char currChar = '\0';
-
-	for (int i = 0; i <= bytes; i++)
+	for (int i = 0; i < messageSize; i++)
 	{
-		currChar = msgSize >> i * 8;
-		str[3 - i] = currChar; 
-
+		packet.push_back(data.dump().c_str()[i]);
 	}
-
-	std::string returnStr = (char)(type) + str + data.dump();
 	
-	return returnStr;
-	
-
+	return packet;
 }
 

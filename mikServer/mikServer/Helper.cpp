@@ -32,11 +32,7 @@ int Helper::getMessageLen(SOCKET sc)
 {
 	char* buffer = getPartFromSocket(sc, 4, 0);
 
-	int a = int((unsigned char)(buffer[0]) << 24 |
-		(unsigned char)(buffer[1]) << 16 |
-		(unsigned char)(buffer[2]) << 8 |
-		(unsigned char)(buffer[3]));
-
+	int a = byteToInt(buffer);
 
 	return a;
 }
@@ -126,7 +122,8 @@ int Helper::byteToInt(char* buffer)
 	return number;
 }
 
-unsigned char* Helper::intToByte(const int& number) {
+unsigned char* Helper::intToByte(const int& number) 
+{
 	unsigned char* byte = new unsigned char[4];
 
 	byte[0] = (number >> 24) & 0xFF;
