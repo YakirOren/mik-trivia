@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mikGUI", "mikGUI\mikGUI.csproj", "{120A66C9-0536-4661-AD6A-0F014067C790}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mik-Wpf", "mik-Wpf\mik-Wpf.csproj", "{FDBAA17D-E85B-4A05-9B9F-5B8FC5E2FA5F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{120A66C9-0536-4661-AD6A-0F014067C790}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{120A66C9-0536-4661-AD6A-0F014067C790}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{120A66C9-0536-4661-AD6A-0F014067C790}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{120A66C9-0536-4661-AD6A-0F014067C790}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDBAA17D-E85B-4A05-9B9F-5B8FC5E2FA5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDBAA17D-E85B-4A05-9B9F-5B8FC5E2FA5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDBAA17D-E85B-4A05-9B9F-5B8FC5E2FA5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDBAA17D-E85B-4A05-9B9F-5B8FC5E2FA5F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {64BA54D4-B686-4947-92CB-51F526A25076}
+		SolutionGuid = {AC362C0D-BDCD-424D-86C5-A9169A993A71}
 	EndGlobalSection
 EndGlobal

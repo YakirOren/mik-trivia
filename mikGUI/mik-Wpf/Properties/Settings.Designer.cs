@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace mikGUI.Properties
+namespace mik_Wpf.Properties
 {
 
 
