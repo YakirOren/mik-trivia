@@ -76,12 +76,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="game.xaml.cs">
+      <DependentUpon>game.xaml</DependentUpon>
+    </Compile>
     <Compile Include="join_games.xaml.cs">
       <DependentUpon>join_games.xaml</DependentUpon>
     </Compile>
     <Compile Include="SplashScreen.xaml.cs">
       <DependentUpon>SplashScreen.xaml</DependentUpon>
     </Compile>
+    <Page Include="game.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="join_games.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -183,6 +190,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Screenshot_3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Screenshot_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\join_game.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\join_game_h.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\new_game.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
