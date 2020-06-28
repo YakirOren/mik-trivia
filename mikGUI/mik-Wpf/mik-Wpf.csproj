@@ -77,9 +77,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="app_code\socket_client.cs" />
-    <Compile Include="controls\answer.xaml.cs">
-      <DependentUpon>answer.xaml</DependentUpon>
-    </Compile>
     <Compile Include="pages\create_texi.xaml.cs">
       <DependentUpon>create_texi.xaml</DependentUpon>
     </Compile>
@@ -98,10 +95,6 @@
     <Compile Include="controls\lobby_user.xaml.cs">
       <DependentUpon>lobby_user.xaml</DependentUpon>
     </Compile>
-    <Page Include="controls\answer.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="pages\create_texi.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
