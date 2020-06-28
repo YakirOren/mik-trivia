@@ -16,28 +16,19 @@ using System.Windows.Shapes;
 namespace mik_Wpf
 {
     /// <summary>
-    /// Interaction logic for join_games.xaml
+    /// Interaction logic for user_lobby.xaml
     /// </summary>
-    public partial class join_games : Page
+    public partial class lobby_user : UserControl
     {
-        public join_games()
+        public lobby_user()
         {
             InitializeComponent();
+        }
 
-            //get the players name from the database.
-            player_name.Content = "יקיר אורן";
-
-            // add active games. maybe add background thread for active games.
-
-            for (int i = 0; i < 3; i++)
-            {
-                game new_game = new game(3, "asda", "sadad");
-
-                games.Children.Add(new_game);
-
-            }
-
-
+        public lobby_user(string name)
+        {
+            InitializeComponent();
+            this.player.Text = name;
         }
 
 

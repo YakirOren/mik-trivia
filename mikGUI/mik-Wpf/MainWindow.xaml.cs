@@ -14,6 +14,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using System.Net.Sockets;
+using System.Net;
+
+using mik_Wpf.app_code;
+
 namespace mik_Wpf
 {
     /// <summary>
@@ -21,10 +26,14 @@ namespace mik_Wpf
     /// </summary>
     public partial class MainWindow : Window
     {
+        public string username = "";
+        public socket_client Client;
+        
         public MainWindow()
         {
             InitializeComponent();
-            
+
+            //string result = SocketSendReceive("", 6969);
 
             _mainFrame.Navigate(new login());
 

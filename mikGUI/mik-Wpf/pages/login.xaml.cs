@@ -20,6 +20,7 @@ namespace mik_Wpf
     /// </summary>
     public partial class login : Page
     {
+
         public login()
         {
             InitializeComponent();
@@ -32,6 +33,16 @@ namespace mik_Wpf
 
         private void submit_Click(object sender, RoutedEventArgs e)
         {
+
+            MainWindow parentWindow = Window.GetWindow(this) as MainWindow;
+
+            if (parentWindow != null)
+            {
+                //get the user name from the database
+                parentWindow.username = "שחקן 1";
+            }
+
+
             this.NavigationService.Navigate(new join_games());
         }
     }

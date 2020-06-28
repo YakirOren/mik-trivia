@@ -39,14 +39,14 @@
                     
                     <Button Height="65" Style="{DynamicResource next}" BorderBrush="{x:Null}" Margin="60,30, 60,19" Click="Button_Click">
                         <Button.Background>
-                            <ImageBrush ImageSource="./images/next_btn.gif" Stretch="Fill"/>
+                            <ImageBrush ImageSource="../images/next_btn.gif" Stretch="Fill"/>
                         </Button.Background>
                     </Button>
 
 
 
                 </StackPanel>
-                <Image Margin="28,20,383.2,79.8" Source="Image1.png" Stretch="Fill"/>
+                <Image Margin="28,20,383.2,79.8" Source="../images/roles.png" Stretch="Fill"/>
             </Grid>
 
 

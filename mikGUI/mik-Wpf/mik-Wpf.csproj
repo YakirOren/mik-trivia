@@ -76,28 +76,53 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="game.xaml.cs">
+    <Compile Include="app_code\socket_client.cs" />
+    <Compile Include="controls\answer.xaml.cs">
+      <DependentUpon>answer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="pages\create_texi.xaml.cs">
+      <DependentUpon>create_texi.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="controls\game_msg.xaml.cs">
+      <DependentUpon>game_msg.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="pages\game.xaml.cs">
       <DependentUpon>game.xaml</DependentUpon>
     </Compile>
-    <Compile Include="join_games.xaml.cs">
+    <Compile Include="pages\join_games.xaml.cs">
       <DependentUpon>join_games.xaml</DependentUpon>
     </Compile>
     <Compile Include="SplashScreen.xaml.cs">
       <DependentUpon>SplashScreen.xaml</DependentUpon>
     </Compile>
-    <Page Include="game.xaml">
+    <Compile Include="controls\lobby_user.xaml.cs">
+      <DependentUpon>lobby_user.xaml</DependentUpon>
+    </Compile>
+    <Page Include="controls\answer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="join_games.xaml">
+    <Page Include="pages\create_texi.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="login.xaml">
+    <Page Include="controls\game_msg.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="register.xaml">
+    <Page Include="pages\game.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="pages\join_games.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="pages\login.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="pages\register.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -109,10 +134,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="login.xaml.cs">
+    <Compile Include="pages\login.xaml.cs">
       <DependentUpon>login.xaml</DependentUpon>
     </Compile>
-    <Compile Include="register.xaml.cs">
+    <Compile Include="pages\register.xaml.cs">
       <DependentUpon>register.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
@@ -120,6 +145,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="SplashScreen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="controls\lobby_user.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -155,14 +184,14 @@
     <Resource Include="images\back.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\התחל לשחק.png" />
     <Resource Include="images\ראש בראש.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="images\icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="app_code\" />
+    <Resource Include="images\game_template.png" />
+    <Resource Include="images\head.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="images\logo.png" />
@@ -186,13 +215,7 @@
     <Resource Include="images\load.gif" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Image1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Screenshot_3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Screenshot_2.png" />
+    <Resource Include="images\roles.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="images\join_game.png" />
@@ -202,6 +225,27 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="images\new_game.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\create_texi.png" />
+    <Resource Include="images\create_texi_h.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\create_exit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\start_drive.png" />
+    <Resource Include="images\start_drive_h.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\header.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\lobby_back.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\answer.png" />
+    <Resource Include="images\answer_select.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
