@@ -8,7 +8,7 @@
 
 	[BYTE]  [4 BYTES] [REST]
 	MsgCode DataSize  Data
-	
+
 	Input:
 		data (std::vector<unsigned int>): The data from the client ( saved as a vector of unsigned int )
 	Output:
@@ -19,11 +19,8 @@ LoginRequest requestDeserializer::deserializeLoginRequest(std::vector<unsigned c
 	LoginRequest loginRequest;
 	nlohmann::json json;
 
-	//std::string dataAsAstring(reinterpret_cast<char*>(data));
-
 	std::string dataAsString = Helper::vectorToString(data);
 
-	//std::cout << "Data: " << dataAsAstring << "\n";
 	for (auto& i : dataAsString)
 	{
 		std::cout << i;
@@ -39,13 +36,7 @@ LoginRequest requestDeserializer::deserializeLoginRequest(std::vector<unsigned c
 		loginRequest.password = json["password"].get<std::string>(),
 		loginRequest.username = json["username"].get<std::string>()
 	};
-	
-	//dataAsString = Helper::vectorToString(data);
-	//convertedData = Helper::binaryToString(dataAsString);
-	
-	//std::cout << "Data From Client: " << convertedData << std::endl;
-	
-	
+
 	return loginRequest;
 }
 
@@ -58,20 +49,18 @@ LoginRequest requestDeserializer::deserializeLoginRequest(std::vector<unsigned c
 	[BYTE]  [4 BYTES] [REST]
 	MsgCode DataSize  Data
 
-	Input: 
+	Input:
 		data (std::vector<unsigned int>): The data from the client ( saved as a vector of unsigned int )
-	Output: 
-		SignupRequest (struct): The request from the user after being deserialized.		
+	Output:
+		SignupRequest (struct): The request from the user after being deserialized.
 */
 SignupRequest requestDeserializer::deserializeSignupRequest(std::vector<unsigned char> data)
 {
 	SignupRequest signupRequest;
 	nlohmann::json json;
-	//std::string dataAsAstring(reinterpret_cast<char*>(data));
 
 	std::string dataAsString = Helper::vectorToString(data);
 
-	//std::cout << "Data: " << dataAsAstring << "\n";
 	for (auto& i : dataAsString)
 	{
 		std::cout << i;
@@ -91,3 +80,82 @@ SignupRequest requestDeserializer::deserializeSignupRequest(std::vector<unsigned
 
 	return signupRequest;
 }
+
+/*
+	This function deserializes the data from the client from std::vector<unsigned char> to a GetPlayersInRoomRequest.
+*/
+GetPlayersInRoomRequest requestDeserializer::deserializeGetPlayersRequest(std::vector<unsigned char> data)
+{
+	GetPlayersInRoomRequest request;
+	std::string dataAsString = Helper::vectorToString(data);
+
+	for (auto& i : dataAsString)
+	{
+		std::cout << i;
+	}
+
+	dataAsString = dataAsString.substr(START_OF_DATA);
+
+	std::cout << "Data: " << dataAsString << "\n";
+
+	nlohmann::json json = nlohmann::json::parse(dataAsString);
+
+	request = { json["roomId"].get<unsigned int>() };
+
+	return request;
+}
+
+/*
+	This function deserializes the data from the client from std::vector<unsigned char> to a JoinRoomRequest.
+*/
+JoinRoomRequest requestDeserializer::deserializeJoinRoomRequest(std::vector<unsigned char> data)
+{
+	JoinRoomRequest request;
+	std::string dataAsString = Helper::vectorToString(data);
+
+	for (auto& i : dataAsString)
+	{
+		std::cout << i;
+	}
+
+	dataAsString = dataAsString.substr(START_OF_DATA);
+
+	std::cout << "Data: " << dataAsString << "\n";
+
+	nlohmann::json json = nlohmann::json::parse(dataAsString);
+
+	request = { json["roomId"].get<unsigned int>() };
+
+	return request;
+}
+
+/*
+	This function deserializes the data from the client from std::vector<unsigned char> to a CreateRoomRequest.
+*/
+CreateRoomRequest requestDeserializer::deserializeCreateRoomRequest(std::vector<unsigned char> data)
+{
+	CreateRoomRequest request;
+	std::string dataAsString = Helper::vectorToString(data);
+
+	for (auto& i : dataAsString)
+	{
+		std::cout << i;
+	}
+
+	dataAsString = dataAsString.substr(START_OF_DATA);
+
+	std::cout << "Data: " << dataAsString << "\n";
+
+	nlohmann::json json = nlohmann::json::parse(dataAsString);
+
+	request = {
+
+			json["roomName"].get<std::string>(),
+			json["maxUsers"].get<unsigned int>(),
+			json["questionCount"].get<unsigned int>(),
+			json["answerTimeout"].get<unsigned int>()
+	};
+
+	return request;
+}
+

@@ -1,1 +1,221 @@
 #include "MenuRequestHandler.h"
+
+
+MenuRequestHandler::MenuRequestHandler(LoggedUser user, RequestHandlerFactory* handlerFactory) : m_handlerFactory(handlerFactory), m_user(user)
+{
+
+}
+
+
+/*
+	Checks if the request is relevant
+	Input: 
+		requestInfo request: the request we check
+	Output: 
+		True if the request is relevent, false otherwise
+*/
+bool MenuRequestHandler::isRequestRelevant(RequestInfo request)
+{
+	bool flag = false;
+	if (request.id == CLIENT_LOGOUT || request.id == ROOM_PLAYERS || request.id == ROOMS || request.id == STATISTICS|| request.id == ROOM_CREATE || request.id == ROOM_LOGIN)
+	{
+		flag = true;
+	}
+	return flag;
+}
+
+
+
+/*
+	Handles the request by passing it to the correct function according to its id, then returns the result of the request.
+	Input: 
+		RequestInfo requestInfo: The request info
+	Output: 
+		The result of passing the request to the corresponding function.
+*/
+RequestResult MenuRequestHandler::handleRequest(RequestInfo requestInfo)
+{
+	std::vector<unsigned char> buffer;
+	RequestResult result = { std::vector<unsigned char>(), nullptr };
+
+	GetPlayersInRoomRequest getPlayersRequest = { 0 };
+	JoinRoomRequest request = { 0 };
+	CreateRoomRequest createRequest = { "", 0, 0, 0 };
+	m_handlerFactory->createMenuRequestHandler(m_user);
+	result.newHandler = nullptr;
+
+	if (isRequestRelevant(requestInfo))
+	{
+		switch (requestInfo.id)
+		{
+			case CLIENT_LOGOUT:
+			{
+				result = signout();
+				break;
+			}
+			case ROOM_PLAYERS:
+			{
+				std::vector<unsigned char> v(requestInfo.buffer, requestInfo.buffer + sizeof(requestInfo.buffer) / sizeof(requestInfo.buffer[0]));
+				getPlayersRequest = requestDeserializer::deserializeGetPlayersRequest(v);
+				result = getPlayersInRoom(getPlayersRequest);
+				break;
+			}
+			case ROOMS:
+			{
+				result = getRooms();
+				break;
+			}
+			case ROOM_LOGIN:
+			{
+				std::vector<unsigned char> v(requestInfo.buffer, requestInfo.buffer + sizeof(requestInfo.buffer) / sizeof(requestInfo.buffer[0]));
+				request = requestDeserializer::deserializeJoinRoomRequest(v);
+				result = joinRoom(request);
+				break;
+			}
+			case ROOM_CREATE:
+			{
+				std::vector<unsigned char> v(requestInfo.buffer, requestInfo.buffer + sizeof(requestInfo.buffer) / sizeof(requestInfo.buffer[0]));
+				createRequest = requestDeserializer::deserializeCreateRoomRequest(v);
+				result = createRoom(createRequest);
+				break;
+			}
+			case STATISTICS:
+			{
+				result = getStatistics();
+				break;
+			}
+			default:
+			{
+				result.response = ResponseSerializer::serializeResponse(ErrorResponse{ "Error with request id" });
+				break;
+			}
+		}
+	}
+	else
+	{
+		result.response = ResponseSerializer::serializeResponse(ErrorResponse{ "Request doesnt Exist" });
+	}
+
+	return result;
+}
+
+
+RequestResult MenuRequestHandler::signout()
+{
+	RequestResult request;
+	SignupResponse response{ 1 };
+
+	try
+	{
+		request.response = ResponseSerializer::serializeResponse(response);
+		request.newHandler = nullptr;
+	}
+	catch (std::exception e)
+	{
+		request.response = ResponseSerializer::serializeResponse(ErrorResponse{ e.what() });
+	}
+
+	return request;
+}
+
+RequestResult MenuRequestHandler::getRooms()
+{
+	RequestResult request;
+	GetRoomsResponse response{ 1, std::vector<RoomData>() };
+	response.status = 1;
+	try
+	{
+		response.rooms = m_handlerFactory->getRoomManager().getRooms();
+		request.response = ResponseSerializer::serializeResponse(response);
+		request.newHandler = nullptr;
+	}
+	catch (std::exception e)
+	{
+		request.response = ResponseSerializer::serializeResponse(ErrorResponse{ e.what() });
+	}
+
+	return request;
+}
+
+RequestResult MenuRequestHandler::getPlayersInRoom(GetPlayersInRoomRequest getPLayerReq)
+{
+	RequestResult request;
+	GetPlayersInRoomResponse response{ std::vector<std::string>() };
+
+	try
+	{
+		std::vector<LoggedUser> usersInRoom = m_handlerFactory->getRoomManager().getRoom(getPLayerReq.roomId).getAllUsers();
+		for (auto vecIter = usersInRoom.begin(); vecIter != usersInRoom.end(); vecIter++)
+		{
+			response.players.push_back((*vecIter).getUsername());
+		}
+		request.response = ResponseSerializer::serializeResponse(response);
+		request.newHandler = nullptr;
+	}
+	catch (std::exception e)
+	{
+		request.response = ResponseSerializer::serializeResponse(ErrorResponse{ e.what() });
+	}
+
+	return request;
+}
+
+RequestResult MenuRequestHandler::getStatistics()
+{
+	RequestResult request;
+
+	try
+	{
+		request.response = ResponseSerializer::serializeResponse(GetStatisticsResponse{ 1, m_handlerFactory->getStatisticsManager().getStatistics(m_user.getUsername()) });
+		request.newHandler = nullptr;
+	}
+	catch (std::exception e)
+	{
+		request.response = ResponseSerializer::serializeResponse(ErrorResponse{ e.what() });
+	}
+
+	return request;
+}
+
+RequestResult MenuRequestHandler::joinRoom(JoinRoomRequest joinRoomReq)
+{
+	RequestResult request;
+	JoinRoomResponse response{ 0 };
+
+	try
+	{
+		response.status = 1;
+		m_handlerFactory->getRoomManager().getRoom(joinRoomReq.roomId).addUser(m_user);
+		request.response = ResponseSerializer::serializeResponse(response);
+		request.newHandler = nullptr;
+	}
+	catch (std::exception e)
+	{
+		request.response = ResponseSerializer::serializeResponse(ErrorResponse{ e.what() });
+	}
+
+	return request;
+}
+
+/*
+
+*/
+RequestResult MenuRequestHandler::createRoom(CreateRoomRequest createRoomReq)
+{
+	RequestResult request;
+	JoinRoomResponse response{ 0 };
+
+	try
+	{
+		response.status = 1;
+		m_handlerFactory->getRoomManager().createRoom(createRoomReq.roomName, createRoomReq.maxUsers, createRoomReq.questionCount, createRoomReq.answerTimeout);
+		request.response = ResponseSerializer::serializeResponse(response);
+		request.newHandler = nullptr;
+	}
+	catch (std::exception e)
+	{
+		request.response = ResponseSerializer::serializeResponse(ErrorResponse{ e.what() });
+	}
+
+	return request;
+}

@@ -12,6 +12,11 @@ class requestDeserializer
 public:
 	static struct LoginRequest deserializeLoginRequest(std::vector<unsigned char> data);
 	static struct SignupRequest deserializeSignupRequest(std::vector<unsigned char> data);
+
+	static struct GetPlayersInRoomRequest deserializeGetPlayersRequest(std::vector<unsigned char> data);
+	static struct JoinRoomRequest deserializeJoinRoomRequest(std::vector<unsigned char> data);
+	static struct CreateRoomRequest deserializeCreateRoomRequest(std::vector<unsigned char> data);
+
 };
 
 struct LoginRequest
@@ -26,5 +31,27 @@ struct SignupRequest
 	std::string password;
 	std::string email;
 };
+
+struct GetPlayersInRoomRequest
+{
+	unsigned int roomId;
+};
+
+struct JoinRoomRequest
+{
+	unsigned int roomId;
+};
+
+struct CreateRoomRequest
+{
+	std::string roomName;
+	unsigned int maxUsers;
+	unsigned int questionCount;
+	unsigned int answerTimeout;
+};
+
+
+
+
 
 
