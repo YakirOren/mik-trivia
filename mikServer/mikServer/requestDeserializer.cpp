@@ -1,5 +1,7 @@
 #include "requestDeserializer.h"
 
+using namespace nlohmann;
+
 /*
 	This function deserializes the data from the client from unsigned char* to a LoginRequest.
 	The data from the client is sorted like so:
@@ -17,24 +19,14 @@
 LoginRequest requestDeserializer::deserializeLoginRequest(std::vector<unsigned char> data)
 {
 	LoginRequest loginRequest;
-	nlohmann::json json;
 
 	std::string dataAsString = Helper::vectorToString(data);
 
-	for (auto& i : dataAsString)
-	{
-		std::cout << i;
-	}
-
-	dataAsString = dataAsString.substr(START_OF_DATA);
-
-	std::cout << "Data: " << dataAsString << "\n";
-
-	json = nlohmann::json::parse(dataAsString);
+	json parsedData = json::parse(dataAsString);
 
 	loginRequest = {
-		loginRequest.password = json["password"].get<std::string>(),
-		loginRequest.username = json["username"].get<std::string>()
+		parsedData["password"].get<std::string>(),
+		parsedData["username"].get<std::string>()
 	};
 
 	return loginRequest;
@@ -57,25 +49,15 @@ LoginRequest requestDeserializer::deserializeLoginRequest(std::vector<unsigned c
 SignupRequest requestDeserializer::deserializeSignupRequest(std::vector<unsigned char> data)
 {
 	SignupRequest signupRequest;
-	nlohmann::json json;
 
 	std::string dataAsString = Helper::vectorToString(data);
 
-	for (auto& i : dataAsString)
-	{
-		std::cout << i;
-	}
-
-	dataAsString = dataAsString.substr(START_OF_DATA);
-
-	std::cout << "Data: " << dataAsString << "\n";
-
-	json = nlohmann::json::parse(dataAsString);
+	json parsedData = json::parse(dataAsString);
 
 	signupRequest = {
-		json["username"].get<std::string>(),
-		json["password"].get<std::string>(),
-		json["email"].get<std::string>()
+		parsedData["username"].get<std::string>(),
+		parsedData["password"].get<std::string>(),
+		parsedData["email"].get<std::string>()
 	};
 
 	return signupRequest;
@@ -87,20 +69,12 @@ SignupRequest requestDeserializer::deserializeSignupRequest(std::vector<unsigned
 GetPlayersInRoomRequest requestDeserializer::deserializeGetPlayersRequest(std::vector<unsigned char> data)
 {
 	GetPlayersInRoomRequest request;
+
 	std::string dataAsString = Helper::vectorToString(data);
 
-	for (auto& i : dataAsString)
-	{
-		std::cout << i;
-	}
+	json parsedData = json::parse(dataAsString);
 
-	dataAsString = dataAsString.substr(START_OF_DATA);
-
-	std::cout << "Data: " << dataAsString << "\n";
-
-	nlohmann::json json = nlohmann::json::parse(dataAsString);
-
-	request = { json["roomId"].get<unsigned int>() };
+	request = { parsedData["roomId"].get<unsigned int>() };
 
 	return request;
 }
@@ -111,20 +85,12 @@ GetPlayersInRoomRequest requestDeserializer::deserializeGetPlayersRequest(std::v
 JoinRoomRequest requestDeserializer::deserializeJoinRoomRequest(std::vector<unsigned char> data)
 {
 	JoinRoomRequest request;
+
 	std::string dataAsString = Helper::vectorToString(data);
 
-	for (auto& i : dataAsString)
-	{
-		std::cout << i;
-	}
+	json parsedData = json::parse(dataAsString);
 
-	dataAsString = dataAsString.substr(START_OF_DATA);
-
-	std::cout << "Data: " << dataAsString << "\n";
-
-	nlohmann::json json = nlohmann::json::parse(dataAsString);
-
-	request = { json["roomId"].get<unsigned int>() };
+	request = { parsedData["roomId"].get<unsigned int>() };
 
 	return request;
 }
@@ -135,25 +101,17 @@ JoinRoomRequest requestDeserializer::deserializeJoinRoomRequest(std::vector<unsi
 CreateRoomRequest requestDeserializer::deserializeCreateRoomRequest(std::vector<unsigned char> data)
 {
 	CreateRoomRequest request;
+
 	std::string dataAsString = Helper::vectorToString(data);
 
-	for (auto& i : dataAsString)
-	{
-		std::cout << i;
-	}
-
-	dataAsString = dataAsString.substr(START_OF_DATA);
-
-	std::cout << "Data: " << dataAsString << "\n";
-
-	nlohmann::json json = nlohmann::json::parse(dataAsString);
+	json parsedData = json::parse(dataAsString);
 
 	request = {
 
-			json["roomName"].get<std::string>(),
-			json["maxUsers"].get<unsigned int>(),
-			json["questionCount"].get<unsigned int>(),
-			json["answerTimeout"].get<unsigned int>()
+			parsedData["roomName"].get<std::string>(),
+			parsedData["maxUsers"].get<unsigned int>(),
+			parsedData["questionCount"].get<unsigned int>(),
+			parsedData["answerTimeout"].get<unsigned int>()
 	};
 
 	return request;

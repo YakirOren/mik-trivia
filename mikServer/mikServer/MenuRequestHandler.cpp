@@ -41,8 +41,8 @@ RequestResult MenuRequestHandler::handleRequest(RequestInfo requestInfo)
 	GetPlayersInRoomRequest getPlayersRequest = { 0 };
 	JoinRoomRequest request = { 0 };
 	CreateRoomRequest createRequest = { "", 0, 0, 0 };
-	m_handlerFactory->createMenuRequestHandler(m_user);
-	result.newHandler = nullptr;
+	//m_handlerFactory->createMenuRequestHandler(m_user);
+	//result.newHandler = nullptr;
 
 	if (isRequestRelevant(requestInfo))
 	{
@@ -55,8 +55,8 @@ RequestResult MenuRequestHandler::handleRequest(RequestInfo requestInfo)
 			}
 			case ROOM_PLAYERS:
 			{
-				std::vector<unsigned char> v(requestInfo.buffer, requestInfo.buffer + sizeof(requestInfo.buffer) / sizeof(requestInfo.buffer[0]));
-				getPlayersRequest = requestDeserializer::deserializeGetPlayersRequest(v);
+				//std::vector<unsigned char> v(requestInfo.buffer, requestInfo.buffer + sizeof(requestInfo.buffer) / sizeof(requestInfo.buffer[0]));
+				getPlayersRequest = requestDeserializer::deserializeGetPlayersRequest(requestInfo.buffer);
 				result = getPlayersInRoom(getPlayersRequest);
 				break;
 			}
@@ -67,15 +67,15 @@ RequestResult MenuRequestHandler::handleRequest(RequestInfo requestInfo)
 			}
 			case ROOM_LOGIN:
 			{
-				std::vector<unsigned char> v(requestInfo.buffer, requestInfo.buffer + sizeof(requestInfo.buffer) / sizeof(requestInfo.buffer[0]));
-				request = requestDeserializer::deserializeJoinRoomRequest(v);
+				//std::vector<unsigned char> v(requestInfo.buffer, requestInfo.buffer + sizeof(requestInfo.buffer) / sizeof(requestInfo.buffer[0]));
+				request = requestDeserializer::deserializeJoinRoomRequest(requestInfo.buffer);
 				result = joinRoom(request);
 				break;
 			}
 			case ROOM_CREATE:
 			{
-				std::vector<unsigned char> v(requestInfo.buffer, requestInfo.buffer + sizeof(requestInfo.buffer) / sizeof(requestInfo.buffer[0]));
-				createRequest = requestDeserializer::deserializeCreateRoomRequest(v);
+				//std::vector<unsigned char> v(requestInfo.buffer, requestInfo.buffer + sizeof(requestInfo.buffer) / sizeof(requestInfo.buffer[0]));
+				createRequest = requestDeserializer::deserializeCreateRoomRequest(requestInfo.buffer);
 				result = createRoom(createRequest);
 				break;
 			}

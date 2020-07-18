@@ -33,6 +33,7 @@ public:
 	static int getMessageLen(SOCKET sc);
 	static int byteToInt(char* buffer);
 	static unsigned char* intToByte(const int& number);
+	static int getMessageLength(std::vector<unsigned char> buffer);
 
 private:
 	static char* getPartFromSocket(SOCKET sc, int bytesNum);

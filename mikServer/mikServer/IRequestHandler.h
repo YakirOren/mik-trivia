@@ -21,7 +21,7 @@ struct RequestResult
 
 struct RequestInfo
 {
-	int id;
-	std::time_t recievalTime;
-	unsigned char* buffer;
+	int id = 0;
+	std::time_t recievalTime = 0;
+	std::vector<unsigned char> buffer;
 };

@@ -45,9 +45,9 @@ struct JoinRoomRequest
 struct CreateRoomRequest
 {
 	std::string roomName;
-	unsigned int maxUsers;
-	unsigned int questionCount;
-	unsigned int answerTimeout;
+	unsigned int maxUsers = 0;
+	unsigned int questionCount = 0;
+	unsigned int answerTimeout = 0;
 };
 
 

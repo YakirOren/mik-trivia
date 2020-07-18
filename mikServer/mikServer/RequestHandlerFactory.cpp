@@ -3,7 +3,7 @@
 /*
 	Constructor
 */
-RequestHandlerFactory::RequestHandlerFactory(IDatabase* database) : m_loginManager(new LoginManager(database)), m_database(database)
+RequestHandlerFactory::RequestHandlerFactory(IDatabase* database) : m_loginManager(new LoginManager(database)), m_database(database), m_roomManager(new RoomManager(m_database)), m_StatisticsManager(nullptr)
 {
 
 }
