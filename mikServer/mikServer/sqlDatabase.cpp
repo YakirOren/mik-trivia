@@ -13,14 +13,20 @@ sqlDatabase::sqlDatabase()
 	}
 
 	//create a new table if it doesn't exists.
-	if (file_exist == 0)
+	if (file_exist != 0)
 	{
-		execute("CREATE TABLE USERS (ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , NAME TEXT NOT NULL , PASSWORD TEXT NOT NULL , EMAIL TEXT NOT NULL);");
-
+		//execute("CREATE TABLE USERS (ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , NAME TEXT NOT NULL , PASSWORD TEXT NOT NULL , EMAIL TEXT NOT NULL);");
+		execute("CREATE TABLE \"USERS\" (\"USERNAME\"	TEXT NOT NULL,\"PASSWORD\"	TEXT NOT NULL,\"EMAIL\"	TEXT NOT NULL,PRIMARY KEY(\"USERNAME\"));"
+			"CREATE TABLE \"questions\" (\"data\"	TEXT NOT NULL,\"correct\"	TEXT NOT NULL,\"ans1\"	TEXT NOT NULL,\"ans2\"	TEXT NOT NULL,\"ans3\"	TEXT NOT NULL,\"id\"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT);"
+			"CREATE TABLE \"Statistics\" (\"UserName\"	TEXT NOT NULL,\"AvarageAnswerTime\"	REAL NOT NULL,\"CorrectAnswers\"	INTEGER NOT NULL,\"Answers\"	INTEGER NOT NULL,\"Games\"	INTEGER NOT NULL,\"Score\"	INTEGER NOT NULL, PRIMARY KEY(\"USERNAME\"));");
+		
 	}
-
-	close();
 }
+
+sqlDatabase::~sqlDatabase()
+{
+}
+
 
 /*
 this function checks if a user exists in the database by name.
@@ -113,6 +119,56 @@ void sqlDatabase::close()
 	this->db = nullptr;
 }
 
+std::vector<std::string> sqlDatabase::GetStatistics()
+{
+	return std::vector<std::string>();
+}
+
+float sqlDatabase::getPlayerAvarageAnswerTime(std::string username)
+{
+	float result = 0;
+	selectBy("STATISTICS", "USERNAME " "= \"" + username + "\"", "AvarageAnswerTime", db);
+	result = stof(dataHolder[0]);
+	dataHolder.clear();
+	return result;
+}
+
+int sqlDatabase::getNumOfCorrectAnswers(std::string username)
+{
+	int result = 0;
+	selectBy("STATISTICS", "USERNAME " "= \"" + username + "\"", "CorrectAnswers", db);
+	result = stoi(dataHolder[0]);
+	dataHolder.clear();
+	return result;
+}
+
+int sqlDatabase::getNumOfTotalAnswers(std::string username)
+{
+	int result = 0;
+	selectBy("STATISTICS", "USERNAME " "= \"" + username + "\"", "Answers", db);
+	result = stoi(dataHolder[0]);
+	dataHolder.clear();
+	return result;
+}
+
+int sqlDatabase::getNumOfPlayerGames(std::string username)
+{
+	int result = 0;
+	selectBy("STATISTICS", "USERNAME " "= \"" + username + "\"", "Games", db);
+	result = stoi(dataHolder[0]);
+	dataHolder.clear();
+	return result;
+}
+
+void sqlDatabase::updateScore(std::string username, unsigned int timeToAnswer, unsigned int timePerQuestion)
+{
+}
+
+int sqlDatabase::calculateScore(std::string username, unsigned int timeToAnswer, unsigned int timePerQuestion)
+{
+	return 0;
+}
+
 /*
 this function is for genric execute of sql in the database.
 */
@@ -136,6 +192,27 @@ int sqlDatabase::execute(std::string sql)
 	return execute(sql, nullptr, nullptr, nullptr);
 }
 
+void sqlDatabase::selectBy(std::string source, std::string condition, std::string request, sqlite3* db)
+{
+	char* error = nullptr;
+	std::string query;
+
+	if (condition == "")
+	{
+		query = "SELECT " + request + " FROM " + source + ";";
+	}
+	else
+	{
+		query = "SELECT " + request + " FROM " + source + " WHERE " + condition + ";";
+	}
+
+	int res = sqlite3_exec(db, query.c_str(), int_callback, nullptr, &error);
+	if (sqlite3_errmsg != nullptr)
+	{
+		std::cout << error << std::endl;
+	}
+}
+
 /*
 this function is a callback function that returens the type int, can be used for sql strings with count() for example.
 Input:
@@ -152,5 +229,15 @@ int sqlDatabase::int_callback(void* data, int argc, char** argv, char** azColNam
 		*dd = atoi(argv[i]);
 	}
 
+	return 0;
+}
+
+int callBack(void* data, int argc, char** argv, char** azColName)
+{
+	int i = 0;
+	for (i = 0; i < argc; i++)
+	{
+		dataHolder.push_back(argv[i]);
+	}
 	return 0;
 }

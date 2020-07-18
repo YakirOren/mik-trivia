@@ -15,7 +15,7 @@ Server::~Server()
 
 void Server::run()
 {
-	std::thread t_connector(&Communicator::bindAndListen, m_communicator);
+	std::thread t_connector(&Communicator::bindAndListen, new Communicator(_database, _handlerFactory));
 	t_connector.detach();
 	
 	////std::cin();

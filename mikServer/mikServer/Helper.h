@@ -5,25 +5,21 @@
 #include <bitset>
 #include <WinSock2.h>
 
-
-//enum MessageType : byte
-//{
-//	MT_CLIENT_LOG_IN = 200,
-//	MT_CLIENT_UPDATE = 204,
-//	MT_CLIENT_FINISH = 207,
-//	MT_CLIENT_EXIT = 208,
-//	MT_SERVER_UPDATE = 101,
-//};
-
-
 enum MessageType
 {
 	CLIENT_LOGIN = 200,
 	CLIENT_SIGNUP = 204,
-	SERVER_ERROR = 500
-
+	SERVER_ERROR = 500,
+	CLIENT_LOGOUT = 201,
+	ROOM_RESPONSE = 300,
+	ROOM_PLAYERS_RESPONSE = 301,
+	ROOM_LOGIN = 302,
+	ROOM_CREATE = 303,
+	ROOM_PLAYERS = 304,
+	ROOMS = 305,
+	STATISTICS = 400,
 };
- 
+
 class Helper
 {
 public:
@@ -37,6 +33,7 @@ public:
 	static int getMessageLen(SOCKET sc);
 	static int byteToInt(char* buffer);
 	static unsigned char* intToByte(const int& number);
+	static int getMessageLength(std::vector<unsigned char> buffer);
 
 private:
 	static char* getPartFromSocket(SOCKET sc, int bytesNum);

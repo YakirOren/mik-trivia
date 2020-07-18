@@ -7,10 +7,10 @@
 	Output:
 		a vector of unsigned char containing the serialized response
 */
-std::vector<unsigned char> ResponseSerializer::serializeResponse(ErrorResponse res)
+std::vector<unsigned char> ResponseSerializer::serializeResponse(ErrorResponse response)
 {
 	json data;
-	data["message"] = res.message;
+	data["message"] = response.message;
 
 	return generatePacket(data, MessageType::SERVER_ERROR);
 }
@@ -22,27 +22,118 @@ std::vector<unsigned char> ResponseSerializer::serializeResponse(ErrorResponse r
 	Output:
 		a vector of unsigned char containing the serialized response
 */
-std::vector<unsigned char> ResponseSerializer::serializeResponse(LoginResponse res)
+std::vector<unsigned char> ResponseSerializer::serializeResponse(LoginResponse response)
 {
 	json data;
-	data["status"] = res.status;
+	data["status"] = response.status;
 
 	return generatePacket(data, MessageType::CLIENT_LOGIN);
 }
 
 /*
 	Serializes the signup response using generatePacket
-	Input: 
+	Input:
 		SignupResponse res: The signup response the function serializes
-	Output: 
+	Output:
 		a vector of unsigned char containing the serialized response
 */
-std::vector<unsigned char> ResponseSerializer::serializeResponse(SignupResponse res)
+std::vector<unsigned char> ResponseSerializer::serializeResponse(SignupResponse response)
 {
 	json data;
-	data["status"] = res.status;
+	data["status"] = response.status;
 
 	return generatePacket(data, MessageType::CLIENT_SIGNUP);
+}
+
+/*
+	Serializes the logout response using generatePacket
+	Input:
+		LogoutResponse res: The logout response the function serializes
+	Output:
+		a vector of unsigned char containing the serialized response
+*/
+std::vector<unsigned char> ResponseSerializer::serializeResponse(LogoutResponse response)
+{
+	json data;
+	data["status"] = response.status;
+
+	return generatePacket(data, MessageType::CLIENT_LOGOUT);
+}
+
+/*
+	Serializes the GetRoomResponse using generatePacket
+	Input:
+		GetRoomResponse res: The GetRoomResponse the function serializes
+	Output:
+		a vector of unsigned char containing the serialized response
+*/
+std::vector<unsigned char> ResponseSerializer::serializeResponse(GetRoomsResponse response)
+{
+	json data;
+	data["status"] = response.status;
+
+	return generatePacket(data, MessageType::ROOM_RESPONSE);
+}
+
+/*
+	Serializes the GetPlayersInRoomResponse using generatePacket
+	Input:
+		GetPlayersInRoomResponse res: The GetPlayersInRoomResponse the function serializes
+	Output:
+		a vector of unsigned char containing the serialized response
+*/
+std::vector<unsigned char> ResponseSerializer::serializeResponse(GetPlayersInRoomResponse response)
+{
+	json data;
+	data["players"] = response.players;
+
+	return generatePacket(data, MessageType::ROOM_PLAYERS_RESPONSE);
+}
+
+/*
+	Serializes the JoinRoomResponse using generatePacket
+	Input:
+		JoinRoomResponse res: The JoinRoomResponse the function serializes
+	Output:
+		a vector of unsigned char containing the serialized response
+*/
+std::vector<unsigned char> ResponseSerializer::serializeResponse(JoinRoomResponse response)
+{
+	json data;
+	data["status"] = response.status;
+
+	return generatePacket(data, MessageType::ROOM_LOGIN);
+}
+
+/*
+	Serializes the CreateRoomResponse using generatePacket
+	Input:
+		CreateRoomResponse res: The CreateRoomResponse the function serializes
+	Output:
+		a vector of unsigned char containing the serialized response
+*/
+std::vector<unsigned char> ResponseSerializer::serializeResponse(CreateRoomResponse response)
+{
+	json data;
+	data["status"] = response.status;
+
+	return generatePacket(data, MessageType::ROOM_CREATE);
+}
+
+/*
+	Serializes the GetStatisticsResponse using generatePacket
+	Input:
+		GetStatisticsResponse res: The GetStatisticsResponse the function serializes
+	Output:
+		a vector of unsigned char containing the serialized response
+*/
+std::vector<unsigned char> ResponseSerializer::serializeResponse(GetStatisticsResponse response)
+{
+	json data;
+	data["status"] = response.status;
+	data["statistics"] = response.statistics;
+
+	return generatePacket(data, MessageType::STATISTICS);
 }
 
 /*
@@ -58,7 +149,7 @@ std::vector<unsigned char> ResponseSerializer::generatePacket(json data, Message
 	int bytes = 0;
 	int messageSize = data.dump().size();
 
-	std::cout << messageSize << std::endl; 
+	std::cout << messageSize << std::endl;
 
 	unsigned char* sizeAsBytes = Helper::intToByte(messageSize);
 
@@ -67,7 +158,7 @@ std::vector<unsigned char> ResponseSerializer::generatePacket(json data, Message
 	std::vector<unsigned char> packet;
 
 	packet.push_back((unsigned char)type);
-	
+
 	for (int i = 0; i < 4; i++)
 	{
 		packet.push_back(sizeAsBytes[i]);
@@ -77,7 +168,7 @@ std::vector<unsigned char> ResponseSerializer::generatePacket(json data, Message
 	{
 		packet.push_back(data.dump().c_str()[i]);
 	}
-	
+
 	return packet;
 }
 

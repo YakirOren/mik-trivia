@@ -4,6 +4,7 @@
 #include "Helper.h"
 #include <thread>
 #include "Communicator.h"
+#include "IDatabase.h"
 
 
 

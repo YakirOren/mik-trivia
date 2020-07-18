@@ -47,15 +47,15 @@ RequestResult LoginRequestHandler::handleRequest(RequestInfo request)
 	RequestResult result = {};
 	LoginRequest loginRequest = {};
 	SignupRequest signupRequest = {};
-	_handlerFactory->createLoginHandler();
+	//_handlerFactory->createLoginHandler();
 
 	if (isRequestRelevant(request))
 	{
 		if (request.id == CLIENT_LOGIN)
 		{
 			// Deserializing the request of the client
-			std::vector<unsigned char> buffer(request.buffer, request.buffer + strlen((char*)request.buffer));
-			loginRequest = requestDeserializer::deserializeLoginRequest(buffer);
+			//std::vector<unsigned char> buffer(request.buffer, request.buffer + strlen((char*)request.buffer));
+			loginRequest = requestDeserializer::deserializeLoginRequest(request.buffer);
 			databaseMutex.lock();
 			result = login(loginRequest);
 			databaseMutex.unlock();
@@ -65,8 +65,8 @@ RequestResult LoginRequestHandler::handleRequest(RequestInfo request)
 		{
 			//SignupResponse signupResponse = {(unsigned) 1};
 			//result.response = ResponseSerializer::serializeResponse(signupResponse);
-			std::vector<unsigned char> buffer(request.buffer, request.buffer + strlen((char*)request.buffer));
-			signupRequest = requestDeserializer::deserializeSignupRequest(buffer);
+			//std::vector<unsigned char> buffer(request.buffer, request.buffer + strlen((char*)request.buffer));
+			signupRequest = requestDeserializer::deserializeSignupRequest(request.buffer);
 			databaseMutex.lock();
 			result = signup(signupRequest);
 			databaseMutex.unlock();
@@ -108,7 +108,7 @@ RequestResult LoginRequestHandler::signup(SignupRequest request)
 	LoginResponse signupResponse = { 1 };
 	try
 	{
-		_handlerFactory->getLoginManager().login(request.username, request.password);
+		_handlerFactory->getLoginManager().signup(request.username, request.password, request.email);
 		result.response = ResponseSerializer::serializeResponse(signupResponse);
 	}
 	catch (std::exception error)

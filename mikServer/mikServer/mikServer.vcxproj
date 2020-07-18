@@ -149,10 +149,13 @@
     <ClCompile Include="requestDeserializer.cpp" />
     <ClCompile Include="RequestHandlerFactory.cpp" />
     <ClCompile Include="ResponseSerializer.cpp" />
+    <ClCompile Include="Room.cpp" />
+    <ClCompile Include="RoomManager.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="sqlDatabase.cpp" />
     <ClCompile Include="sqlite3.c" />
+    <ClCompile Include="StatisticsManager.cpp" />
     <ClCompile Include="WSAInitializer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -169,9 +172,12 @@
     <ClInclude Include="requestDeserializer.h" />
     <ClInclude Include="RequestHandlerFactory.h" />
     <ClInclude Include="ResponseSerializer.h" />
+    <ClInclude Include="Room.h" />
+    <ClInclude Include="RoomManager.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="sqlDatabase.h" />
     <ClInclude Include="sqlite3.h" />
+    <ClInclude Include="StatisticsManager.h" />
     <ClInclude Include="WSAInitializer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

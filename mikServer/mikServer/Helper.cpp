@@ -1,4 +1,5 @@
 #include "Helper.h"
+#include <winsock.h>
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -11,8 +12,7 @@ using std::string;
 int Helper::getMessageTypeCode(SOCKET sc)
 {
 	char* s = getPartFromSocket(sc, 1);
-	
-	return (int)s;
+	return (unsigned char)s[0];
 }
 
 
@@ -41,7 +41,7 @@ int Helper::getMessageLen(SOCKET sc)
 std::string Helper::vectorToString(std::vector<unsigned char> buffer)
 {
 	std::string bufferAsString(buffer.begin(), buffer.end());
-	std::cout << "vector as string: " << bufferAsString << std::endl;
+	//std::cout << "vector as string: " << bufferAsString << std::endl;
 	return bufferAsString;
 }
 
@@ -132,4 +132,9 @@ unsigned char* Helper::intToByte(const int& number)
 	byte[3] = number & 0xFF;
 
 	return byte;
+}
+
+int Helper::getMessageLength(std::vector<unsigned char> buffer)
+{
+	return (int)(buffer[3] << 24 | buffer[2] << 16 | buffer[1] << 8 | buffer[0]);
 }
