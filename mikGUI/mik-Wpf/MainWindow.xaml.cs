@@ -33,7 +33,7 @@ namespace mik_Wpf
         {
             InitializeComponent();
 
-            //string result = SocketSendReceive("", 6969);
+            Client = new socket_client("127.0.0.1", 6969);
 
             _mainFrame.Navigate(new login());
 

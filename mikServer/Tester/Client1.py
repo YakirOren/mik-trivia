@@ -8,7 +8,12 @@ PORT = 6969
 
 def main():
     client_data = {"username": "user1",
-        "password": "1234", "mail": "user1@gmail.com"}
+        "password": "1234", "email": "user1@gmail.com"}
+
+    client_login = {"username": "user1",
+        "password": "1234"}
+
+
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
         try:
             client_socket.connect((SERVER_IP, PORT))
@@ -20,18 +25,27 @@ def main():
                        "\n" + "3: Exit" + "\n")
 
         if choise == '1':
-            client_socket.send(Serialize(200, client_data))
+            client_socket.send(Serialize(204, client_data))
+            data = client_socket.recv(1024)
+            print(deSerialize(data))
+
+        elif choise == '2':
+            client_socket.send(Serialize(200, client_login))
             data = client_socket.recv(1024)
             print(deSerialize(data))
 
 
+
 def Serialize(code: int, data_string: json):
+
+
     d = code.to_bytes(1, byteorder='big') + (len(str(data_string))).to_bytes(4, byteorder='big') + json.dumps(data_string).encode()
     return d
 
 
 def deSerialize(bin_string:str) -> (int, json):
     print(bin_string)
+
     return (int(bin_string[0]), json.loads(bin_string[5:]))
 
     

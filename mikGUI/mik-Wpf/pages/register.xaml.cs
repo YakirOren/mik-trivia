@@ -27,9 +27,19 @@ namespace mik_Wpf
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            // actualy register the new user...
 
-            this.NavigationService.GoBack();
+            MainWindow parentWindow = Window.GetWindow(this) as MainWindow;
+
+            if (parentWindow != null)
+            {
+
+                if (parentWindow.Client.signup(name.Text, password.Password, email.Text))
+                {
+                    this.NavigationService.GoBack();
+                }
+            }
+
+
 
         }
     }

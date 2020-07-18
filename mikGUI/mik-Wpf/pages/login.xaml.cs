@@ -38,12 +38,21 @@ namespace mik_Wpf
 
             if (parentWindow != null)
             {
-                //get the user name from the database
-                parentWindow.username = "שחקן 1";
+
+                
+
+                if (parentWindow.Client.login(name.Text, password.Password))
+                {
+                    parentWindow.username = name.Text;
+                    this.NavigationService.Navigate(new join_games());
+
+                }
             }
 
 
-            this.NavigationService.Navigate(new join_games());
+
+
+
         }
     }
 }
