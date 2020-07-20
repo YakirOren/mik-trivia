@@ -76,57 +76,52 @@ namespace mik_Wpf.app_code
         }
 
 
+        /*this function gets a request and a code and returns the answer from the server in json form*/
         public JObject SocketSendReceive(string request, int code)
         {
-
-            Byte[] msg = Encoding.ASCII.GetBytes(code.ToString()).Concat(Encoding.ASCII.GetBytes(request.Length.ToString())).Concat(Encoding.ASCII.GetBytes(request)).ToArray();
-
-
-            Byte[] bytesReceived = new Byte[256];
-
-
-
-            string response = "";
 
             if (this.socket == null)
                 throw new Exception("Connection fail");
 
-            // Send request to the server.
-            this.socket.Send(msg, msg.Length, 0);
+            //the code part in the protocol is 1 byte
+            byte[] code_part = new byte[1];
+            code_part[0] = BitConverter.GetBytes(code)[0]; //converting int to byte 
 
 
+            byte[] length_part = BitConverter.GetBytes(request.Length);
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(length_part);
 
+            // code + len + data
+            byte[] msg = code_part.Concat(length_part).Concat(Encoding.ASCII.GetBytes(request)).ToArray();
+
+            Console.WriteLine(BitConverter.ToString(msg).Replace('-',' '));
+
+            // Send the request to the server.
+            this.socket.Send(msg);
+
+
+            byte[] temp = new byte[5];
+            // Receive from the server the first five bytes. 
+            this.socket.Receive(temp, 5, 0); 
+
+
+            byte[] bytesReceived = new byte[256];
             int bytes = 0;
+            string response = "";
 
-            // Receive the server 
+            //THIS ONLY GETS 256 BYTES FROM THE SOCKET
 
+            bytes = this.socket.Receive(bytesReceived);
+            response = Encoding.ASCII.GetString(bytesReceived, 0, bytes);
 
-            Byte[] temp = new Byte[5];
+            // should add loop if the message size would be lager then 256.
 
-            //Console.WriteLine(this.socket.Receive(temp, 5, 0));
+                        
+            Console.WriteLine(response);
 
+            return JObject.Parse(response);
 
-            do
-            {
-                bytes = this.socket.Receive(bytesReceived, bytesReceived.Length, 0);
-                response = response + Encoding.ASCII.GetString(bytesReceived, 0, bytes);
-
-                foreach (var item in bytesReceived)
-                {
-                    Console.WriteLine(item);
-                }
-
-                Console.WriteLine(bytes);
-                Console.WriteLine(response);
-            }
-            while (bytes > 0);
-            
-
-
-
-            JObject json = JObject.Parse(response);
-
-            return json;
         }
 
 
@@ -136,6 +131,8 @@ namespace mik_Wpf.app_code
 
             var content = "{ \"username\": \"" + name + "\",\"password\": \"" + password + "\"}";
 
+
+            Console.WriteLine(content);
             dynamic d = SocketSendReceive(content, (int)CODES.CLIENT_LOGIN);
 
             Console.WriteLine(d);
@@ -147,9 +144,10 @@ namespace mik_Wpf.app_code
         public bool signup(string name, string password, string email)
         {
 
-            string content = (int)CODES.CLIENT_SIGNUP + "{ \"username\": \"" + name + "\",\"password\": \"" + password + "\", \"email\": \"" + email + "\"}";
-
+            string content = "{ \"username\": \"" + name + "\",\"password\": \"" + password + "\", \"email\": \"" + email + "\"}";
+            Console.WriteLine(content);
             dynamic d = SocketSendReceive(content, (int)CODES.CLIENT_SIGNUP);
+            Console.WriteLine(d);
 
             return d.status == 1;
 

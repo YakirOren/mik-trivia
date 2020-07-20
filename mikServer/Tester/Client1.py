@@ -38,8 +38,10 @@ def main():
 
 def Serialize(code: int, data_string: json):
 
-
     d = code.to_bytes(1, byteorder='big') + (len(str(data_string))).to_bytes(4, byteorder='big') + json.dumps(data_string).encode()
+    
+    print(d.hex())
+    
     return d
 
 

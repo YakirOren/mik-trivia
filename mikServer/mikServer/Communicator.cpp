@@ -110,7 +110,7 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 	}
 	catch (const std::exception& e)
 	{
-		throw std::exception(e.what());
+		std::cout << e.what() << "\n";
 		removeClient(clientSocket);
 	}
 
