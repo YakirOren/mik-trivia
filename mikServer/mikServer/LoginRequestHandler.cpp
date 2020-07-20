@@ -105,7 +105,7 @@ RequestResult LoginRequestHandler::login(LoginRequest request)
 RequestResult LoginRequestHandler::signup(SignupRequest request)
 {
 	RequestResult result = {};
-	LoginResponse signupResponse = { 1 };
+	SignupResponse signupResponse = { 1 };
 	try
 	{
 		_handlerFactory->getLoginManager().signup(request.username, request.password, request.email);

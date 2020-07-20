@@ -97,11 +97,20 @@ void Helper::sendData(SOCKET sc, std::string message)
 	}
 }
 
-void Helper::sendData(SOCKET sc, unsigned char* message)
+void Helper::sendData(SOCKET sc, const char* message, int length)
 {
-	if (send(sc, (char*)message, strlen((char*)message), 0) == INVALID_SOCKET)
+	if (send(sc, (char*)message, /*strlen((char*)message)*/ length, 0) == INVALID_SOCKET)
 	{
 		throw std::exception("Error while sending message to client");
+	}
+}
+
+void Helper::sendData(SOCKET sc, std::vector<unsigned char>& data)
+{
+	const char* temp = reinterpret_cast<const char*>(data.data());
+	if (send(sc, temp, (int)data.size(), 0) == SOCKET_ERROR)
+	{
+		throw std::exception("Error while sending message to client, Socket error - " + WSAGetLastError());
 	}
 }
 
