@@ -2,6 +2,9 @@
 
 std::mutex clientsInsertMutex;
 
+/*
+	Accept's the newly entered user and inserts him into the 
+*/
 void Communicator::accept()
 {
 	// notice that we step out to the global namespace
@@ -96,8 +99,11 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 		if (m_clients[clientSocket] != nullptr)
 		{
 			requestResult = m_clients.at(clientSocket)->handleRequest(requestInfo);
-			unsigned char* response = static_cast<unsigned char*>(requestResult.response.data());
-			Helper::sendData(clientSocket, response);
+			const char* response = reinterpret_cast<char*>(requestResult.response.data());
+			std::cout << response << std::endl;
+			//std::string temp(requestResult.response.begin(), requestResult.response.end());
+			//Helper::sendData(clientSocket, requestResult.response);
+			Helper::sendData(clientSocket, response, requestResult.response.size());
 		}
 		
 		//removeClient(clientSocket);

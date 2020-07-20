@@ -28,7 +28,8 @@ public:
 	static std::string vectorToString(std::vector<unsigned char> buffer);
 	static std::string binaryToString(std::string binaryString);
 	static void sendData(SOCKET sc, std::string message);
-	static void sendData(SOCKET sc, unsigned char* message);
+	static void sendData(SOCKET sc, const char* message, int length);
+	static void sendData(SOCKET sc, std::vector<unsigned char>& data);
 	static unsigned char(&to_array(std::string const& str))[];
 	static int getMessageLen(SOCKET sc);
 	static int byteToInt(char* buffer);
