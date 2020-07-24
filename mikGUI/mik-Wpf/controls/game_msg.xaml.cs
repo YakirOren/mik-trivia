@@ -39,11 +39,13 @@ namespace mik_Wpf
             this.players_lbl.Text = string.Format("{0}/{1}", players, MaxPlayers);
         }
 
-        public game_msg(int players, string driver)
+        public game_msg(int ID,string driver)
         {
             InitializeComponent();
             
-            MaxPlayers = 4;
+            this.ID = ID;
+            this.players = 0;
+            MaxPlayers = 4; // GUI limitation
             this.driver = driver;
             this.players_lbl.Text = string.Format("{0}/{1}", players, MaxPlayers);
             
@@ -53,15 +55,18 @@ namespace mik_Wpf
 
         private void join_Click(object sender, RoutedEventArgs e)
         {
-            AddPlayer();
-            
+
+
             if (this.MainWindow != null)
             {
 
                 //send JoinRoomRequest
+                this.MainWindow.Client.JoinRoom(ID);
+
+
                 if (true)
                 {
-                    var dd = new create_texi(ID);
+                    var dd = new create_texi(ID); // creating a new game room. but the player is not ht driver
                     this.MainWindow.Hide();
                     dd.ShowDialog();
                     this.MainWindow.Show();

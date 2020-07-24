@@ -71,6 +71,7 @@ std::vector<unsigned char> ResponseSerializer::serializeResponse(GetRoomsRespons
 {
 	json data;
 	data["status"] = response.status;
+	data["rooms"] = std::string(response.rooms.begin(), response.rooms.end()); //WIP!!!
 
 	return generatePacket(data, MessageType::ROOM_RESPONSE);
 }

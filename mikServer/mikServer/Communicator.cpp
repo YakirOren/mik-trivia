@@ -79,34 +79,37 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 	std::vector<unsigned char> buffer = {};
 	int type = 0, lengthOfData = 0;
 	std::string data = "";
-
+	
 	try
 	{
-		//Recieving the code from the message
-		type = Helper::getMessageTypeCode(clientSocket); 
-		time(&(requestInfo.recievalTime)); // Getting the recieval time
+		while (true) {
+			//Recieving the code from the message
+			type = Helper::getMessageTypeCode(clientSocket);
+			time(&(requestInfo.recievalTime)); // Getting the recieval time
 
-		//Recieving the length of the data
-		lengthOfData = Helper::getMessageLen(clientSocket);
+			//Recieving the length of the data
+			lengthOfData = Helper::getMessageLen(clientSocket);
 
-		//Recieving the data itself
-		recieveData(clientSocket, requestInfo.buffer, lengthOfData);
-		
-		std::cout << data << std::endl;
+			//Recieving the data itself
+			recieveData(clientSocket, requestInfo.buffer, lengthOfData);
 
-		requestInfo.id = type;
+			std::cout << data << std::endl;
 
-		if (m_clients[clientSocket] != nullptr)
-		{
-			requestResult = m_clients.at(clientSocket)->handleRequest(requestInfo);
-			const char* response = reinterpret_cast<char*>(requestResult.response.data());
-			std::cout << response << std::endl;
-			//std::string temp(requestResult.response.begin(), requestResult.response.end());
-			//Helper::sendData(clientSocket, requestResult.response);
-			Helper::sendData(clientSocket, response, requestResult.response.size());
+			requestInfo.id = type;
+
+			if (m_clients[clientSocket] != nullptr)
+			{
+				requestResult = m_clients.at(clientSocket)->handleRequest(requestInfo);
+				const char* response = reinterpret_cast<char*>(requestResult.response.data());
+				std::cout << response << std::endl;
+				//std::string temp(requestResult.response.begin(), requestResult.response.end());
+				//Helper::sendData(clientSocket, requestResult.response);
+				Helper::sendData(clientSocket, response, requestResult.response.size());
+			}
+
+			//removeClient(clientSocket);
 		}
-		
-		//removeClient(clientSocket);
+
 	}
 	catch (const std::exception& e)
 	{

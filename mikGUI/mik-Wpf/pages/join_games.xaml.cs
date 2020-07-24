@@ -31,13 +31,14 @@ namespace mik_Wpf
 
         public void CreateRoom()
         {
-            //get the info from the user.
 
-            //user name
-            // user need to selct what kind of questions to be asked i.e destination.
+            int newRoomId = parentWindow.Client.CreateRoom(username); 
+            // this send to the server that a new room has been created. 
+            //the server will notify all the other clients that a new room has been create which the LookForActiveGames function handels.
 
 
-            game_msg new_game = new game_msg(0, parentWindow.username);
+
+            game_msg new_game = new game_msg(newRoomId, parentWindow.username);
 
             games.Children.Add(new_game);
 
@@ -47,6 +48,9 @@ namespace mik_Wpf
         {
             while (true)
             {
+                parentWindow.Client.GetAllRooms();
+
+                // thread sleep.... for 30 sec?
 
             }
         }
@@ -82,8 +86,7 @@ namespace mik_Wpf
             }
 
             // add active games. maybe add background thread for active games.
-            CreateRoom();
-            CreateRoom();
+            
         }
     }
 }

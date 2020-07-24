@@ -26,10 +26,40 @@ namespace mik_Wpf.app_code
         ROOMS = 305,
         STATISTICS = 400,
     }
+
+    public static class Socket_Extension
+    {
+        public static byte[] ReceiveAll(this Socket socket)
+        {
+            var buffer = new List<byte>();
+
+            while (socket.Available > 0)
+            {
+                var currByte = new Byte[1];
+                var byteCounter = socket.Receive(currByte, currByte.Length, SocketFlags.None);
+
+                if (byteCounter.Equals(1))
+                {
+                    buffer.Add(currByte[0]);
+                }
+            }
+
+            return buffer.ToArray();
+        }
+
+
+        public static string ToASCIIStr(this byte[] arr)
+        {
+            return Encoding.ASCII.GetString(arr);
+        }
+
+    }
+
+
     public class socket_client
     {
-        string ip;
-        int port;
+        string ip = "";
+        int port = 0;
 
         Socket socket;
 
@@ -60,7 +90,14 @@ namespace mik_Wpf.app_code
                 Socket tempSocket =
                     new Socket(ipe.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-                tempSocket.Connect(ipe);
+                try
+                {
+                    tempSocket.Connect(ipe);
+                }
+                catch (Exception)
+                {
+
+                }
 
                 if (tempSocket.Connected)
                 {
@@ -73,6 +110,11 @@ namespace mik_Wpf.app_code
                 }
             }
             return s;
+        }
+
+        public JObject SocketSendReceive(JObject request, int code)
+        {
+            return SocketSendReceive(request.ToString(), code);
         }
 
 
@@ -95,7 +137,7 @@ namespace mik_Wpf.app_code
             // code + len + data
             byte[] msg = code_part.Concat(length_part).Concat(Encoding.ASCII.GetBytes(request)).ToArray();
 
-            Console.WriteLine(BitConverter.ToString(msg).Replace('-',' '));
+            Console.WriteLine(BitConverter.ToString(msg).Replace('-', ' '));
 
             // Send the request to the server.
             this.socket.Send(msg);
@@ -103,21 +145,10 @@ namespace mik_Wpf.app_code
 
             byte[] temp = new byte[5];
             // Receive from the server the first five bytes. 
-            this.socket.Receive(temp, 5, 0); 
+            this.socket.Receive(temp, 5, 0);
 
+            string response = socket.ReceiveAll().ToASCIIStr();
 
-            byte[] bytesReceived = new byte[256];
-            int bytes = 0;
-            string response = "";
-
-            //THIS ONLY GETS 256 BYTES FROM THE SOCKET
-
-            bytes = this.socket.Receive(bytesReceived);
-            response = Encoding.ASCII.GetString(bytesReceived, 0, bytes);
-
-            // should add loop if the message size would be lager then 256.
-
-                        
             Console.WriteLine(response);
 
             return JObject.Parse(response);
@@ -128,14 +159,11 @@ namespace mik_Wpf.app_code
 
         public bool login(string name, string password)
         {
+            var request = new JObject();
+            request["username"] = name;
+            request["password"] = password;
 
-            var content = "{ \"username\": \"" + name + "\",\"password\": \"" + password + "\"}";
-
-
-            Console.WriteLine(content);
-            dynamic d = SocketSendReceive(content, (int)CODES.CLIENT_LOGIN);
-
-            Console.WriteLine(d);
+            dynamic d = SocketSendReceive(request, (int)CODES.CLIENT_LOGIN);
 
             return d.status == 1;
 
@@ -143,17 +171,63 @@ namespace mik_Wpf.app_code
 
         public bool signup(string name, string password, string email)
         {
+            var request = new JObject();
+            request["username"] = name;
+            request["password"] = password;
+            request["email"] = email;
 
-            string content = "{ \"username\": \"" + name + "\",\"password\": \"" + password + "\", \"email\": \"" + email + "\"}";
-            Console.WriteLine(content);
-            dynamic d = SocketSendReceive(content, (int)CODES.CLIENT_SIGNUP);
-            Console.WriteLine(d);
+            dynamic d = SocketSendReceive(request, (int)CODES.CLIENT_SIGNUP);
 
             return d.status == 1;
 
         }
 
 
+        public int CreateRoom(string RoomName, int QuetionCount = 5, int AnswerTimeout = 20)
+        {
+            var request = new JObject();
+            request["roomName"] = RoomName;
+            request["maxUsers"] = 4; // GUI limitation
+            request["quetionCount"] = QuetionCount;
+            request["answerTimeout"] = AnswerTimeout;
+
+
+            dynamic d = SocketSendReceive(request, (int)CODES.CLIENT_SIGNUP);
+
+
+            return d.status == 1;
+        }
+
+        public int GetPlayersInRoom(int RoomID)
+        {
+
+            var request = new JObject();
+            request["roomId"] = RoomID;
+
+            dynamic d = SocketSendReceive(request, (int)CODES.ROOM_PLAYERS);
+
+            return d.players;
+        }
+
+
+        public bool JoinRoom(int RoomID)
+        {
+            var request = new JObject();
+            request["roomId"] = RoomID;
+
+            dynamic d = SocketSendReceive(request, (int)CODES.ROOM_LOGIN);
+
+            return d.status == 1;
+        }
+
+
+        public int GetAllRooms()
+        {
+
+            dynamic d = SocketSendReceive("", (int)CODES.ROOMS);
+
+            return d.players;
+        }
 
 
 

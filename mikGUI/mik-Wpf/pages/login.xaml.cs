@@ -39,8 +39,6 @@ namespace mik_Wpf
             if (parentWindow != null)
             {
 
-                
-
                 if (parentWindow.Client.login(name.Text, password.Password))
                 {
                     parentWindow.username = name.Text;

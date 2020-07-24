@@ -7,6 +7,7 @@
 
 int main()
 {
+	std::cout << "Press any key to close the server:" << std::endl;
 	try
 	{
 		WSAInitializer wsaInit;
