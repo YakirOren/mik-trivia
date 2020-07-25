@@ -16,15 +16,15 @@ namespace mik_Wpf.app_code
     {
         CLIENT_LOGIN = 200,
         CLIENT_SIGNUP = 204,
-        SERVER_ERROR = 500,
+        SERVER_ERROR = 50,
         CLIENT_LOGOUT = 201,
-        ROOM_RESPONSE = 300,
-        ROOM_PLAYERS_RESPONSE = 301,
-        ROOM_LOGIN = 302,
-        ROOM_CREATE = 303,
-        ROOM_PLAYERS = 304,
-        ROOMS = 305,
-        STATISTICS = 400,
+        ROOM_RESPONSE = 100,
+        ROOM_PLAYERS_RESPONSE = 101,
+        ROOM_LOGIN = 102,
+        ROOM_CREATE = 103,
+        ROOM_PLAYERS = 104,
+        ROOMS = 105,
+        STATISTICS = 40,
     }
 
     public static class Socket_Extension
@@ -127,7 +127,13 @@ namespace mik_Wpf.app_code
 
             //the code part in the protocol is 1 byte
             byte[] code_part = new byte[1];
-            code_part[0] = BitConverter.GetBytes(code)[0]; //converting int to byte 
+            //code_part[0] = BitConverter.GetBytes(code)[0]; //converting int to byte 
+            code_part[0] = (byte)code; //converting int to byte 
+
+            Console.WriteLine(code);
+            Console.WriteLine((byte)code);
+            Console.WriteLine((char)code);
+
 
 
             byte[] length_part = BitConverter.GetBytes(request.Length);
@@ -192,10 +198,10 @@ namespace mik_Wpf.app_code
             request["answerTimeout"] = AnswerTimeout;
 
 
-            dynamic d = SocketSendReceive(request, (int)CODES.CLIENT_SIGNUP);
+            dynamic d = SocketSendReceive(request, (int)CODES.ROOM_CREATE);
 
 
-            return d.status == 1;
+            return d.roomId;
         }
 
         public int GetPlayersInRoom(int RoomID)
