@@ -47,25 +47,18 @@ RequestResult LoginRequestHandler::handleRequest(RequestInfo request)
 	RequestResult result = {};
 	LoginRequest loginRequest = {};
 	SignupRequest signupRequest = {};
-	//_handlerFactory->createLoginHandler();
 
 	if (isRequestRelevant(request))
 	{
 		if (request.id == CLIENT_LOGIN)
 		{
-			// Deserializing the request of the client
-			//std::vector<unsigned char> buffer(request.buffer, request.buffer + strlen((char*)request.buffer));
 			loginRequest = requestDeserializer::deserializeLoginRequest(request.buffer);
 			databaseMutex.lock();
 			result = login(loginRequest);
 			databaseMutex.unlock();
-			//result.response = ResponseSerializer::serializeResponse(loginResponse);
 		}
 		else if (request.id == CLIENT_SIGNUP)
 		{
-			//SignupResponse signupResponse = {(unsigned) 1};
-			//result.response = ResponseSerializer::serializeResponse(signupResponse);
-			//std::vector<unsigned char> buffer(request.buffer, request.buffer + strlen((char*)request.buffer));
 			signupRequest = requestDeserializer::deserializeSignupRequest(request.buffer);
 			databaseMutex.lock();
 			result = signup(signupRequest);
@@ -94,6 +87,7 @@ RequestResult LoginRequestHandler::login(LoginRequest request)
 	{
 		_handlerFactory->getLoginManager().login(request.username, request.password);
 		result.response = ResponseSerializer::serializeResponse(loginResponse);
+		result.newHandler = _handlerFactory->createMenuRequestHandler(LoggedUser(request.username));
 	}
 	catch (std::exception error)
 	{
@@ -110,6 +104,7 @@ RequestResult LoginRequestHandler::signup(SignupRequest request)
 	{
 		_handlerFactory->getLoginManager().signup(request.username, request.password, request.email);
 		result.response = ResponseSerializer::serializeResponse(signupResponse);
+		result.newHandler = _handlerFactory->createMenuRequestHandler(LoggedUser(request.username));
 	}
 	catch (std::exception error)
 	{

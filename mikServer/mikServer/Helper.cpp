@@ -99,16 +99,16 @@ void Helper::sendData(SOCKET sc, std::string message)
 
 void Helper::sendData(SOCKET sc, const char* message, int length)
 {
-	if (send(sc, (char*)message, /*strlen((char*)message)*/ length, 0) == INVALID_SOCKET)
+	if (send(sc, (char*)message, length, 0) == INVALID_SOCKET)
 	{
 		throw std::exception("Error while sending message to client");
 	}
 }
 
-void Helper::sendData(SOCKET sc, std::vector<unsigned char>& data)
+void Helper::sendData(SOCKET sc, std::vector<unsigned char>& data, int length)
 {
 	const char* temp = reinterpret_cast<const char*>(data.data());
-	if (send(sc, temp, (int)data.size(), 0) == SOCKET_ERROR)
+	if (send(sc, temp, length, 0) == SOCKET_ERROR)
 	{
 		throw std::exception("Error while sending message to client, Socket error - " + WSAGetLastError());
 	}
@@ -147,3 +147,14 @@ int Helper::getMessageLength(std::vector<unsigned char> buffer)
 {
 	return (int)(buffer[3] << 24 | buffer[2] << 16 | buffer[1] << 8 | buffer[0]);
 }
+
+int Helper::getNumberOfRooms(std::vector<RoomData> data)
+{
+	int counter = 0;
+	for (std::vector<RoomData>::iterator i; i != data.end(); i++)
+	{
+		counter++;
+	}
+	return counter;
+}
+

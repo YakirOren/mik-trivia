@@ -67,54 +67,57 @@ void Communicator::bindAndListen()
 
 /*
 	Handle's every newly contected client and saves the data from it's request.
-	Input:
+	Input: 
 		SOCKET clientSocket: The socket between the server and the client
 	Output:
 		None
 */
-void Communicator::handleNewClient(SOCKET clientSocket)
-{
+void Communicator::handleNewClient(SOCKET clientSocket){
 	RequestInfo requestInfo;
 	RequestResult requestResult;
 	std::vector<unsigned char> buffer = {};
 	int type = 0, lengthOfData = 0;
 	std::string data = "";
+	const char* response = "";
 
 	try
 	{
-		//Recieving the code from the message
-		type = Helper::getMessageTypeCode(clientSocket); 
-		time(&(requestInfo.recievalTime)); // Getting the recieval time
-
-		//Recieving the length of the data
-		lengthOfData = Helper::getMessageLen(clientSocket);
-
-		//Recieving the data itself
-		recieveData(clientSocket, requestInfo.buffer, lengthOfData);
-		
-		std::cout << data << std::endl;
-
-		requestInfo.id = type;
-
-		if (m_clients[clientSocket] != nullptr)
+		while (true) 
 		{
-			requestResult = m_clients.at(clientSocket)->handleRequest(requestInfo);
-			const char* response = reinterpret_cast<char*>(requestResult.response.data());
-			std::cout << response << std::endl;
-			//std::string temp(requestResult.response.begin(), requestResult.response.end());
-			//Helper::sendData(clientSocket, requestResult.response);
-			Helper::sendData(clientSocket, response, requestResult.response.size());
+			//Recieving the code from the message
+			type = Helper::getMessageTypeCode(clientSocket);
+			time(&(requestInfo.recievalTime)); // Getting the recieval time
+
+			//Recieving the length of the data
+			lengthOfData = Helper::getMessageLen(clientSocket);
+
+			//Recieving the data itself
+			if (lengthOfData > 0)
+			{
+				recieveData(clientSocket, requestInfo.buffer, lengthOfData);
+			}
+
+			std::cout << data << std::endl;
+
+			requestInfo.id = type;
+
+			if (m_clients[clientSocket] != nullptr)
+			{
+				requestResult = m_clients[clientSocket]->handleRequest(requestInfo);
+				delete m_clients[clientSocket];
+				m_clients[clientSocket] = requestResult.newHandler;
+			}
+
+			Helper::sendData(clientSocket, requestResult.response, requestResult.response.size());
 		}
-		
-		//removeClient(clientSocket);
+
 	}
 	catch (const std::exception& e)
 	{
-		throw std::exception(e.what());
+		std::cout << e.what() << "\n";
 		removeClient(clientSocket);
 	}
 
-	//closesocket(clientSocket);
 }
 
 /*
@@ -138,8 +141,11 @@ void Communicator::removeClient(SOCKET clientSocket)
 */
 void Communicator::startHandleRequests()
 {
-	std::cout << "Waiting for client connection request" << std::endl;
-	accept();
+	while (true)
+	{
+		std::cout << "Waiting for client connection request" << std::endl;
+		accept();
+	}
 }
 
 /*

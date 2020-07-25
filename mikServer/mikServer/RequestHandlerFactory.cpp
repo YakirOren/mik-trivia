@@ -62,10 +62,10 @@ LoginManager& RequestHandlerFactory::getLoginManager()
 	Output:
 		MenuRequestHandler object
 */
-MenuRequestHandler RequestHandlerFactory::createMenuRequestHandler(LoggedUser usr)
+MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler(LoggedUser user)
 {
 	m_StatisticsManager = new StatisticsManager(m_database);
-	return MenuRequestHandler(usr, this);
+	return (new MenuRequestHandler(user, this));
 }
 
 /*
