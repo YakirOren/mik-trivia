@@ -158,7 +158,7 @@ namespace mik_Wpf.app_code
             Console.WriteLine(response);
 
             return JObject.Parse(response);
-
+            
         }
 
 
@@ -194,7 +194,7 @@ namespace mik_Wpf.app_code
             var request = new JObject();
             request["roomName"] = RoomName;
             request["maxUsers"] = 4; // GUI limitation
-            request["quetionCount"] = QuetionCount;
+            request["questionCount"] = QuetionCount;
             request["answerTimeout"] = AnswerTimeout;
 
 
@@ -233,6 +233,13 @@ namespace mik_Wpf.app_code
             dynamic d = SocketSendReceive("", (int)CODES.ROOMS);
 
             return d.players;
+        }
+
+        public string getStats()
+        {
+            dynamic d = SocketSendReceive("", (int)CODES.STATISTICS);
+
+            return d.statistics;
         }
 
 

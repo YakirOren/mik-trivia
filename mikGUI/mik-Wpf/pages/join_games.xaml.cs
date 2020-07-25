@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -87,6 +88,18 @@ namespace mik_Wpf
 
             // add active games. maybe add background thread for active games.
             
+        }
+
+        private void stats_Click(object sender, RoutedEventArgs e)
+        {
+            var dd = new stats();
+
+            if (parentWindow != null)
+            {
+                //parentWindow.Hide();
+                dd.ShowDialog();
+                //parentWindow.Show();
+            }
         }
     }
 }

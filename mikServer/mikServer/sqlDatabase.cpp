@@ -75,7 +75,7 @@ void sqlDatabase::createUser(std::string name, std::string password, std::string
 	std::string sql = "insert into users (NAME, PASSWORD, EMAIL) VALUES ('" + name + "' ,'" + password + "', '" + email + "');";
 	execute(sql);
 	//selectBy("USERS", "USERNAME " "= \"" + name + "\"", "USERNAME", db);
-	sql = "insert into statistics (UserName, AvarageAnswerTime, CorrectAnswers, Answers, Games, Score) VALUES ('" + name + "' ,'0,0,0,0,0');";
+	sql = "insert into statistics (UserName, AvarageAnswerTime, CorrectAnswers, Answers, Games, Score) VALUES ('" + name + "' ,'0','0','0','0','0');";
 	execute(sql);
 }
 
