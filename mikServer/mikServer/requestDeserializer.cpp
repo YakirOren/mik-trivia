@@ -106,6 +106,8 @@ CreateRoomRequest requestDeserializer::deserializeCreateRoomRequest(std::vector<
 
 	json parsedData = json::parse(dataAsString);
 
+	std::cout << dataAsString << std::endl; 
+
 	request = {
 
 			parsedData["roomName"].get<std::string>(),

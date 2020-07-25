@@ -18,7 +18,14 @@ RoomManager::RoomManager(IDatabase* database)
 int RoomManager::createRoom(std::string roomName, unsigned int maxUsers, unsigned int questionCount, unsigned int answerTimeout)
 {
 	unsigned int id = 0;
-	id = (*(--m_rooms.end())).first + 1; //Creating a new ID for the room, the new ID is the last room's ID + 1
+	if (m_rooms.empty())
+	{
+		id = 1;
+	}
+	else
+	{
+		id = (*(--m_rooms.end())).first + 1; //Creating a new ID for the room, the new ID is the last room's ID + 1
+	}
 	Room newRoom = Room(id, roomName, maxUsers, questionCount, answerTimeout);
 	m_rooms.insert(std::pair<unsigned int, Room*>(id, &newRoom));
 	return id;
