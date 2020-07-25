@@ -4,6 +4,7 @@
 #include <string>
 #include <bitset>
 #include <WinSock2.h>
+#include "RoomManager.h"
 
 enum MessageType
 {
@@ -29,12 +30,13 @@ public:
 	static std::string binaryToString(std::string binaryString);
 	static void sendData(SOCKET sc, std::string message);
 	static void sendData(SOCKET sc, const char* message, int length);
-	static void sendData(SOCKET sc, std::vector<unsigned char>& data);
+	static void sendData(SOCKET sc, std::vector<unsigned char>& data, int length);
 	static unsigned char(&to_array(std::string const& str))[];
 	static int getMessageLen(SOCKET sc);
 	static int byteToInt(char* buffer);
 	static unsigned char* intToByte(const int& number);
 	static int getMessageLength(std::vector<unsigned char> buffer);
+	static int getNumberOfRooms(std::vector<RoomData> data);
 
 private:
 	static char* getPartFromSocket(SOCKET sc, int bytesNum);

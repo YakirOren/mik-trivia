@@ -52,13 +52,12 @@ struct GetStatisticsResponse
 struct JoinRoomResponse
 {
 	unsigned int status;
-
 };
 
 struct CreateRoomResponse
 {
 	unsigned int status;
-
+	unsigned int roomId;
 };
 
 class ResponseSerializer

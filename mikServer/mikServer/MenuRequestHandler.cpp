@@ -75,6 +75,7 @@ RequestResult MenuRequestHandler::handleRequest(RequestInfo requestInfo)
 			case ROOM_CREATE:
 			{
 				//std::vector<unsigned char> v(requestInfo.buffer, requestInfo.buffer + sizeof(requestInfo.buffer) / sizeof(requestInfo.buffer[0]));
+				std::cout << "Creating Room" << std::endl;
 				createRequest = requestDeserializer::deserializeCreateRoomRequest(requestInfo.buffer);
 				result = createRoom(createRequest);
 				break;
@@ -99,7 +100,13 @@ RequestResult MenuRequestHandler::handleRequest(RequestInfo requestInfo)
 	return result;
 }
 
-
+/*
+	Returns the result of signout query
+	Input:
+		None
+	Output:
+		RequestResult: The result of executing the signout query
+*/
 RequestResult MenuRequestHandler::signout()
 {
 	RequestResult request;
@@ -118,6 +125,13 @@ RequestResult MenuRequestHandler::signout()
 	return request;
 }
 
+/*
+	Returns the result of getRooms query
+	Input:
+		None
+	Output:
+		RequestResult: The result of executing the getRooms query
+*/
 RequestResult MenuRequestHandler::getRooms()
 {
 	RequestResult request;
@@ -137,6 +151,13 @@ RequestResult MenuRequestHandler::getRooms()
 	return request;
 }
 
+/*
+	Returns the result of getPlayersInRoom query
+	Input:
+		None
+	Output:
+		RequestResult: The result of executing the getPlayersInRoom query
+*/
 RequestResult MenuRequestHandler::getPlayersInRoom(GetPlayersInRoomRequest getPLayerReq)
 {
 	RequestResult request;
@@ -160,6 +181,13 @@ RequestResult MenuRequestHandler::getPlayersInRoom(GetPlayersInRoomRequest getPL
 	return request;
 }
 
+/*
+	Returns the result of getStatistics query
+	Input:
+		None
+	Output:
+		RequestResult: The result of executing the getStatistics query
+*/
 RequestResult MenuRequestHandler::getStatistics()
 {
 	RequestResult request;
@@ -177,6 +205,13 @@ RequestResult MenuRequestHandler::getStatistics()
 	return request;
 }
 
+/*
+	Returns the result of joinRoom query
+	Input:
+		None
+	Output:
+		RequestResult: The result of executing the joinRoom query
+*/
 RequestResult MenuRequestHandler::joinRoom(JoinRoomRequest joinRoomReq)
 {
 	RequestResult request;
@@ -198,17 +233,22 @@ RequestResult MenuRequestHandler::joinRoom(JoinRoomRequest joinRoomReq)
 }
 
 /*
-
+	Returns the result of createRoom query
+	Input:
+		None
+	Output:
+		RequestResult: The result of executing the createRoom query
 */
 RequestResult MenuRequestHandler::createRoom(CreateRoomRequest createRoomReq)
 {
 	RequestResult request;
-	JoinRoomResponse response{ 0 };
+	CreateRoomResponse response{ 0 };
 
 	try
 	{
 		response.status = 1;
-		m_handlerFactory->getRoomManager().createRoom(createRoomReq.roomName, createRoomReq.maxUsers, createRoomReq.questionCount, createRoomReq.answerTimeout);
+		response.roomId = m_handlerFactory->getRoomManager().createRoom(createRoomReq.roomName, createRoomReq.maxUsers, createRoomReq.questionCount, createRoomReq.answerTimeout);
+		std::cout << "Room Created" << std::endl;
 		request.response = ResponseSerializer::serializeResponse(response);
 		request.newHandler = nullptr;
 	}
