@@ -74,7 +74,9 @@ void sqlDatabase::createUser(std::string name, std::string password, std::string
 {
 	std::string sql = "insert into users (NAME, PASSWORD, EMAIL) VALUES ('" + name + "' ,'" + password + "', '" + email + "');";
 	execute(sql);
-
+	//selectBy("USERS", "USERNAME " "= \"" + name + "\"", "USERNAME", db);
+	sql = "insert into statistics (UserName, AvarageAnswerTime, CorrectAnswers, Answers, Games, Score) VALUES ('" + name + "' ,'0,0,0,0,0');";
+	execute(sql);
 }
 
 /*
@@ -119,9 +121,16 @@ void sqlDatabase::close()
 	this->db = nullptr;
 }
 
-std::vector<std::string> sqlDatabase::GetStatistics()
+std::vector<std::string> sqlDatabase::GetStatistics(std::string username)
 {
-	return std::vector<std::string>();
+	std::vector<std::string> stats;
+	//add to the stats vector all the data about every user.
+	stats.push_back(username);
+	stats.push_back(std::to_string(this->getPlayerAvarageAnswerTime(username)));
+	stats.push_back(std::to_string(this->getNumOfCorrectAnswers(username)));
+	stats.push_back(std::to_string(this->getNumOfTotalAnswers(username)));
+	stats.push_back(std::to_string(this->getNumOfPlayerGames(username)));
+	return stats;
 }
 
 float sqlDatabase::getPlayerAvarageAnswerTime(std::string username)
@@ -162,11 +171,18 @@ int sqlDatabase::getNumOfPlayerGames(std::string username)
 
 void sqlDatabase::updateScore(std::string username, unsigned int timeToAnswer, unsigned int timePerQuestion)
 {
+	int score = calculateScore(username, timeToAnswer, timePerQuestion);
+	updateBy("STATISTICS", "USERNAME = \"" + username + "\"", "Score", std::to_string(score), db);
 }
 
 int sqlDatabase::calculateScore(std::string username, unsigned int timeToAnswer, unsigned int timePerQuestion)
 {
-	return 0;
+	int newScore = SCORE_RIGHT_ANSWER * timeToAnswer / timePerQuestion;
+	selectBy("STATISTICS", "USERNAME = \"" + username + "\"", "Score", db);
+	int currentScore = stoi(dataHolder[0]);
+	dataHolder.clear();
+	//return the sum of the previous score and the new score
+	return currentScore + newScore;
 }
 
 /*
@@ -192,6 +208,15 @@ int sqlDatabase::execute(std::string sql)
 	return execute(sql, nullptr, nullptr, nullptr);
 }
 
+/*
+	Executes a simple select query using the entered values
+	Input:
+		source: The table from which we want to get the data from
+		condition: The conditions for the query
+		request: The request itself ( what to search for )
+		db: Pointer to the database
+	Output: None
+*/
 void sqlDatabase::selectBy(std::string source, std::string condition, std::string request, sqlite3* db)
 {
 	char* error = nullptr;
@@ -210,6 +235,28 @@ void sqlDatabase::selectBy(std::string source, std::string condition, std::strin
 	if (sqlite3_errmsg != nullptr)
 	{
 		std::cout << error << std::endl;
+	}
+}
+
+/*
+	Executes a simple update query using the entered values
+	Input:
+		source: The table from which we want to get the data from
+		condition: The conditions for the query
+		column: Which column to update
+		value: The new value to insert
+		db: Pointer to the database
+	Output: None
+*/
+void sqlDatabase::updateBy(std::string source, std::string condition, std::string column, std::string value, sqlite3* db)
+{
+	char* error = nullptr;
+	std::string sqlQuery = "UPDATE " + source + " SET " + column + " = \"" + value + "\" WHERE " + condition + ";";
+
+	int result = sqlite3_exec(db, sqlQuery.c_str(), nullptr, nullptr, &error);
+	if (error != nullptr)
+	{
+		std::cout << std::string(error) << std::endl;
 	}
 }
 
