@@ -1,0 +1,49 @@
+﻿<Page x:Class="mik_Wpf.join_games"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:mik_Wpf"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Loaded="Page_Loaded"
+      Title="join_games">
+
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="144*" />
+            <ColumnDefinition Width="519.2"/>
+            <ColumnDefinition Width="137*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="4*" />
+        </Grid.RowDefinitions>
+
+        
+        <Image Source="../images/header.png" Grid.Row="0" Margin="0,-15,0,27.6" HorizontalAlignment="Right" Grid.ColumnSpan="3" Width="800"/>
+        <Image Margin="0,43,0,-0.4" Source="../images/back.png" Stretch="Fill" Grid.RowSpan="2" Grid.ColumnSpan="3"/>
+
+        <Label Name="player_name" Content="שחקן 1" Grid.Column="2" FontSize="14" Foreground="White" Margin="6.8,5,56,39.6" />
+        <Label Content="0" Grid.Column="1" FontSize="14" Foreground="White" Margin="386,5,27.2,39.6" />
+
+        <Button Name="join" BorderBrush="Transparent"  Style="{DynamicResource texi_button}" Margin="44,4,0,46.6" Click="join_Click">
+            <Button.Background>
+                <ImageBrush ImageSource="../images/create_texi.png" Stretch="Fill"/>
+            </Button.Background>
+        </Button>
+       
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10,0.4,10.2,9.6" Grid.Column="1" Grid.Row="1">
+            <StackPanel Name="games" Orientation="Vertical"   >
+                <StackPanel.Resources>
+                    <Style TargetType="{x:Type local:game_msg}">
+                        <Setter Property="Margin" Value="0,10,0,0"/>
+                    </Style>
+                </StackPanel.Resources>
+            </StackPanel>
+        </ScrollViewer>
+
+    </Grid>
+</Page>
