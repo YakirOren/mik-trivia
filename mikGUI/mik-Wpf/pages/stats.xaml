@@ -7,20 +7,31 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:mik_Wpf"
         mc:Ignorable="d"
-        Title="stats" Height="450" Width="800">
+        Title="stats" Height="360" Width="617.6" ResizeMode="NoResize">
 
     <Grid RenderTransformOrigin="0.678,0.505" Style="{DynamicResource app_backgroud}">
 
 
         <Border BorderBrush="White" BorderThickness="2.5" CornerRadius="8">
             <Grid>
-                <Label Name="AvgAnswerTime" Margin="77,155,572.8,224.2" RenderTransformOrigin="0.5,0.5">AvgAnswerTime:
-                </Label>
+                <Image Source="../images/texi_man.png" Margin="338,54,28.4,41.6"></Image>
 
-                <Label Name="TotalAnswers" Margin="77,121,572.8,257.2">TotalAnswers:</Label>
-                <Label Name="TotalPlayedGames" Margin="77,229,572.8,154.2">TotalPlayedGames:</Label>
+                <StackPanel Margin="50, 80 , 200 ,0">
+                    <StackPanel.Resources>
+                        <Style TargetType="{x:Type Label}">
+                            <Setter Property="Margin" Value="0,10,0,0"/>
+                        </Style>
+                    </StackPanel.Resources>
 
-                <Label Name="TotalCorrectAnswers" Margin="76,191,534.8,191.2" >TotalCorrectAnswers:</Label>
+                    <Label Height="35" Foreground="White" FontFamily="Yu Gothic UI Semibold" FontSize="20" Name="AvgAnswerTime" >AvgAnswerTime:
+                    </Label>
+
+                    <Label Foreground="White" FontFamily="Yu Gothic UI Semibold" FontSize="20" Name="TotalAnswers">TotalAnswers:</Label>
+                    <Label Foreground="White" FontFamily="Yu Gothic UI Semibold" FontSize="20" Name="TotalPlayedGames" >TotalPlayedGames:</Label>
+
+                    <Label Foreground="White" FontFamily="Yu Gothic UI Semibold" FontSize="20" Name="TotalCorrectAnswers">TotalCorrectAnswers:</Label>
+
+                </StackPanel>
             </Grid>
         </Border>
     </Grid>
