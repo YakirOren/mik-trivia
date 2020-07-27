@@ -22,7 +22,7 @@
             <RowDefinition Height="4*" />
         </Grid.RowDefinitions>
 
-        
+
         <Image Source="../images/header.png" Grid.Row="0" Margin="0,-15,0,27.6" HorizontalAlignment="Right" Grid.ColumnSpan="3" Width="800"/>
         <Image Margin="0,43,0,-0.4" Source="../images/back.png" Stretch="Fill" Grid.RowSpan="2" Grid.ColumnSpan="3"/>
 
@@ -34,7 +34,13 @@
                 <ImageBrush ImageSource="../images/create_texi.png" Stretch="Fill"/>
             </Button.Background>
         </Button>
-       
+
+        <Button Name="stats" BorderBrush="Transparent"  Style="{DynamicResource stats_button}" Margin="263,2,213.2,46.6" Click="stats_Click" Grid.Column="1">
+            <Button.Background>
+                <ImageBrush ImageSource="../images/stats.png" Stretch="Fill"/>
+            </Button.Background>
+        </Button>
+
         <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10,0.4,10.2,9.6" Grid.Column="1" Grid.Row="1">
             <StackPanel Name="games" Orientation="Vertical"   >
                 <StackPanel.Resources>
