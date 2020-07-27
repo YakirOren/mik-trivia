@@ -29,17 +29,26 @@ namespace mik_Wpf
         {
             MainWindow mainWindow = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
 
-            //mainWindow.Client.CreateRoom("2");
-            var a = mainWindow.Client.getStats();
-
-            if (mainWindow != null)
+            try
             {
-                this.AvgAnswerTime.Content += a[0];
-                this.TotalCorrectAnswers.Content += a[1];
-                this.TotalAnswers.Content += a[2];
-                this.TotalPlayedGames.Content += a[3];
+                var a = mainWindow.Client.getStats();
+                if (mainWindow != null)
+                {
+                    this.AvgAnswerTime.Content += " " + a[1];
+                    this.TotalCorrectAnswers.Content += " " + a[2];
+                    this.TotalAnswers.Content += " " + a[3];
+                    this.TotalPlayedGames.Content += " " + a[4];
 
+                }
             }
+            catch (Exception gay)
+            {
+
+                Console.WriteLine(gay.Message);
+            }
+            //mainWindow.Client.CreateRoom("2");
+
+
         }
     }
 }
