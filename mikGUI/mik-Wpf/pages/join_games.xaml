@@ -41,10 +41,10 @@
             </Button.Background>
         </Button>
 
-        <Button Name="refresh" BorderBrush="Transparent"  Style="{DynamicResource stats_button}" Margin="97,0,366.2,48.6" Click="refresh_Click"
+        <Button Name="refresh" BorderBrush="Transparent"  Style="{DynamicResource refresh_button}" Margin="97,0,366.2,48.6" Click="refresh_Click"
                 Grid.Column="1">
             <Button.Background>
-                <ImageBrush ImageSource="../images/stats.png" Stretch="Fill"/>
+                <ImageBrush ImageSource="../images/refresh.png" Stretch="Fill"/>
             </Button.Background>
         </Button>
 

@@ -33,7 +33,7 @@ namespace mik_Wpf
         public void CreateRoom()
         {
 
-            int newRoomId = parentWindow.Client.CreateRoom(username); 
+            int newRoomId = parentWindow.Client.CreateRoom(username);
             // this send to the server that a new room has been created. 
             //the server will notify all the other clients that a new room has been create which the LookForActiveGames function handels.
 
@@ -83,11 +83,11 @@ namespace mik_Wpf
             {
                 username = parentWindow.username;
                 player_name.Content = username;
-                
+
             }
 
             // add active games. maybe add background thread for active games.
-            
+
         }
 
         private void stats_Click(object sender, RoutedEventArgs e)
@@ -104,7 +104,15 @@ namespace mik_Wpf
 
         private void refresh_Click(object sender, RoutedEventArgs e)
         {
-            parentWindow.Client.GetAllRooms();
+            games.Children.Clear();
+            foreach (var item in parentWindow.Client.GetAllRooms())
+            {
+                game_msg new_game = new game_msg(int.Parse(item[1]), item[0]);
+                games.Children.Add(new_game);
+
+            }
+
+
 
         }
     }
