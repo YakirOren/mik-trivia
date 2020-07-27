@@ -8,6 +8,11 @@ Room::~Room()
 {
 }
 
+void RoomData::to_json(json& j, const RoomData& d)
+{
+	j = json{ {"id", d.id}, {"name", d.name}, {"maxPlayers", d.maxPlayers}, {"timePerQuestion", d.timePerQuestion}, {"isActive", d.isActive} };
+}
+
 /*
 	Adds a user to the room
 */

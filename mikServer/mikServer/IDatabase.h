@@ -18,11 +18,7 @@ public:
 	virtual int getNumOfTotalAnswers(std::string) = 0;
 	virtual int getNumOfPlayerGames(std::string) = 0;
 
-private:
 	virtual bool open() = 0;
 	virtual void close() = 0;
-
-
-
 };
 

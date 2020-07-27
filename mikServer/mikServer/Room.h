@@ -1,17 +1,22 @@
 #pragma once
 #include "LoggedUser.h"
 #include <vector>
+#include "json.hpp"
 
-struct RoomData
+using json = nlohmann::json;
+
+class RoomData
 {
+public:
 	unsigned int id;
 	std::string name;
 	unsigned int maxPlayers;
 	unsigned int timePerQuestion;
 	unsigned int isActive;
 
-}typedef RoomData;
+	void to_json(json& j, const RoomData& d);
 
+}typedef RoomData;
 
 class Room
 {
@@ -23,6 +28,7 @@ public:
 	std::vector<LoggedUser> getAllUsers();
 	RoomData getRoomData();
 
+	
 
 private:
 	RoomData m_metadata;

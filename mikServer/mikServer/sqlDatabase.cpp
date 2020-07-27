@@ -17,8 +17,8 @@ sqlDatabase::sqlDatabase()
 	{
 		//execute("CREATE TABLE USERS (ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , NAME TEXT NOT NULL , PASSWORD TEXT NOT NULL , EMAIL TEXT NOT NULL);");
 		execute("CREATE TABLE \"USERS\" (\"USERNAME\"	TEXT NOT NULL,\"PASSWORD\"	TEXT NOT NULL,\"EMAIL\"	TEXT NOT NULL,PRIMARY KEY(\"USERNAME\"));"
-			"CREATE TABLE \"questions\" (\"data\"	TEXT NOT NULL,\"correct\"	TEXT NOT NULL,\"ans1\"	TEXT NOT NULL,\"ans2\"	TEXT NOT NULL,\"ans3\"	TEXT NOT NULL,\"id\"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT);"
-			"CREATE TABLE \"Statistics\" (\"UserName\"	TEXT NOT NULL,\"AvarageAnswerTime\"	REAL NOT NULL,\"CorrectAnswers\"	INTEGER NOT NULL,\"Answers\"	INTEGER NOT NULL,\"Games\"	INTEGER NOT NULL,\"Score\"	INTEGER NOT NULL, PRIMARY KEY(\"USERNAME\"));");
+			"CREATE TABLE \"QUESTIONS\" (\"data\"	TEXT NOT NULL,\"correct\"	TEXT NOT NULL,\"ans1\"	TEXT NOT NULL,\"ans2\"	TEXT NOT NULL,\"ans3\"	TEXT NOT NULL,\"id\"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT);"
+			"CREATE TABLE \"STATISTICS\" (\"UserName\"	TEXT NOT NULL,\"AvarageAnswerTime\"	REAL NOT NULL,\"CorrectAnswers\"	INTEGER NOT NULL,\"Answers\"	INTEGER NOT NULL,\"Games\"	INTEGER NOT NULL,\"Score\"	INTEGER NOT NULL, PRIMARY KEY(\"USERNAME\"));");
 		
 	}
 }
@@ -55,7 +55,7 @@ Output:
 */
 bool sqlDatabase::doesUserExists(std::string name, std::string password)
 {
-	std::string sql = "select count(*) from users where name = '" + name + "'"+ "and password = '" + password + "'"+";";
+	std::string sql = "select count(*) from users where username = '" + name + "'"+ "and password = '" + password + "'"+";";
 
 	int d = 0;
 	execute(sql, int_callback, static_cast<void*>(&d), nullptr);
@@ -72,11 +72,13 @@ Output:
 */
 void sqlDatabase::createUser(std::string name, std::string password, std::string email)
 {
-	std::string sql = "insert into users (NAME, PASSWORD, EMAIL) VALUES ('" + name + "' ,'" + password + "', '" + email + "');";
+	std::string sql = "insert into users (USERNAME, PASSWORD, EMAIL) VALUES ('" + name + "' ,'" + password + "', '" + email + "');";
 	execute(sql);
 	//selectBy("USERS", "USERNAME " "= \"" + name + "\"", "USERNAME", db);
-	sql = "insert into statistics (UserName, AvarageAnswerTime, CorrectAnswers, Answers, Games, Score) VALUES ('" + name + "' ,'0,0,0,0,0');";
-	execute(sql);
+	//sql = "insert into statistics (UserName, AvarageAnswerTime, CorrectAnswers, Answers, Games, Score) VALUES ('" + name + "' ,'0,0,0,0,0');";
+	selectBy("USERS", "USERNAME " "= \"" + name + "\"", "USERNAME", db);
+	insertInto("STATISTICS", "(UserName, AvarageAnswerTime, CorrectAnswers, Answers, Games, Score)", "(\"" + dataHolder[0] + "\"" + ",0,0,0,0,0)", db);
+	dataHolder.clear();
 }
 
 /*
@@ -121,6 +123,13 @@ void sqlDatabase::close()
 	this->db = nullptr;
 }
 
+/*
+	Returns the statistics of a specific user based on its username
+	Input:
+		username: The name of the user
+	Output:
+		std::vector<std::string> containing the statistics of the player
+*/
 std::vector<std::string> sqlDatabase::GetStatistics(std::string username)
 {
 	std::vector<std::string> stats;
@@ -133,6 +142,13 @@ std::vector<std::string> sqlDatabase::GetStatistics(std::string username)
 	return stats;
 }
 
+/*
+	Returns the average answer time of a specific player based on its name
+	Input:
+		username: The name of the user
+	Output:
+		The average answer time of thep player
+*/
 float sqlDatabase::getPlayerAvarageAnswerTime(std::string username)
 {
 	float result = 0;
@@ -142,6 +158,13 @@ float sqlDatabase::getPlayerAvarageAnswerTime(std::string username)
 	return result;
 }
 
+/*
+	Returns the number of correct answers that a specific player has based on its name
+	Input:
+		username: The name of the user
+	Output:
+		The number of answers that the user correctly answered
+*/
 int sqlDatabase::getNumOfCorrectAnswers(std::string username)
 {
 	int result = 0;
@@ -151,6 +174,13 @@ int sqlDatabase::getNumOfCorrectAnswers(std::string username)
 	return result;
 }
 
+/*
+	Returns the total number of answers of a specific player based on its name
+	Input:
+		username: The name of the user
+	Output:
+		The total amount of answers the user has
+*/
 int sqlDatabase::getNumOfTotalAnswers(std::string username)
 {
 	int result = 0;
@@ -160,6 +190,13 @@ int sqlDatabase::getNumOfTotalAnswers(std::string username)
 	return result;
 }
 
+/*
+	Returns the number of games a specific player played based on its name
+	Input:
+		username: The name of the user
+	Output:
+		The amount of games that the user played
+*/
 int sqlDatabase::getNumOfPlayerGames(std::string username)
 {
 	int result = 0;
@@ -169,12 +206,30 @@ int sqlDatabase::getNumOfPlayerGames(std::string username)
 	return result;
 }
 
+/*
+	Updates the users score after a game 
+	Input:
+		username: The name of the user
+		timeToAnswer: The time it took the player to asnwer the quetion
+		timePerQuestion: The time for each question
+	Output:
+		None
+*/
 void sqlDatabase::updateScore(std::string username, unsigned int timeToAnswer, unsigned int timePerQuestion)
 {
 	int score = calculateScore(username, timeToAnswer, timePerQuestion);
 	updateBy("STATISTICS", "USERNAME = \"" + username + "\"", "Score", std::to_string(score), db);
 }
 
+/*
+	Calculates the score that a user got based on the time it took him to answer and the time per question
+	Input:
+		username: The name of the user
+		timeToAnswer: The time it took the player to asnwer the quetion
+		timePerQuestion: The time for each question
+	Output:
+		The average answer time of thep player
+*/
 int sqlDatabase::calculateScore(std::string username, unsigned int timeToAnswer, unsigned int timePerQuestion)
 {
 	int newScore = SCORE_RIGHT_ANSWER * timeToAnswer / timePerQuestion;
@@ -190,9 +245,9 @@ this function is for genric execute of sql in the database.
 */
 int sqlDatabase::execute(std::string sql, int(*callback)(void*, int, char**, char**), void* parm, char** errmsg)
 {
-	open();
+	//open();
 	int ret = sqlite3_exec(this->db, sql.c_str(), callback, parm, nullptr);
-	close();
+	//close();
 
 	return ret;
 }
@@ -219,8 +274,8 @@ int sqlDatabase::execute(std::string sql)
 */
 void sqlDatabase::selectBy(std::string source, std::string condition, std::string request, sqlite3* db)
 {
-	char* error = nullptr;
-	std::string query;
+	char* error = { 0 };
+	std::string query = "";
 
 	if (condition == "")
 	{
@@ -229,12 +284,13 @@ void sqlDatabase::selectBy(std::string source, std::string condition, std::strin
 	else
 	{
 		query = "SELECT " + request + " FROM " + source + " WHERE " + condition + ";";
+		//query = "SELECT USERNAME FROM USERS WHERE USERNAME = '1';";
 	}
 
-	int res = sqlite3_exec(db, query.c_str(), int_callback, nullptr, &error);
-	if (sqlite3_errmsg != nullptr)
+	int result = sqlite3_exec(db, query.c_str(), callBack, nullptr, &error);
+	if (result != SQLITE_OK && error != nullptr) 
 	{
-		std::cout << error << std::endl;
+		std::cout << std::string(error) << std::endl;
 	}
 }
 
@@ -250,11 +306,33 @@ void sqlDatabase::selectBy(std::string source, std::string condition, std::strin
 */
 void sqlDatabase::updateBy(std::string source, std::string condition, std::string column, std::string value, sqlite3* db)
 {
-	char* error = nullptr;
+	char* error = { 0 };
 	std::string sqlQuery = "UPDATE " + source + " SET " + column + " = \"" + value + "\" WHERE " + condition + ";";
 
 	int result = sqlite3_exec(db, sqlQuery.c_str(), nullptr, nullptr, &error);
-	if (error != nullptr)
+	if (result != SQLITE_OK)
+	{
+		std::cout << std::string(error) << std::endl;
+	}
+}
+
+/*
+	Executes a simple insert query using the entered values
+	Input:
+		source: The table from which we want to get the data from
+		condition: The conditions for the query
+		headers: Which headers we insert into
+		value: The new value to insert
+		db: Pointer to the database
+	Output: None
+*/
+void sqlDatabase::insertInto(std::string source, std::string headers, std::string condition, sqlite3* db)
+{
+	char* error = { 0 };
+	std::string sqlQuery = "INSERT INTO " + source + " " + headers + " VALUES " + condition + ";";
+
+	int result = sqlite3_exec(db, sqlQuery.c_str(), nullptr, nullptr, &error);
+	if (result != SQLITE_OK)
 	{
 		std::cout << std::string(error) << std::endl;
 	}
@@ -279,6 +357,9 @@ int sqlDatabase::int_callback(void* data, int argc, char** argv, char** azColNam
 	return 0;
 }
 
+/*
+	Simple callback function used to recieve the results of certein sql querys
+*/
 int callBack(void* data, int argc, char** argv, char** azColName)
 {
 	int i = 0;

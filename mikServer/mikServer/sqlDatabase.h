@@ -46,6 +46,8 @@ private:
 
 	void updateBy(std::string source, std::string condition, std::string column, std::string value, sqlite3* db);
 
+	void insertInto(std::string source, std::string headers, std::string condition, sqlite3* db);
+
 	// init functions.
 	static int int_callback(void* data, int argc, char** argv, char** azColName);
 
