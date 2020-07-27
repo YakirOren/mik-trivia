@@ -26,8 +26,8 @@ int RoomManager::createRoom(std::string roomName, unsigned int maxUsers, unsigne
 	{
 		id = (*(--m_rooms.end())).first + 1; //Creating a new ID for the room, the new ID is the last room's ID + 1
 	}
-	Room newRoom = Room(id, roomName, maxUsers, questionCount, answerTimeout);
-	m_rooms.insert(std::pair<unsigned int, Room*>(id, &newRoom));
+	auto newRoom = new Room(id, roomName, maxUsers, questionCount, answerTimeout);
+	m_rooms.insert(std::pair<unsigned int, Room*>(id, newRoom));
 	return id;
 }
 

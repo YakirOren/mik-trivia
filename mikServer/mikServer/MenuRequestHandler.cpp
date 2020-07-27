@@ -139,6 +139,10 @@ RequestResult MenuRequestHandler::getRooms()
 	try
 	{
 		response.rooms = m_handlerFactory->getRoomManager().getRooms();
+		for (auto& i : response.rooms)
+		{
+			std::cout << i.id << i.isActive << i.maxPlayers << i.name << i.timePerQuestion << std::endl;
+		}
 		request.response = ResponseSerializer::serializeResponse(response);
 		request.newHandler = m_handlerFactory->createMenuRequestHandler(m_user);
 	}
