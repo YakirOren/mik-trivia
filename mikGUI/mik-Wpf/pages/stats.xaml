@@ -14,12 +14,13 @@
 
         <Border BorderBrush="White" BorderThickness="2.5" CornerRadius="8">
             <Grid>
-                <Label Name="AvgAnswerTime" Margin="77,150,656.8,229.2" RenderTransformOrigin="0.5,0.5">AvgAnswerTime:
+                <Label Name="AvgAnswerTime" Margin="77,155,572.8,224.2" RenderTransformOrigin="0.5,0.5">AvgAnswerTime:
                 </Label>
 
-                <Label Name="TotalAnswers" Margin="77,121,648.8,257.2">TotalAnswers</Label>
+                <Label Name="TotalAnswers" Margin="77,121,572.8,257.2">TotalAnswers:</Label>
+                <Label Name="TotalPlayedGames" Margin="77,229,572.8,154.2">TotalPlayedGames:</Label>
 
-                <Label Name="TotalCorrectAnswers" Margin="76,191,648.8,191.2" >TotalCorrectAnswers</Label>
+                <Label Name="TotalCorrectAnswers" Margin="76,191,534.8,191.2" >TotalCorrectAnswers:</Label>
             </Grid>
         </Border>
     </Grid>

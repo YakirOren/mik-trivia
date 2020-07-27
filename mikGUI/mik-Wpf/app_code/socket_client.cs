@@ -235,11 +235,11 @@ namespace mik_Wpf.app_code
             return d.players;
         }
 
-        public string getStats()
+        public List<string> getStats()
         {
             dynamic d = SocketSendReceive("", (int)CODES.STATISTICS);
 
-            return d.statistics;
+            return d.statistics.ToObject<List<string>>();
         }
 
 
