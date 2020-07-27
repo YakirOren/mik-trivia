@@ -158,7 +158,7 @@ namespace mik_Wpf.app_code
             Console.WriteLine(response);
 
             return JObject.Parse(response);
-            
+
         }
 
 
@@ -227,12 +227,16 @@ namespace mik_Wpf.app_code
         }
 
 
-        public int GetAllRooms()
+        public List<List<string>> GetAllRooms()
         {
 
             dynamic d = SocketSendReceive("", (int)CODES.ROOMS);
 
-            return d.players;
+            if (d.rooms != null)
+            {
+                return d.rooms.ToObject<List<List<string>>>();
+            }
+            return null;
         }
 
         public List<string> getStats()

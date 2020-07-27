@@ -83,7 +83,7 @@ namespace mik_Wpf
             {
                 username = parentWindow.username;
                 player_name.Content = username;
-
+                
             }
 
             // add active games. maybe add background thread for active games.
@@ -100,6 +100,12 @@ namespace mik_Wpf
                 dd.ShowDialog();
                 //parentWindow.Show();
             }
+        }
+
+        private void refresh_Click(object sender, RoutedEventArgs e)
+        {
+            parentWindow.Client.GetAllRooms();
+
         }
     }
 }
