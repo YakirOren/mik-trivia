@@ -70,8 +70,14 @@ std::vector<unsigned char> ResponseSerializer::serializeResponse(LogoutResponse 
 std::vector<unsigned char> ResponseSerializer::serializeResponse(GetRoomsResponse response)
 {
 	json data;
+	std::vector<std::vector<std::string>> rooms;
 	data["status"] = response.status;
 	//data["rooms"] = response.rooms;
+	for (auto& i : response.rooms)
+	{
+		rooms.push_back(std::vector <std::string>{ i.name, std::to_string(i.id), std::to_string(i.isActive), std::to_string(i.maxPlayers), std::to_string(i.timePerQuestion) });
+	}
+	data["rooms"] = rooms;
 
 	return generatePacket(data, MessageType::ROOM_RESPONSE);
 }
