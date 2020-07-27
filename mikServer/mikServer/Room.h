@@ -8,11 +8,11 @@ using json = nlohmann::json;
 
 struct roomData
 {
-	unsigned int id;
-	std::string name;
-	unsigned int maxPlayers;
-	unsigned int timePerQuestion;
-	unsigned int isActive;
+	unsigned int id = 0;
+	std::string name = "default";
+	unsigned int maxPlayers = 4;
+	unsigned int timePerQuestion = 60;
+	unsigned int isActive = 0;
 
 }typedef RoomData;
 
