@@ -104,8 +104,11 @@ void Communicator::handleNewClient(SOCKET clientSocket){
 			if (m_clients[clientSocket] != nullptr)
 			{
 				requestResult = m_clients[clientSocket]->handleRequest(requestInfo);
-				delete m_clients[clientSocket];
-				m_clients[clientSocket] = requestResult.newHandler;
+				if (type != 204)
+				{
+					//delete m_clients[clientSocket];
+					m_clients[clientSocket] = requestResult.newHandler;
+				}
 			}
 
 			Helper::sendData(clientSocket, requestResult.response, requestResult.response.size());

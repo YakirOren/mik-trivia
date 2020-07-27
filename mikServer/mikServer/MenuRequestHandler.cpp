@@ -41,7 +41,6 @@ RequestResult MenuRequestHandler::handleRequest(RequestInfo requestInfo)
 	GetPlayersInRoomRequest getPlayersRequest = { 0 };
 	JoinRoomRequest request = { 0 };
 	CreateRoomRequest createRequest = { "", 0, 0, 0 };
-	//m_handlerFactory->createMenuRequestHandler(m_user);
 	//result.newHandler = nullptr;
 
 	if (isRequestRelevant(requestInfo))
@@ -115,7 +114,7 @@ RequestResult MenuRequestHandler::signout()
 	try
 	{
 		request.response = ResponseSerializer::serializeResponse(response);
-		request.newHandler = nullptr;
+		request.newHandler = m_handlerFactory->createMenuRequestHandler(m_user);
 	}
 	catch (std::exception e)
 	{
@@ -141,7 +140,7 @@ RequestResult MenuRequestHandler::getRooms()
 	{
 		response.rooms = m_handlerFactory->getRoomManager().getRooms();
 		request.response = ResponseSerializer::serializeResponse(response);
-		request.newHandler = nullptr;
+		request.newHandler = m_handlerFactory->createMenuRequestHandler(m_user);
 	}
 	catch (std::exception e)
 	{
@@ -171,7 +170,7 @@ RequestResult MenuRequestHandler::getPlayersInRoom(GetPlayersInRoomRequest getPL
 			response.players.push_back((*vecIter).getUsername());
 		}
 		request.response = ResponseSerializer::serializeResponse(response);
-		request.newHandler = nullptr;
+		request.newHandler = m_handlerFactory->createMenuRequestHandler(m_user);
 	}
 	catch (std::exception e)
 	{
@@ -195,7 +194,7 @@ RequestResult MenuRequestHandler::getStatistics()
 	try
 	{
 		request.response = ResponseSerializer::serializeResponse(GetStatisticsResponse{ 1, m_handlerFactory->getStatisticsManager().getStatistics(m_user.getUsername()) });
-		request.newHandler = nullptr;
+		request.newHandler = m_handlerFactory->createMenuRequestHandler(m_user);
 	}
 	catch (std::exception e)
 	{
@@ -222,7 +221,7 @@ RequestResult MenuRequestHandler::joinRoom(JoinRoomRequest joinRoomReq)
 		response.status = 1;
 		m_handlerFactory->getRoomManager().getRoom(joinRoomReq.roomId).addUser(m_user);
 		request.response = ResponseSerializer::serializeResponse(response);
-		request.newHandler = nullptr;
+		request.newHandler = m_handlerFactory->createMenuRequestHandler(m_user);
 	}
 	catch (std::exception e)
 	{
@@ -250,7 +249,7 @@ RequestResult MenuRequestHandler::createRoom(CreateRoomRequest createRoomReq)
 		response.roomId = m_handlerFactory->getRoomManager().createRoom(createRoomReq.roomName, createRoomReq.maxUsers, createRoomReq.questionCount, createRoomReq.answerTimeout);
 		std::cout << "Room Created" << std::endl;
 		request.response = ResponseSerializer::serializeResponse(response);
-		request.newHandler = nullptr;
+		request.newHandler = m_handlerFactory->createMenuRequestHandler(m_user);
 	}
 	catch (std::exception e)
 	{

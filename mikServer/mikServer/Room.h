@@ -5,18 +5,17 @@
 
 using json = nlohmann::json;
 
-class RoomData
+
+struct roomData
 {
-public:
 	unsigned int id;
 	std::string name;
 	unsigned int maxPlayers;
 	unsigned int timePerQuestion;
 	unsigned int isActive;
 
-	void to_json(json& j, const RoomData& d);
-
 }typedef RoomData;
+
 
 class Room
 {
@@ -27,8 +26,6 @@ public:
 	void removeUser(LoggedUser user);
 	std::vector<LoggedUser> getAllUsers();
 	RoomData getRoomData();
-
-	
 
 private:
 	RoomData m_metadata;

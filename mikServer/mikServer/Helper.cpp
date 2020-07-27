@@ -107,6 +107,7 @@ void Helper::sendData(SOCKET sc, const char* message, int length)
 
 void Helper::sendData(SOCKET sc, std::vector<unsigned char>& data, int length)
 {
+	std::cout << "Data Sent" << std::endl;
 	const char* temp = reinterpret_cast<const char*>(data.data());
 	if (send(sc, temp, length, 0) == SOCKET_ERROR)
 	{
