@@ -29,10 +29,16 @@ namespace mik_Wpf
         {
             MainWindow mainWindow = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
 
+            //mainWindow.Client.CreateRoom("2");
+            var a = mainWindow.Client.getStats();
+
             if (mainWindow != null)
             {
-                Console.WriteLine(mainWindow.Client.getStats());
-                //mainWindow.Client.getStats();
+                this.AvgAnswerTime.Content += a[0];
+                this.TotalCorrectAnswers.Content += a[1];
+                this.TotalAnswers.Content += a[2];
+                this.TotalPlayedGames.Content += a[3];
+
             }
         }
     }

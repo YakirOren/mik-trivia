@@ -157,7 +157,9 @@ std::vector<unsigned char> ResponseSerializer::generatePacket(json data, Message
 
 	unsigned char* sizeAsBytes = Helper::intToByte(messageSize);
 
-	printf("%d %d %d %d \n", sizeAsBytes[0], sizeAsBytes[1], sizeAsBytes[2], sizeAsBytes[3]);
+	//printf("%d %d %d %d \n", sizeAsBytes[0], sizeAsBytes[1], sizeAsBytes[2], sizeAsBytes[3]);
+
+	std::cout << "sending: " << type << std::endl;
 
 	std::vector<unsigned char> packet;
 
