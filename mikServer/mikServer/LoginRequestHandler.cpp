@@ -85,9 +85,15 @@ RequestResult LoginRequestHandler::login(LoginRequest request)
 	LoginResponse loginResponse = {1};
 	try
 	{
-		_handlerFactory->getLoginManager().login(request.username, request.password);
-		result.response = ResponseSerializer::serializeResponse(loginResponse);
-		result.newHandler = _handlerFactory->createMenuRequestHandler(LoggedUser(request.username));
+		if (_handlerFactory->getLoginManager().login(request.username, request.password))
+		{
+			result.response = ResponseSerializer::serializeResponse(loginResponse);
+			result.newHandler = _handlerFactory->createMenuRequestHandler(LoggedUser(request.username));
+		}
+		else
+		{
+			result.response = ResponseSerializer::serializeResponse(ErrorResponse{ "Error: Password or Username are not correct" });
+		}
 	}
 	catch (std::exception error)
 	{
@@ -102,9 +108,15 @@ RequestResult LoginRequestHandler::signup(SignupRequest request)
 	SignupResponse signupResponse = { 1 };
 	try
 	{
-		_handlerFactory->getLoginManager().signup(request.username, request.password, request.email);
-		result.response = ResponseSerializer::serializeResponse(signupResponse);
-		result.newHandler = _handlerFactory->createMenuRequestHandler(LoggedUser(request.username));
+		if (_handlerFactory->getLoginManager().signup(request.username, request.password, request.email))
+		{
+			result.response = ResponseSerializer::serializeResponse(signupResponse);
+			result.newHandler = _handlerFactory->createMenuRequestHandler(LoggedUser(request.username));
+		}
+		else
+		{
+			result.response = ResponseSerializer::serializeResponse(ErrorResponse{ "Error: User Already Exist!" });
+		}
 	}
 	catch (std::exception error)
 	{

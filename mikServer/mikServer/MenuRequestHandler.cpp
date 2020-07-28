@@ -142,11 +142,11 @@ RequestResult MenuRequestHandler::getRooms()
 		for (auto& i : response.rooms)
 		{
 			std::vector<LoggedUser> usersInRoom = m_handlerFactory->getRoomManager().getRoom(i.id).getAllUsers();
-			for (auto iterator = usersInRoom.begin(); iterator != usersInRoom.end(); iterator++)
+			/*for (auto iterator = usersInRoom.begin(); iterator != usersInRoom.end(); iterator++)
 			{
 				i.maxPlayers++;
 			}
-			std::cout << i.id << i.isActive << i.maxPlayers << i.name << i.timePerQuestion << std::endl;
+			std::cout << i.id << i.isActive << i.maxPlayers << i.name << i.timePerQuestion << std::endl;*/
 		}
 		request.response = ResponseSerializer::serializeResponse(response);
 		request.newHandler = m_handlerFactory->createMenuRequestHandler(m_user);
@@ -261,10 +261,10 @@ RequestResult MenuRequestHandler::createRoom(CreateRoomRequest createRoomReq)
 	try
 	{
 		response.status = 1;
-		response.roomId = m_handlerFactory->getRoomManager().createRoom(createRoomReq.roomName, createRoomReq.maxUsers, createRoomReq.questionCount, createRoomReq.answerTimeout);
+		response.roomId = m_handlerFactory->getRoomManager().createRoom(createRoomReq.roomName, createRoomReq.maxUsers + 1, createRoomReq.questionCount, createRoomReq.answerTimeout);
 		std::cout << "Room Created" << std::endl;
 		request.response = ResponseSerializer::serializeResponse(response);
-		request.newHandler = m_handlerFactory->createMenuRequestHandler(m_user);
+		request.newHandler = m_handlerFactory->createRoomAdminRequestHandler(&m_handlerFactory->getRoomManager().getRoom(response.roomId), &m_user);
 	}
 	catch (std::exception e)
 	{
