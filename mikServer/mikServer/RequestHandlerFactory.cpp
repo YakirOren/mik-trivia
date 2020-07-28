@@ -3,9 +3,9 @@
 /*
 	Constructor
 */
-RequestHandlerFactory::RequestHandlerFactory(IDatabase* database) : m_loginManager(new LoginManager(database)), m_database(database), m_roomManager(new RoomManager(m_database)), m_StatisticsManager(nullptr)
+RequestHandlerFactory::RequestHandlerFactory(IDatabase* database) : m_loginManager(new LoginManager(database)), m_database(database), m_StatisticsManager(nullptr)
 {
-
+	m_roomManager = RoomManager::getInstance(m_database);
 }
 
 /*
@@ -89,5 +89,6 @@ StatisticsManager& RequestHandlerFactory::getStatisticsManager()
 */
 RoomManager& RequestHandlerFactory::getRoomManager()
 {
+	std::cout << &m_roomManager << std::endl;
 	return *m_roomManager;
 }

@@ -1,4 +1,7 @@
 #include "RoomManager.h"
+#include <iostream>
+
+RoomManager* RoomManager::m_instance = NULL;
 
 RoomManager::RoomManager(IDatabase* database)
 {
@@ -14,6 +17,16 @@ RoomManager::RoomManager(IDatabase* database)
 			questionCount - The amount of question in the trivia.
 			answerTimeout - The time for each question.
 */
+
+RoomManager* RoomManager::getInstance(IDatabase* database)
+{
+	if (m_instance == NULL)
+	{
+		m_instance = new RoomManager(database);
+	}
+	std::cout << &m_instance << std::endl;
+	return m_instance;
+}
 
 int RoomManager::createRoom(std::string roomName, unsigned int maxUsers, unsigned int questionCount, unsigned int answerTimeout)
 {

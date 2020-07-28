@@ -9,7 +9,7 @@ using json = nlohmann::json;
 struct roomData
 {
 	unsigned int id = 0;
-	std::string name = "Playing Room";
+	std::string name = "";
 	unsigned int maxPlayers = 4;
 	unsigned int timePerQuestion = 60;
 	unsigned int isActive = 0;
