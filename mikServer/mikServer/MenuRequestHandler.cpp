@@ -263,6 +263,7 @@ RequestResult MenuRequestHandler::createRoom(CreateRoomRequest createRoomReq)
 		response.status = 1;
 		response.roomId = m_handlerFactory->getRoomManager().createRoom(createRoomReq.roomName, createRoomReq.maxUsers + 1, createRoomReq.questionCount, createRoomReq.answerTimeout);
 		std::cout << "Room Created" << std::endl;
+		m_handlerFactory->getRoomManager().getRoom(response.roomId).addUser(m_user);
 		request.response = ResponseSerializer::serializeResponse(response);
 		request.newHandler = m_handlerFactory->createRoomAdminRequestHandler(&m_handlerFactory->getRoomManager().getRoom(response.roomId), &m_user);
 	}
