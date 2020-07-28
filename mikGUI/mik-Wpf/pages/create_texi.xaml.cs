@@ -56,7 +56,7 @@ namespace mik_Wpf
         {
             players.Children.Clear();
 
-            var d = mainWindow.Client.GetPlayersInRoom(this.gameID);
+            var d = mainWindow.Client.getRoomState(this.gameID);
 
             driver_lbl.Text = d[0];
 
@@ -159,7 +159,7 @@ namespace mik_Wpf
         {
             players.Children.Clear();
 
-            var d = mainWindow.Client.GetPlayersInRoom(this.gameID);
+            var d = mainWindow.Client.getRoomState(this.gameID);
 
             driver_lbl.Text = d[0];
 

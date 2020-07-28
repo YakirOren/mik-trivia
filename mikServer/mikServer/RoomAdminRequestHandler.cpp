@@ -135,7 +135,7 @@ RequestResult RoomAdminRequestHandler::getRoomState(GetRoomStateRequest request)
 	RequestResult result;
 	GetRoomStateResponse response = { 0 }; 
 	
-	std::vector<std::string> players = { 0 };
+	std::vector<std::string> players;
 
 	// Recieving all of the users that are currently waiting in the room
 	for (LoggedUser user : m_room->getAllUsers())

@@ -276,7 +276,7 @@ namespace mik_Wpf.app_code
             dynamic d = SocketSendReceive(request, (int)CODES.ROOM_STATE);
             // {"status": 1, "hasGameBegun": 1/0, "players": [player1, player2....], "questionCount": numberOfQuestion, "answerTimeout": timeout
 
-            return d.status == 1;
+            return d.players.ToObject<List<string>>();
         }
 
 

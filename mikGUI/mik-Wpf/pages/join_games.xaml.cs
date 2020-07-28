@@ -27,13 +27,10 @@ namespace mik_Wpf
         public string username;
        
 
-
         public join_games()
         {
-            parentWindow.backgroundWorker1.WorkerReportsProgress = true;
-            parentWindow.backgroundWorker1.WorkerSupportsCancellation = true;
             InitializeComponent();
-            InitializeBackgroundWorker();
+
         }
 
         private void InitializeBackgroundWorker()
@@ -109,9 +106,7 @@ namespace mik_Wpf
 
         public int CreateRoom()
         {
-
             int newRoomId = parentWindow.Client.CreateRoom(username);
-            getGames();
             return newRoomId;
         }
 
@@ -121,8 +116,7 @@ namespace mik_Wpf
         {
             parentWindow.backgroundWorker1.CancelAsync();
             int roomId = CreateRoom();
-            parentWindow.Client.JoinRoom(roomId);
-            create_texi dd = new create_texi(roomId, parentWindow.Client.GetPlayersInRoom(roomId)[0], true);
+            create_texi dd = new create_texi(roomId, parentWindow.Client.getRoomState(roomId)[0], true);
             parentWindow = Window.GetWindow(this) as MainWindow;
 
             
@@ -144,6 +138,10 @@ namespace mik_Wpf
 
             if (parentWindow != null)
             {
+                parentWindow.backgroundWorker1.WorkerReportsProgress = true;
+                parentWindow.backgroundWorker1.WorkerSupportsCancellation = true;
+                InitializeBackgroundWorker();
+
                 username = parentWindow.username;
                 player_name.Content = username;
                 getGames();
