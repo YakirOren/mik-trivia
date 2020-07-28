@@ -25,26 +25,26 @@ namespace mik_Wpf
     {
         public MainWindow parentWindow;
         public string username;
-        private System.ComponentModel.BackgroundWorker backgroundWorker1 = new BackgroundWorker();
+       
 
 
         public join_games()
         {
-            backgroundWorker1.WorkerReportsProgress = true;
-            backgroundWorker1.WorkerSupportsCancellation = true;
+            parentWindow.backgroundWorker1.WorkerReportsProgress = true;
+            parentWindow.backgroundWorker1.WorkerSupportsCancellation = true;
             InitializeComponent();
             InitializeBackgroundWorker();
         }
 
         private void InitializeBackgroundWorker()
         {
-            backgroundWorker1.DoWork +=
+            parentWindow.backgroundWorker1.DoWork +=
                 new DoWorkEventHandler(backgroundWorker1_DoWork);
-            backgroundWorker1.RunWorkerCompleted +=
+            parentWindow.backgroundWorker1.RunWorkerCompleted +=
                 new RunWorkerCompletedEventHandler(
             backgroundWorker1_RunWorkerCompleted);
 
-            backgroundWorker1.ProgressChanged +=
+            parentWindow.backgroundWorker1.ProgressChanged +=
                 new ProgressChangedEventHandler(
             backgroundWorker1_ProgressChanged);
         }
@@ -119,6 +119,7 @@ namespace mik_Wpf
 
         private void join_Click(object sender, RoutedEventArgs e)
         {
+            parentWindow.backgroundWorker1.CancelAsync();
             int roomId = CreateRoom();
             parentWindow.Client.JoinRoom(roomId);
             create_texi dd = new create_texi(roomId, parentWindow.Client.GetPlayersInRoom(roomId)[0], true);
@@ -148,7 +149,7 @@ namespace mik_Wpf
                 getGames();
             }
 
-            backgroundWorker1.RunWorkerAsync(); // add active games. maybe add background thread for active games.
+            parentWindow.backgroundWorker1.RunWorkerAsync(); // add active games. maybe add background thread for active games.
 
         } 
 

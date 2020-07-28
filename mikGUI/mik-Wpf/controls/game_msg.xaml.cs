@@ -51,11 +51,10 @@ namespace mik_Wpf
         private void join_Click(object sender, RoutedEventArgs e)
         {
 
-
             if (this.MainWindow != null)
             {
-
-                //send JoinRoomRequest
+                MainWindow.backgroundWorker1.CancelAsync();
+                
                 this.MainWindow.Client.JoinRoom(ID);
 
 

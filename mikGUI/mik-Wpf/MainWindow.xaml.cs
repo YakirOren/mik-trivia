@@ -18,6 +18,7 @@ using System.Net.Sockets;
 using System.Net;
 
 using mik_Wpf.app_code;
+using System.ComponentModel;
 
 namespace mik_Wpf
 {
@@ -28,7 +29,7 @@ namespace mik_Wpf
     {
         public string username = "";
         public socket_client Client;
-        
+        public System.ComponentModel.BackgroundWorker backgroundWorker1 = new BackgroundWorker();
         public MainWindow()
         {
             InitializeComponent();
