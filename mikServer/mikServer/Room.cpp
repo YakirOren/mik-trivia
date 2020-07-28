@@ -2,22 +2,23 @@
 
 Room::Room(unsigned int id, std::string roomName, unsigned int maxUsers, unsigned int questionCount, unsigned int answerTimeout)
 {
+	m_metadata.id = id;
+	m_metadata.isActive = 1;
+	m_metadata.maxPlayers = maxUsers;
+	m_metadata.name = roomName;
+	m_metadata.timePerQuestion = answerTimeout;
 }
 
 Room::~Room()
 {
 }
 
-//void RoomData::to_json(json& j, const RoomData& d)
-//{
-//	j = json{ {"id", d.id}, {"name", d.name}, {"maxPlayers", d.maxPlayers}, {"timePerQuestion", d.timePerQuestion}, {"isActive", d.isActive} };
-//}
-
 /*
 	Adds a user to the room
 */
 void Room::addUser(LoggedUser user)
 {
+	m_users.push_back(user);
 }
 
 /*

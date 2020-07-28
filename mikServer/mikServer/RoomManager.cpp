@@ -9,15 +9,8 @@ RoomManager::RoomManager(IDatabase* database)
 }
 
 /*
-	Creates a new room.
-	Input: 
-		The neccessery parameters for creating a room:
-			name		  - The name of the room.
-			maxUsers	  - The maximum amount of users the room can handle.
-			questionCount - The amount of question in the trivia.
-			answerTimeout - The time for each question.
+	Returns an instance of the 
 */
-
 RoomManager* RoomManager::getInstance(IDatabase* database)
 {
 	if (m_instance == NULL)
@@ -28,6 +21,15 @@ RoomManager* RoomManager::getInstance(IDatabase* database)
 	return m_instance;
 }
 
+/*
+	Creates a new room.
+	Input:
+		The neccessery parameters for creating a room:
+			name		  - The name of the room.
+			maxUsers	  - The maximum amount of users the room can handle.
+			questionCount - The amount of question in the trivia.
+			answerTimeout - The time for each question.
+*/
 int RoomManager::createRoom(std::string roomName, unsigned int maxUsers, unsigned int questionCount, unsigned int answerTimeout)
 {
 	unsigned int id = 0;
