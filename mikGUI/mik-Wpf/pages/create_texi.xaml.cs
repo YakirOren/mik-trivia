@@ -144,6 +144,7 @@ namespace mik_Wpf
 
             // Start the asynchronous operation.
             backgroundWorker1.RunWorkerAsync();
+            mainWindow.backgroundWorker1.CancelAsync();
 
             //getPlayers();
 
@@ -205,6 +206,8 @@ namespace mik_Wpf
             backgroundWorker1.CancelAsync();
 
             mainWindow.backgroundWorker1.RunWorkerAsync();
+            
+            
             //this.Close();
         }
     }
