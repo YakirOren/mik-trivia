@@ -30,7 +30,7 @@ namespace mik_Wpf
         }
 
 
-        public void CreateRoom()
+        public int CreateRoom()
         {
 
             int newRoomId = parentWindow.Client.CreateRoom(username);
@@ -45,6 +45,7 @@ namespace mik_Wpf
 
             getGames();
 
+            return newRoomId;
         }
 
         public void LookForActiveGames()
@@ -60,11 +61,12 @@ namespace mik_Wpf
 
         private void join_Click(object sender, RoutedEventArgs e)
         {
-            // genrate a new game id;
-            create_texi dd = new create_texi(1, true);
-            CreateRoom();
+            int roomId = CreateRoom();
+            parentWindow.Client.JoinRoom(roomId);
+            create_texi dd = new create_texi(roomId, parentWindow.Client.GetPlayersInRoom(roomId)[0], true);
             parentWindow = Window.GetWindow(this) as MainWindow;
 
+            
             if (parentWindow != null)
             {
                 parentWindow.Hide();

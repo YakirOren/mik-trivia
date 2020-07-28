@@ -61,7 +61,7 @@ namespace mik_Wpf
 
                 if (true)
                 {
-                    var dd = new create_texi(ID); // creating a new game room. but the player is not ht driver
+                    var dd = new create_texi(ID, driver); // creating a new game room. but the player is not ht driver
                     this.MainWindow.Hide();
                     dd.ShowDialog();
                     this.MainWindow.Show();

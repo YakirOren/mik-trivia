@@ -61,7 +61,7 @@ namespace mik_Wpf.app_code
         string ip = "";
         int port = 0;
 
-        Socket socket;
+        public Socket socket;
 
         public socket_client(string ip, int port)
         {
@@ -193,7 +193,7 @@ namespace mik_Wpf.app_code
         {
             var request = new JObject();
             request["roomName"] = RoomName;
-            request["maxUsers"] = 4; // GUI limitation
+            request["maxUsers"] = 0; 
             request["questionCount"] = QuetionCount;
             request["answerTimeout"] = AnswerTimeout;
 
@@ -204,15 +204,16 @@ namespace mik_Wpf.app_code
             return d.roomId;
         }
 
-        public int GetPlayersInRoom(int RoomID)
+        public List<string> GetPlayersInRoom(int RoomID)
         {
+            
 
             var request = new JObject();
             request["roomId"] = RoomID;
 
             dynamic d = SocketSendReceive(request, (int)CODES.ROOM_PLAYERS);
 
-            return d.players;
+            return d.players.ToObject<List<string>>();
         }
 
 

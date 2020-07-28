@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Windows;
-
+using mik_Wpf.app_code;
 
 namespace mik_Wpf
 {
@@ -10,11 +10,14 @@ namespace mik_Wpf
     public partial class create_texi : Window
     {
         public bool isAdmin;
+        public string AdminName;
         public int gameID;
-        public create_texi(int gameID, bool isAdmin = false)
+        public MainWindow mainWindow;
+        public create_texi(int gameID, string AdminName,bool isAdmin = false)
         {
             this.gameID = gameID;
             this.isAdmin = isAdmin;
+            this.AdminName = AdminName;
             InitializeComponent();
 
             if (!this.isAdmin)
@@ -33,7 +36,7 @@ namespace mik_Wpf
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
 
-            MainWindow mainWindow = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+            mainWindow = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
 
             if (mainWindow != null)
             {
@@ -45,10 +48,33 @@ namespace mik_Wpf
 
             // when a new player joins add him to the list.
 
-            players.Children.Add(new lobby_user("yakir"));
-            players.Children.Add(new lobby_user("yakir"));
-            players.Children.Add(new lobby_user("yakir"));
 
+            
+            getPlayers();
+            //mainWindow.Client.socket.ReceiveAll(); // wait for a messge from the server (the messge will be that a new client has join the room and this client should update the )
+
+
+
+
+        }
+
+
+        public void getPlayers()
+        {
+            players.Children.Clear();
+
+            var d = mainWindow.Client.GetPlayersInRoom(this.gameID);
+
+            driver_lbl.Text = d[0];
+            
+            d.RemoveAt(0);
+
+            foreach (var name in d)
+            {
+                var new_game = new lobby_user(name);
+                players.Children.Add(new_game);
+
+            }
         }
 
         private void submit_Click(object sender, RoutedEventArgs e)
@@ -59,6 +85,8 @@ namespace mik_Wpf
 
             //genrate a new game id;
 
+
+            // send start game request.
 
             _gameFrame.Navigate(new game(gameID));
 
