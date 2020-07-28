@@ -232,11 +232,8 @@ namespace mik_Wpf.app_code
 
             dynamic d = SocketSendReceive("", (int)CODES.ROOMS);
 
-            if (d.rooms != null)
-            {
-                return d.rooms.ToObject<List<List<string>>>();
-            }
-            return null;
+            return d.rooms.ToObject<List<List<string>>>();
+
         }
 
         public List<string> getStats()

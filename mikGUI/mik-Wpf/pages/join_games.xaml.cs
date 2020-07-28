@@ -39,9 +39,11 @@ namespace mik_Wpf
 
 
 
-            game_msg new_game = new game_msg(newRoomId, parentWindow.username);
+            //game_msg new_game = new game_msg(newRoomId, parentWindow.username);
 
-            games.Children.Add(new_game);
+            //games.Children.Add(new_game);
+
+            getGames();
 
         }
 
@@ -83,7 +85,7 @@ namespace mik_Wpf
             {
                 username = parentWindow.username;
                 player_name.Content = username;
-
+                getGames();
             }
 
             // add active games. maybe add background thread for active games.
@@ -102,17 +104,25 @@ namespace mik_Wpf
             }
         }
 
-        private void refresh_Click(object sender, RoutedEventArgs e)
+
+        public void getGames()
         {
             games.Children.Clear();
-            foreach (var item in parentWindow.Client.GetAllRooms())
+
+            var d = parentWindow.Client.GetAllRooms().Reverse<List<string>>();
+
+            foreach (var item in d)
             {
-                game_msg new_game = new game_msg(int.Parse(item[1]), item[0]);
+                game_msg new_game = new game_msg(int.Parse(item[1]), item[0], int.Parse(item[3]));
                 games.Children.Add(new_game);
 
             }
+        }
 
 
+        private void refresh_Click(object sender, RoutedEventArgs e)
+        {
+            getGames();
 
         }
     }
