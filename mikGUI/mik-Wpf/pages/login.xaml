@@ -46,7 +46,8 @@
                         <RowDefinition Height="43*"/>
                         <RowDefinition Height="12*"/>
                     </Grid.RowDefinitions>
-
+                    
+                    <Image Source="../images/register.png" Stretch="Fill" Grid.RowSpan="3"/>
                     <Image Source="../images/register.png" Stretch="Fill" Grid.RowSpan="3"/>
                     <Button Name="register_btn" HorizontalAlignment="Left" VerticalAlignment="Top" Width="178.973" Style="{DynamicResource register}" Height="36.083" BorderBrush="{x:Null}" Margin="32.8,3.767,0,0" Grid.Row="1" Click="register_btn_Click">
 
