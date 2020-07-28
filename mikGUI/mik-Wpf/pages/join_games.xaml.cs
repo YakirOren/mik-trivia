@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+
 namespace mik_Wpf
 {
     /// <summary>
@@ -23,48 +25,106 @@ namespace mik_Wpf
     {
         public MainWindow parentWindow;
         public string username;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1 = new BackgroundWorker();
+
 
         public join_games()
         {
+            backgroundWorker1.WorkerReportsProgress = true;
+            backgroundWorker1.WorkerSupportsCancellation = true;
             InitializeComponent();
+            InitializeBackgroundWorker();
         }
 
-
-        public void CreateRoom()
+        private void InitializeBackgroundWorker()
         {
+            backgroundWorker1.DoWork +=
+                new DoWorkEventHandler(backgroundWorker1_DoWork);
+            backgroundWorker1.RunWorkerCompleted +=
+                new RunWorkerCompletedEventHandler(
+            backgroundWorker1_RunWorkerCompleted);
 
-            int newRoomId = parentWindow.Client.CreateRoom(username);
-            // this send to the server that a new room has been created. 
-            //the server will notify all the other clients that a new room has been create which the LookForActiveGames function handels.
+            backgroundWorker1.ProgressChanged +=
+                new ProgressChangedEventHandler(
+            backgroundWorker1_ProgressChanged);
+        }
 
-
-
-            //game_msg new_game = new game_msg(newRoomId, parentWindow.username);
-
-            //games.Children.Add(new_game);
-
+        private void backgroundWorker1_ProgressChanged(object sender,
+            ProgressChangedEventArgs e)
+        {
             getGames();
 
         }
 
-        public void LookForActiveGames()
+        private void backgroundWorker1_DoWork(object sender,
+            DoWorkEventArgs e)
         {
-            while (true)
+            // Get the BackgroundWorker that raised this event.
+            BackgroundWorker worker = sender as BackgroundWorker;
+
+            // Assign the result of the computation
+            // to the Result property of the DoWorkEventArgs
+            // object. This is will be available to the 
+            // RunWorkerCompleted eventhandler.
+
+            int d = 0;
+            while (!worker.CancellationPending)
             {
-                parentWindow.Client.GetAllRooms();
-
-                // thread sleep.... for 30 sec?
-
+                d++;
+                worker.ReportProgress(d);
+                System.Threading.Thread.Sleep(5000);
+                d = 0;
             }
+            e.Cancel = true;
+
+
+
         }
+
+
+        private void backgroundWorker1_RunWorkerCompleted(
+            object sender, RunWorkerCompletedEventArgs e)
+        {
+            // First, handle the case where an exception was thrown.
+            if (e.Error != null)
+            {
+                MessageBox.Show(e.Error.Message);
+            }
+            else if (e.Cancelled)
+            {
+                // Next, handle the case where the user canceled 
+                // the operation.
+                // Note that due to a race condition in 
+                // the DoWork event handler, the Cancelled
+                // flag may not have been set, even though
+                // CancelAsync was called.
+                System.Console.WriteLine("Canceled");
+            }
+
+
+        }
+
+
+
+
+        public int CreateRoom()
+        {
+
+            int newRoomId = parentWindow.Client.CreateRoom(username);
+            getGames();
+            return newRoomId;
+        }
+
+        
 
         private void join_Click(object sender, RoutedEventArgs e)
         {
-            // genrate a new game id;
-            create_texi dd = new create_texi(1, true);
-            CreateRoom();
+            int roomId = CreateRoom();
+            parentWindow.Client.JoinRoom(roomId);
+            create_texi dd = new create_texi(roomId, parentWindow.Client.GetPlayersInRoom(roomId)[0], true);
             parentWindow = Window.GetWindow(this) as MainWindow;
 
+            
             if (parentWindow != null)
             {
                 parentWindow.Hide();
@@ -88,9 +148,9 @@ namespace mik_Wpf
                 getGames();
             }
 
-            // add active games. maybe add background thread for active games.
+            backgroundWorker1.RunWorkerAsync(); // add active games. maybe add background thread for active games.
 
-        }
+        } 
 
         private void stats_Click(object sender, RoutedEventArgs e)
         {
@@ -125,5 +185,8 @@ namespace mik_Wpf
             getGames();
 
         }
+
+
+
     }
 }

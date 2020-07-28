@@ -17,12 +17,17 @@ namespace mik_Wpf.app_code
         CLIENT_LOGIN = 200,
         CLIENT_SIGNUP = 204,
         SERVER_ERROR = 50,
+        MAX_USERS_ERROR = 51,
         CLIENT_LOGOUT = 201,
         ROOM_RESPONSE = 100,
         ROOM_PLAYERS_RESPONSE = 101,
         ROOM_LOGIN = 102,
+        ROOM_LEAVE = 105,
         ROOM_CREATE = 103,
         ROOM_PLAYERS = 104,
+        ROOM_STATE = 106,
+        ROOM_START = 107,
+        ROOM_CLOSE = 108,
         ROOMS = 105,
         STATISTICS = 40,
     }
@@ -61,7 +66,7 @@ namespace mik_Wpf.app_code
         string ip = "";
         int port = 0;
 
-        Socket socket;
+        public Socket socket;
 
         public socket_client(string ip, int port)
         {
@@ -193,7 +198,7 @@ namespace mik_Wpf.app_code
         {
             var request = new JObject();
             request["roomName"] = RoomName;
-            request["maxUsers"] = 4; // GUI limitation
+            request["maxUsers"] = 0;
             request["questionCount"] = QuetionCount;
             request["answerTimeout"] = AnswerTimeout;
 
@@ -204,15 +209,23 @@ namespace mik_Wpf.app_code
             return d.roomId;
         }
 
-        public int GetPlayersInRoom(int RoomID)
+        public List<string> GetPlayersInRoom(int RoomID)
         {
+
 
             var request = new JObject();
             request["roomId"] = RoomID;
 
-            dynamic d = SocketSendReceive(request, (int)CODES.ROOM_PLAYERS);
+            try
+            {
+                dynamic d = SocketSendReceive(request, (int)CODES.ROOM_PLAYERS);
+                return d.players.ToObject<List<string>>();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
 
-            return d.players;
         }
 
 
@@ -242,6 +255,57 @@ namespace mik_Wpf.app_code
 
             return d.statistics.ToObject<List<string>>();
         }
+
+
+
+
+        public void startGameRequest(int RoomID)
+        {
+            var request = new JObject();
+            request["roomId"] = RoomID;
+
+            dynamic d = SocketSendReceive(request, (int)CODES.ROOM_START);
+        }
+
+
+        public List<string> getRoomState(int RoomID)
+        {
+            var request = new JObject();
+            request["roomId"] = RoomID;
+
+            dynamic d = SocketSendReceive(request, (int)CODES.ROOM_STATE);
+            // {"status": 1, "hasGameBegun": 1/0, "players": [player1, player2....], "questionCount": numberOfQuestion, "answerTimeout": timeout
+
+            return d.status == 1;
+        }
+
+
+
+        public void closeRoom(int RoomID)
+        {
+            var request = new JObject();
+            request["roomId"] = RoomID;
+
+            dynamic d = SocketSendReceive(request, (int)CODES.ROOM_CLOSE);
+        }
+
+
+        public void leaveRoom(int RoomID)
+        {
+            var request = new JObject();
+            request["roomId"] = RoomID;
+
+            dynamic d = SocketSendReceive(request, (int)CODES.ROOM_LEAVE);
+        }
+
+
+
+
+
+
+
+
+
 
 
 
