@@ -16,9 +16,15 @@ Room::~Room()
 /*
 	Adds a user to the room
 */
-void Room::addUser(LoggedUser user)
+bool Room::addUser(LoggedUser user)
 {
-	m_users.push_back(user);
+	bool hasAdded = false;
+	if (m_users.size() < MAX_PLAYERS)
+	{
+		m_users.push_back(user);
+		hasAdded = true;
+	}
+	return hasAdded;
 }
 
 /*

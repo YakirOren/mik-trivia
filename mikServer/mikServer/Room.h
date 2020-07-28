@@ -5,6 +5,8 @@
 
 using json = nlohmann::json;
 
+#define MAX_PLAYERS 4
+
 
 struct roomData
 {
@@ -22,7 +24,7 @@ class Room
 public:
 	Room(unsigned int id, std::string roomName, unsigned int maxUsers, unsigned int questionCount, unsigned int answerTimeout);
 	~Room();
-	void addUser(LoggedUser user);
+	bool addUser(LoggedUser user);
 	void removeUser(LoggedUser user);
 	std::vector<LoggedUser> getAllUsers();
 	RoomData getRoomData();

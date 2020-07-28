@@ -86,14 +86,14 @@ RequestResult MenuRequestHandler::handleRequest(RequestInfo requestInfo)
 			}
 			default:
 			{
-				result.response = ResponseSerializer::serializeResponse(ErrorResponse{ "Error with request id" });
+				result.response = ResponseSerializer::serializeResponse(ErrorResponse{ "Request Doesn't Exist" });
 				break;
 			}
 		}
 	}
 	else
 	{
-		result.response = ResponseSerializer::serializeResponse(ErrorResponse{ "Request doesnt Exist" });
+		result.response = ResponseSerializer::serializeResponse(ErrorResponse{ "Request Doesn't Exist" });
 	}
 
 	return result;
@@ -228,9 +228,15 @@ RequestResult MenuRequestHandler::joinRoom(JoinRoomRequest joinRoomReq)
 	try
 	{
 		response.status = 1;
-		m_handlerFactory->getRoomManager().getRoom(joinRoomReq.roomId).addUser(m_user);
-		request.response = ResponseSerializer::serializeResponse(response);
-		request.newHandler = m_handlerFactory->createMenuRequestHandler(m_user);
+		if (m_handlerFactory->getRoomManager().getRoom(joinRoomReq.roomId).addUser(m_user))
+		{
+			request.response = ResponseSerializer::serializeResponse(response);
+			request.newHandler = m_handlerFactory->createMenuRequestHandler(m_user);
+		}
+		else
+		{
+			request.response = ResponseSerializer::serializeResponse(MaxUsersError{ "Error: Room Is Already Full!" });
+		}
 	}
 	catch (std::exception e)
 	{

@@ -11,7 +11,11 @@ using json = nlohmann::json;
 struct ErrorResponse
 {
 	std::string message;
+};
 
+struct MaxUsersError
+{
+	std::string message;
 };
 
 struct LoginResponse
@@ -60,6 +64,31 @@ struct CreateRoomResponse
 	unsigned int roomId;
 };
 
+struct LeaveRoomResponse
+{
+	unsigned int status;
+};
+
+struct CloseRoomResponse
+{
+	unsigned int status;
+};
+
+struct StartGameResponse
+{
+	unsigned int status;
+};
+
+struct GetRoomStateResponse
+{
+	unsigned int status;
+	unsigned int HasGameBegun;
+	std::vector<std::string> players;
+	unsigned int questionCount;
+	unsigned int answerTimeout;
+
+};
+
 class ResponseSerializer
 {
 public:
@@ -72,7 +101,11 @@ public:
 	static std::vector<unsigned char> serializeResponse(JoinRoomResponse response);
 	static std::vector<unsigned char> serializeResponse(CreateRoomResponse response);
 	static std::vector<unsigned char> serializeResponse(GetStatisticsResponse response);
-
+	static std::vector<unsigned char> serializeResponse(MaxUsersError response);
+	static std::vector<unsigned char> serializeResponse(LeaveRoomResponse response);
+	static std::vector<unsigned char> serializeResponse(GetRoomStateResponse response);
+	static std::vector<unsigned char> serializeResponse(CloseRoomResponse response);
+	static std::vector<unsigned char> serializeResponse(StartGameResponse response);
 private:
 	static std::vector<unsigned char> generatePacket(json data, MessageType type);
 };

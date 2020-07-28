@@ -92,3 +92,28 @@ RoomManager& RequestHandlerFactory::getRoomManager()
 	std::cout << &m_roomManager << std::endl;
 	return *m_roomManager;
 }
+
+/*
+	creates player manager
+	Input:
+		None
+	Output:
+		RoomPlayerRequestHandler object
+*/
+RoomPlayerRequestHandler* RequestHandlerFactory::createRoomPlayerRequestHandler(Room* room, LoggedUser* loggedUser)
+{
+	return new RoomPlayerRequestHandler(room, loggedUser, this);
+}
+
+/*
+	creates admin manager
+	Input:
+		None
+	Output:
+		RoomAdminRequestHandler object
+*/
+RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(Room* room, LoggedUser* loggedUser)
+{
+	return new RoomAdminRequestHandler(room, loggedUser, this);
+}
+

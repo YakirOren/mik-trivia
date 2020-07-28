@@ -147,6 +147,85 @@ std::vector<unsigned char> ResponseSerializer::serializeResponse(GetStatisticsRe
 }
 
 /*
+	Serializes the MaxUsersResponse using generatePacket
+	Input:
+		MaxUsersResponse res: The MaxUsersResponse the function serializes
+	Output:
+		a vector of unsigned char containing the serialized response
+*/
+std::vector<unsigned char> ResponseSerializer::serializeResponse(MaxUsersError response)
+{
+	json data;
+	data["message"] = response.message;
+
+	return generatePacket(data, MessageType::MAX_USERS_ERROR);
+}
+
+/*
+	Serializes the LeaveRoomResponse using generatePacket
+	Input:
+		LeaveRoomResponse res: The LeaveRoomResponse the function serializes
+	Output:
+		a vector of unsigned char containing the serialized response
+*/
+std::vector<unsigned char> ResponseSerializer::serializeResponse(LeaveRoomResponse response)
+{
+	json data;
+	data["status"] = response.status;
+
+	return generatePacket(data, MessageType::ROOM_LEAVE);
+}
+
+/*
+	Serializes the GetRoomStateResponse using generatePacket
+	Input:
+		GetRoomStateResponse res: The GetRoomStateResponse the function serializes
+	Output:
+		a vector of unsigned char containing the serialized response
+*/
+std::vector<unsigned char> ResponseSerializer::serializeResponse(GetRoomStateResponse response)
+{
+	json data;
+	data["status"] = response.status;
+	data["HasGameBegun"] = response.HasGameBegun;
+	data["players"] = response.players;
+	data["questionCount"] = response.questionCount;
+	data["answerTimeout"] = response.answerTimeout;
+
+	return generatePacket(data, MessageType::ROOM_STATE);
+}
+
+/*
+	Serializes the closeRoomResponse using generatePacket
+	Input:
+		CloseRoomResponse res: The CloseRoomResponse the function serializes
+	Output:
+		a vector of unsigned char containing the serialized response
+*/
+std::vector<unsigned char> ResponseSerializer::serializeResponse(CloseRoomResponse response)
+{
+	json data;
+	data["status"] = response.status;
+
+	return generatePacket(data, MessageType::ROOM_CLOSE);
+}
+
+/*
+	Serializes the StartGameResponse using generatePacket
+	Input:
+		StartGameResponse res: The StartGameResponse the function serializes
+	Output:
+		a vector of unsigned char containing the serialized response
+*/
+std::vector<unsigned char> ResponseSerializer::serializeResponse(StartGameResponse response)
+{
+	json data;
+	data["status"] = response.status;
+
+	return generatePacket(data, MessageType::ROOM_START);
+}
+
+/*
 	Generates the response that will be retured to the user.
 	Input:
 		json data: The data that we wish to send to the user.
