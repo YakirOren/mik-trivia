@@ -56,7 +56,7 @@ namespace mik_Wpf
         {
             players.Children.Clear();
 
-            var d = mainWindow.Client.GetPlayersInRoom(this.gameID);
+            var d = mainWindow.Client.getRoomState(this.gameID);
 
             driver_lbl.Text = d[0];
 
@@ -144,6 +144,7 @@ namespace mik_Wpf
 
             // Start the asynchronous operation.
             backgroundWorker1.RunWorkerAsync();
+            mainWindow.backgroundWorker1.CancelAsync();
 
             //getPlayers();
 
@@ -159,7 +160,7 @@ namespace mik_Wpf
         {
             players.Children.Clear();
 
-            var d = mainWindow.Client.GetPlayersInRoom(this.gameID);
+            var d = mainWindow.Client.getRoomState(this.gameID);
 
             driver_lbl.Text = d[0];
 
@@ -205,6 +206,8 @@ namespace mik_Wpf
             backgroundWorker1.CancelAsync();
 
             mainWindow.backgroundWorker1.RunWorkerAsync();
+            
+            
             //this.Close();
         }
     }
