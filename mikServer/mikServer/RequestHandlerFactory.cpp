@@ -38,9 +38,9 @@ RequestHandlerFactory::~RequestHandlerFactory()
 	Output:
 		a new LoginRequestHandler object
 */
-LoginRequestHandler RequestHandlerFactory::createLoginHandler()
+LoginRequestHandler* RequestHandlerFactory::createLoginHandler()
 {
-	return LoginRequestHandler(m_database);
+	return new LoginRequestHandler(m_database);
 }
 
 /*

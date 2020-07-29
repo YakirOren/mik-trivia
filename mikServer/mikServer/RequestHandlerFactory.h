@@ -21,7 +21,7 @@ public:
 	RequestHandlerFactory(IDatabase* database);
 	~RequestHandlerFactory();
 
-	LoginRequestHandler createLoginHandler();
+	LoginRequestHandler* createLoginHandler();
 	LoginManager& getLoginManager();
 
 	MenuRequestHandler* createMenuRequestHandler(LoggedUser usr);

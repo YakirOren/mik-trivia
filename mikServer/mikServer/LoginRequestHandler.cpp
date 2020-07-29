@@ -92,6 +92,7 @@ RequestResult LoginRequestHandler::login(LoginRequest request)
 		}
 		else
 		{
+			result.newHandler = _handlerFactory->createLoginHandler();
 			result.response = ResponseSerializer::serializeResponse(ErrorResponse{ "Error: Password or Username are not correct" });
 		}
 	}
@@ -115,6 +116,7 @@ RequestResult LoginRequestHandler::signup(SignupRequest request)
 		}
 		else
 		{
+			result.newHandler = _handlerFactory->createLoginHandler();
 			result.response = ResponseSerializer::serializeResponse(ErrorResponse{ "Error: User Already Exist!" });
 		}
 	}
