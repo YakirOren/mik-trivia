@@ -45,6 +45,11 @@ namespace mik_Wpf
                     this.NavigationService.Navigate(new join_games());
 
                 }
+                else
+                {
+                    this.wong_info.Visibility = Visibility.Visible;
+
+                }
             }
 
 
