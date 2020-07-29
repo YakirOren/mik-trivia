@@ -79,6 +79,13 @@ RequestResult LoginRequestHandler::handleRequest(RequestInfo request)
 	return result;
 }
 
+/*
+	Returns the result of LoginRequest query and let's the user to log into the server if the result is positive
+	Input:
+		None
+	Output:
+		RequestResult: The result of executing the LoginRequest query
+*/
 RequestResult LoginRequestHandler::login(LoginRequest request)
 {
 	RequestResult result = {};
@@ -103,6 +110,13 @@ RequestResult LoginRequestHandler::login(LoginRequest request)
 	return result;
 }
 
+/*
+	Returns the result of SingupRequest query after signin up the client
+	Input:
+		None
+	Output:
+		RequestResult: The result of executing the SignupRequest query
+*/
 RequestResult LoginRequestHandler::signup(SignupRequest request)
 {
 	RequestResult result = {};
