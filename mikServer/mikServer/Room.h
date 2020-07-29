@@ -1,6 +1,7 @@
 #pragma once
 #include "LoggedUser.h"
 #include <vector>
+#include <mutex>
 #include "json.hpp"
 
 using json = nlohmann::json;

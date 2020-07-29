@@ -231,7 +231,7 @@ RequestResult MenuRequestHandler::joinRoom(JoinRoomRequest joinRoomReq)
 		if (m_handlerFactory->getRoomManager().getRoom(joinRoomReq.roomId).addUser(m_user))
 		{
 			request.response = ResponseSerializer::serializeResponse(response);
-			request.newHandler = m_handlerFactory->createMenuRequestHandler(m_user);
+			request.newHandler = m_handlerFactory->createRoomPlayerRequestHandler(&m_handlerFactory->getRoomManager().getRoom(joinRoomReq.roomId), &m_user);
 		}
 		else
 		{

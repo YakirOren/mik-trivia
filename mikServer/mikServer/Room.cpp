@@ -1,5 +1,7 @@
 #include "Room.h"
 
+std::mutex playersMutex;
+
 Room::Room(unsigned int id, std::string roomName, unsigned int maxUsers, unsigned int questionCount, unsigned int answerTimeout)
 {
 	m_metadata.id = id;
@@ -19,11 +21,13 @@ Room::~Room()
 bool Room::addUser(LoggedUser user)
 {
 	bool hasAdded = false;
+	playersMutex.lock();
 	if (m_users.size() < MAX_PLAYERS)
 	{
 		m_users.push_back(user);
 		hasAdded = true;
 	}
+	playersMutex.unlock();
 	return hasAdded;
 }
 
@@ -32,15 +36,20 @@ bool Room::addUser(LoggedUser user)
 */
 void Room::removeUser(LoggedUser user)
 {
-	auto iterator = m_users.begin();
-	for (auto iterator = m_users.begin(); iterator != m_users.end(); iterator++)
+	playersMutex.lock();
+	for (auto iterator = m_users.begin(); iterator != m_users.end();)
 	{
 		if ((*iterator).getUsername() == user.getUsername())
 		{
 			m_users.erase(iterator);
+			break;
+		}
+		else
+		{
+			iterator++;
 		}
 	}
-
+	playersMutex.unlock();
 }
 
 /*
