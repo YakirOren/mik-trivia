@@ -205,9 +205,14 @@ namespace mik_Wpf
 
             backgroundWorker1.CancelAsync();
 
-            mainWindow.backgroundWorker1.RunWorkerAsync();
-            
-            
+
+            if (!mainWindow.backgroundWorker1.IsBusy)
+            {
+                mainWindow.backgroundWorker1.RunWorkerAsync();
+
+            }
+
+
             //this.Close();
         }
     }
