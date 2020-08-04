@@ -2,6 +2,9 @@
 
 std::mutex clientsInsertMutex;
 
+/*
+	Accept's the newly entered user and inserts him into the 
+*/
 void Communicator::accept()
 {
 	// notice that we step out to the global namespace
@@ -22,13 +25,20 @@ void Communicator::accept()
 	m_clients.insert(std::pair<SOCKET, IRequestHandler*>(client_socket, new LoginRequestHandler(_database)));
 	lock.unlock();
 
-	IDatabase* database = new sqlDatabase();
+	//IDatabase* database = new sqlDatabase();
 	// Creates a thread for the client
 	std::thread new_client(&Communicator::handleNewClient, this, client_socket);
 	new_client.detach();
 
 }
 
+/*
+	Binds the connection between the server and the client and then listens to the socket.
+	Input:
+		None
+	Output:
+		None
+*/
 void Communicator::bindAndListen()
 {
 	struct sockaddr_in sa = { 0 };
@@ -57,56 +67,57 @@ void Communicator::bindAndListen()
 
 /*
 	Handle's every newly contected client and saves the data from it's request.
-	Input:
+	Input: 
 		SOCKET clientSocket: The socket between the server and the client
 	Output:
 		None
 */
-void Communicator::handleNewClient(SOCKET clientSocket)
-{
+void Communicator::handleNewClient(SOCKET clientSocket){
 	RequestInfo requestInfo;
 	RequestResult requestResult;
-	
+	std::vector<unsigned char> buffer = {};
 	int type = 0, lengthOfData = 0;
 	std::string data = "";
+	const char* response = "";
 
 	try
 	{
-		//Recieving the code from the message
-		type = Helper::getMessageTypeCode(clientSocket); //Function doesn't work for some reason, Need to be fixed
-		type = CLIENT_SIGNUP;
-		
-		//Recieving the length of the data
-		lengthOfData = Helper::getMessageLen(clientSocket); //Works
-
-		//Recieving the data itself
-		data = Helper::getStringPartFromSocket(clientSocket, lengthOfData); //Works
-
-		std::cout << "got message" << std::endl;
-
-		std::cout << data << std::endl;
-
-		requestInfo.id = type;
-		requestInfo.buffer = Helper::to_array(data);
-
-		time(&(requestInfo.recievalTime)); // Getting the recieval time
-		requestResult = m_clients.at(clientSocket)->handleRequest(requestInfo);
-		unsigned char* response = static_cast<unsigned char*>(requestResult.response.data());
-		Helper::sendData(clientSocket, response);
-		
-		while (true)
+		while (true) 
 		{
+			//Recieving the code from the message
+			type = Helper::getMessageTypeCode(clientSocket);
+			time(&(requestInfo.recievalTime)); // Getting the recieval time
 
+			//Recieving the length of the data
+			lengthOfData = Helper::getMessageLen(clientSocket);
+
+			//Recieving the data itself
+			if (lengthOfData > 0)
+			{
+				recieveData(clientSocket, requestInfo.buffer, lengthOfData);
+			}
+
+			std::cout << data << std::endl;
+
+			requestInfo.id = type;
+
+			if (m_clients[clientSocket] != nullptr)
+			{
+				requestResult = m_clients[clientSocket]->handleRequest(requestInfo);
+				delete m_clients[clientSocket];
+				m_clients[clientSocket] = requestResult.newHandler;
+			}
+
+			Helper::sendData(clientSocket, requestResult.response, requestResult.response.size());
 		}
-		
-		removeClient(clientSocket);
+
 	}
-	catch (const std::exception&)
+	catch (const std::exception& e)
 	{
+		std::cout << e.what() << "\n";
 		removeClient(clientSocket);
 	}
 
-	closesocket(clientSocket);
 }
 
 /*
@@ -130,25 +141,26 @@ void Communicator::removeClient(SOCKET clientSocket)
 */
 void Communicator::startHandleRequests()
 {
-	std::cout << "Waiting for client connection request" << std::endl;
-	accept();
-}
-
-void Communicator::recieveData(SOCKET clientSocket, std::vector<unsigned char>& buffer, unsigned int size)
-{
-	/*char* data = {};
-	int index = 1;
-	buffer.clear();
-	buffer.resize(size);
 	while (true)
 	{
-		recv(clientSocket, data, index, 0);
-		if (data[strlen(data)] != " ")
-		{
+		std::cout << "Waiting for client connection request" << std::endl;
+		accept();
+	}
+}
 
-		}
-	}*/
-
+/*
+	Recieves the data from the client socket and saves it inside of the buffer
+	Input:
+		clientSocket: The socket between the client and the player
+		buffer: The buffer in which we save the data
+		size: The size of the data we want to recieve
+	Output:
+		None
+*/
+void Communicator::recieveData(SOCKET clientSocket, std::vector<unsigned char>& buffer, unsigned int size)
+{
+	buffer.clear();
+	buffer.resize(size);
 	if (!recv(clientSocket, (char*)&buffer[0], size, 0) || buffer[0] == 0)
 	{
 		throw std::exception("Error while recieving data");

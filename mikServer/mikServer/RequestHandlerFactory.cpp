@@ -3,7 +3,7 @@
 /*
 	Constructor
 */
-RequestHandlerFactory::RequestHandlerFactory(IDatabase* database) : _loginManager(new LoginManager(database)), _database(database)
+RequestHandlerFactory::RequestHandlerFactory(IDatabase* database) : m_loginManager(new LoginManager(database)), m_database(database), m_roomManager(new RoomManager(m_database)), m_StatisticsManager(nullptr)
 {
 
 }
@@ -13,7 +13,22 @@ RequestHandlerFactory::RequestHandlerFactory(IDatabase* database) : _loginManage
 */
 RequestHandlerFactory::~RequestHandlerFactory()
 {
-
+	//clear memory of all allocated managers
+	if (m_StatisticsManager != nullptr)
+	{
+		delete m_StatisticsManager;
+		m_StatisticsManager = nullptr;
+	}
+	if (m_loginManager != nullptr)
+	{
+		delete m_loginManager;
+		m_loginManager = nullptr;
+	}
+	if (m_roomManager != nullptr)
+	{
+		delete m_roomManager;
+		m_roomManager = nullptr;
+	}
 }
 
 /*
@@ -25,7 +40,7 @@ RequestHandlerFactory::~RequestHandlerFactory()
 */
 LoginRequestHandler RequestHandlerFactory::createLoginHandler()
 {
-	return LoginRequestHandler(_database);
+	return LoginRequestHandler(m_database);
 }
 
 /*
@@ -37,5 +52,42 @@ LoginRequestHandler RequestHandlerFactory::createLoginHandler()
 */
 LoginManager& RequestHandlerFactory::getLoginManager()
 {
-	return *_loginManager;
+	return *m_loginManager;
+}
+
+/*
+	creates menu manager
+	Input:
+		None
+	Output:
+		MenuRequestHandler object
+*/
+MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler(LoggedUser user)
+{
+	m_StatisticsManager = new StatisticsManager(m_database);
+	return (new MenuRequestHandler(user, this));
+}
+
+/*
+	Returns the statistics manager
+	Input:
+		None
+	Output:
+		Pointer to the statistics manager
+*/
+StatisticsManager& RequestHandlerFactory::getStatisticsManager()
+{
+	return *m_StatisticsManager;
+}
+
+/*
+	Returns the room manager
+	Input:
+		None
+	Output:
+		Pointer to the room manager
+*/
+RoomManager& RequestHandlerFactory::getRoomManager()
+{
+	return *m_roomManager;
 }

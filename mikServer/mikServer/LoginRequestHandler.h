@@ -4,6 +4,7 @@
 #include <mutex>
 
 class RequestHandlerFactory;
+class MenuRequestHandler;
 
 class LoginRequestHandler : public IRequestHandler
 {
@@ -13,7 +14,6 @@ public:
 	virtual bool isRequestRelevant(struct RequestInfo request);
 	virtual struct RequestResult handleRequest(struct RequestInfo request);
 private:
-	LoginManager *_loginManager;
 	RequestHandlerFactory *_handlerFactory;
 	RequestResult login(LoginRequest request);
 	RequestResult signup(SignupRequest request);

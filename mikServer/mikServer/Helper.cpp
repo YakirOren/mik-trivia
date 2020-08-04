@@ -1,4 +1,5 @@
 #include "Helper.h"
+#include <winsock.h>
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -11,8 +12,7 @@ using std::string;
 int Helper::getMessageTypeCode(SOCKET sc)
 {
 	char* s = getPartFromSocket(sc, 1);
-	
-	return (int)s;
+	return (unsigned char)s[0];
 }
 
 
@@ -41,7 +41,7 @@ int Helper::getMessageLen(SOCKET sc)
 std::string Helper::vectorToString(std::vector<unsigned char> buffer)
 {
 	std::string bufferAsString(buffer.begin(), buffer.end());
-	std::cout << "vector as string: " << bufferAsString << std::endl;
+	//std::cout << "vector as string: " << bufferAsString << std::endl;
 	return bufferAsString;
 }
 
@@ -97,11 +97,20 @@ void Helper::sendData(SOCKET sc, std::string message)
 	}
 }
 
-void Helper::sendData(SOCKET sc, unsigned char* message)
+void Helper::sendData(SOCKET sc, const char* message, int length)
 {
-	if (send(sc, (char*)message, strlen((char*)message), 0) == INVALID_SOCKET)
+	if (send(sc, (char*)message, length, 0) == INVALID_SOCKET)
 	{
 		throw std::exception("Error while sending message to client");
+	}
+}
+
+void Helper::sendData(SOCKET sc, std::vector<unsigned char>& data, int length)
+{
+	const char* temp = reinterpret_cast<const char*>(data.data());
+	if (send(sc, temp, length, 0) == SOCKET_ERROR)
+	{
+		throw std::exception("Error while sending message to client, Socket error - " + WSAGetLastError());
 	}
 }
 
@@ -133,3 +142,19 @@ unsigned char* Helper::intToByte(const int& number)
 
 	return byte;
 }
+
+int Helper::getMessageLength(std::vector<unsigned char> buffer)
+{
+	return (int)(buffer[3] << 24 | buffer[2] << 16 | buffer[1] << 8 | buffer[0]);
+}
+
+int Helper::getNumberOfRooms(std::vector<RoomData> data)
+{
+	int counter = 0;
+	for (std::vector<RoomData>::iterator i; i != data.end(); i++)
+	{
+		counter++;
+	}
+	return counter;
+}
+

@@ -84,9 +84,11 @@ Output:
 */
 bool LoginManager::logout(std::string name)
 {
+	
 	bool status = false;
 	//find the user.
 	auto user = std::find_if(std::begin(this->m_loggedUsers), std::end(this->m_loggedUsers), [&](const auto& a) {return a.getUsername() == name; });
+
 	if (user != std::end(this->m_loggedUsers))
 	{
 		//and delete the user
