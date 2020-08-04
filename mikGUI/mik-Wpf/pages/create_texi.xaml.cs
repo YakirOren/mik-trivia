@@ -1,6 +1,7 @@
-﻿using System.Linq;
+﻿using System.ComponentModel;
+using System.Linq;
 using System.Windows;
-
+using mik_Wpf.app_code;
 
 namespace mik_Wpf
 {
@@ -10,12 +11,21 @@ namespace mik_Wpf
     public partial class create_texi : Window
     {
         public bool isAdmin;
+        public string AdminName;
         public int gameID;
-        public create_texi(int gameID, bool isAdmin = false)
+        public MainWindow mainWindow;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1 = new BackgroundWorker();
+
+        public create_texi(int gameID, string AdminName, bool isAdmin = false)
         {
             this.gameID = gameID;
             this.isAdmin = isAdmin;
+            this.AdminName = AdminName;
+            backgroundWorker1.WorkerReportsProgress = true;
+            backgroundWorker1.WorkerSupportsCancellation = true;
+
             InitializeComponent();
+            InitializeBackgroundWorker();
 
             if (!this.isAdmin)
             {
@@ -24,16 +34,102 @@ namespace mik_Wpf
 
         }
 
-        private void exit_Click(object sender, RoutedEventArgs e)
+
+        // Set up the BackgroundWorker object by 
+        // attaching event handlers. 
+        private void InitializeBackgroundWorker()
         {
-            this.Close();
+            backgroundWorker1.DoWork +=
+                new DoWorkEventHandler(backgroundWorker1_DoWork);
+            backgroundWorker1.RunWorkerCompleted +=
+                new RunWorkerCompletedEventHandler(
+            backgroundWorker1_RunWorkerCompleted);
+
+            backgroundWorker1.ProgressChanged +=
+                new ProgressChangedEventHandler(
+            backgroundWorker1_ProgressChanged);
+        }
+
+
+        private void backgroundWorker1_ProgressChanged(object sender,
+            ProgressChangedEventArgs e)
+        {
+            players.Children.Clear();
+
+            var d = mainWindow.Client.getRoomState(this.gameID);
+
+            driver_lbl.Text = d[0];
+
+            d.RemoveAt(0);
+
+            foreach (var name in d)
+            {
+                var new_game = new lobby_user(name);
+                players.Children.Add(new_game);
+                System.Console.WriteLine(name);
+
+            }
 
         }
+
+
+        // This event handler is where the actual,
+        // potentially time-consuming work is done.
+        private void backgroundWorker1_DoWork(object sender,
+            DoWorkEventArgs e)
+        {
+            // Get the BackgroundWorker that raised this event.
+            BackgroundWorker worker = sender as BackgroundWorker;
+
+            // Assign the result of the computation
+            // to the Result property of the DoWorkEventArgs
+            // object. This is will be available to the 
+            // RunWorkerCompleted eventhandler.
+
+            int d = 0;
+            while (!worker.CancellationPending)
+            {
+                d++;
+                worker.ReportProgress(d);
+                System.Threading.Thread.Sleep(3000);
+                d = 0;
+            }
+            e.Cancel = true;
+
+
+
+        }
+
+        // This event handler deals with the results of the
+        // background operation.
+        private void backgroundWorker1_RunWorkerCompleted(
+            object sender, RunWorkerCompletedEventArgs e)
+        {
+            // First, handle the case where an exception was thrown.
+            if (e.Error != null)
+            {
+                MessageBox.Show(e.Error.Message);
+            }
+            else if (e.Cancelled)
+            {
+                // Next, handle the case where the user canceled 
+                // the operation.
+                // Note that due to a race condition in 
+                // the DoWork event handler, the Cancelled
+                // flag may not have been set, even though
+                // CancelAsync was called.
+                System.Console.WriteLine("Canceled");
+            }
+
+
+        }
+
+
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
 
-            MainWindow mainWindow = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+            mainWindow = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
 
             if (mainWindow != null)
             {
@@ -45,10 +141,37 @@ namespace mik_Wpf
 
             // when a new player joins add him to the list.
 
-            players.Children.Add(new lobby_user("yakir"));
-            players.Children.Add(new lobby_user("yakir"));
-            players.Children.Add(new lobby_user("yakir"));
 
+            // Start the asynchronous operation.
+            backgroundWorker1.RunWorkerAsync();
+            mainWindow.backgroundWorker1.CancelAsync();
+
+            //getPlayers();
+
+            //mainWindow.Client.socket.ReceiveAll(); // wait for a messge from the server (the messge will be that a new client has join the room and this client should update the )
+
+
+
+
+        }
+
+
+        public void getPlayers()
+        {
+            players.Children.Clear();
+
+            var d = mainWindow.Client.getRoomState(this.gameID);
+
+            driver_lbl.Text = d[0];
+
+            d.RemoveAt(0);
+
+            foreach (var name in d)
+            {
+                var new_game = new lobby_user(name);
+                players.Children.Add(new_game);
+
+            }
         }
 
         private void submit_Click(object sender, RoutedEventArgs e)
@@ -60,10 +183,37 @@ namespace mik_Wpf
             //genrate a new game id;
 
 
+            // send start game request.
+
+            mainWindow.Client.startGameRequest(this.gameID);
+            backgroundWorker1.CancelAsync();
             _gameFrame.Navigate(new game(gameID));
 
 
         }
 
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            if (isAdmin)
+            {
+                mainWindow.Client.closeRoom(this.gameID);
+            }
+            else
+            {
+                mainWindow.Client.leaveRoom(this.gameID);
+            }
+
+            backgroundWorker1.CancelAsync();
+
+
+            if (!mainWindow.backgroundWorker1.IsBusy)
+            {
+                mainWindow.backgroundWorker1.RunWorkerAsync();
+
+            }
+
+
+            //this.Close();
+        }
     }
 }

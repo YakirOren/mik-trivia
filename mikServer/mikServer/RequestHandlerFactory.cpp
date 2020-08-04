@@ -3,9 +3,9 @@
 /*
 	Constructor
 */
-RequestHandlerFactory::RequestHandlerFactory(IDatabase* database) : m_loginManager(new LoginManager(database)), m_database(database), m_roomManager(new RoomManager(m_database)), m_StatisticsManager(nullptr)
+RequestHandlerFactory::RequestHandlerFactory(IDatabase* database) : m_loginManager(new LoginManager(database)), m_database(database), m_StatisticsManager(nullptr)
 {
-
+	m_roomManager = RoomManager::getInstance(m_database);
 }
 
 /*
@@ -38,9 +38,9 @@ RequestHandlerFactory::~RequestHandlerFactory()
 	Output:
 		a new LoginRequestHandler object
 */
-LoginRequestHandler RequestHandlerFactory::createLoginHandler()
+LoginRequestHandler* RequestHandlerFactory::createLoginHandler()
 {
-	return LoginRequestHandler(m_database);
+	return new LoginRequestHandler(m_database);
 }
 
 /*
@@ -89,5 +89,31 @@ StatisticsManager& RequestHandlerFactory::getStatisticsManager()
 */
 RoomManager& RequestHandlerFactory::getRoomManager()
 {
+	std::cout << &m_roomManager << std::endl;
 	return *m_roomManager;
 }
+
+/*
+	creates player manager
+	Input:
+		None
+	Output:
+		RoomPlayerRequestHandler object
+*/
+RoomPlayerRequestHandler* RequestHandlerFactory::createRoomPlayerRequestHandler(Room* room, LoggedUser* loggedUser)
+{
+	return new RoomPlayerRequestHandler(room, loggedUser, this);
+}
+
+/*
+	creates admin manager
+	Input:
+		None
+	Output:
+		RoomAdminRequestHandler object
+*/
+RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(Room* room, LoggedUser* loggedUser)
+{
+	return new RoomAdminRequestHandler(room, loggedUser, this);
+}
+

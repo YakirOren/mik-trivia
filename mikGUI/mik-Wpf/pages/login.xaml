@@ -38,6 +38,7 @@
 
                     </StackPanel>
                 </Border>
+                <Image Margin="450,252,100,80" Name="wong_info" Visibility="Hidden" Source="../images/wrong_info.png" Stretch="Fill" />
 
                 <!--register section-->
                 <Grid HorizontalAlignment="Left" Height="170" VerticalAlignment="Top" Width="235.2" Margin="48,127.2,0,0">

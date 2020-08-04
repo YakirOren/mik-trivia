@@ -20,12 +20,8 @@ StatisticsManager::~StatisticsManager()
 */
 std::vector<std::string> StatisticsManager::getStatistics(std::string username)
 {
-	/*std::vector<std::string> statistics;
-	statistics.push_back(std::to_string(m_database->getPlayerAvarageAnswerTime(username)));
-	statistics.push_back(std::to_string(m_database->getNumOfCorrectAnswers(username)));
-	statistics.push_back(std::to_string(m_database->getNumOfTotalAnswers(username)));
-	statistics.push_back(std::to_string(m_database->getNumOfPlayerGames(username)));
+	std::vector<std::string> statistics;
+	statistics = m_database->GetStatistics(username);
 
-	return statistics;*/
-	return std::vector<std::string>();
+	return statistics;
 }

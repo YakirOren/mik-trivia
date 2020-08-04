@@ -79,15 +79,29 @@ RequestResult LoginRequestHandler::handleRequest(RequestInfo request)
 	return result;
 }
 
+/*
+	Returns the result of LoginRequest query and let's the user to log into the server if the result is positive
+	Input:
+		None
+	Output:
+		RequestResult: The result of executing the LoginRequest query
+*/
 RequestResult LoginRequestHandler::login(LoginRequest request)
 {
 	RequestResult result = {};
 	LoginResponse loginResponse = {1};
 	try
 	{
-		_handlerFactory->getLoginManager().login(request.username, request.password);
-		result.response = ResponseSerializer::serializeResponse(loginResponse);
-		result.newHandler = _handlerFactory->createMenuRequestHandler(LoggedUser(request.username));
+		if (_handlerFactory->getLoginManager().login(request.username, request.password))
+		{
+			result.response = ResponseSerializer::serializeResponse(loginResponse);
+			result.newHandler = _handlerFactory->createMenuRequestHandler(LoggedUser(request.username));
+		}
+		else
+		{
+			result.newHandler = _handlerFactory->createLoginHandler();
+			result.response = ResponseSerializer::serializeResponse(ErrorResponse{ "Error: Password or Username are not correct" });
+		}
 	}
 	catch (std::exception error)
 	{
@@ -96,15 +110,29 @@ RequestResult LoginRequestHandler::login(LoginRequest request)
 	return result;
 }
 
+/*
+	Returns the result of SingupRequest query after signin up the client
+	Input:
+		None
+	Output:
+		RequestResult: The result of executing the SignupRequest query
+*/
 RequestResult LoginRequestHandler::signup(SignupRequest request)
 {
 	RequestResult result = {};
 	SignupResponse signupResponse = { 1 };
 	try
 	{
-		_handlerFactory->getLoginManager().signup(request.username, request.password, request.email);
-		result.response = ResponseSerializer::serializeResponse(signupResponse);
-		result.newHandler = _handlerFactory->createMenuRequestHandler(LoggedUser(request.username));
+		if (_handlerFactory->getLoginManager().signup(request.username, request.password, request.email))
+		{
+			result.response = ResponseSerializer::serializeResponse(signupResponse);
+			result.newHandler = _handlerFactory->createMenuRequestHandler(LoggedUser(request.username));
+		}
+		else
+		{
+			result.newHandler = _handlerFactory->createLoginHandler();
+			result.response = ResponseSerializer::serializeResponse(ErrorResponse{ "Error: User Already Exist!" });
+		}
 	}
 	catch (std::exception error)
 	{

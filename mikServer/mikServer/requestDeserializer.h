@@ -17,6 +17,10 @@ public:
 	static struct JoinRoomRequest deserializeJoinRoomRequest(std::vector<unsigned char> data);
 	static struct CreateRoomRequest deserializeCreateRoomRequest(std::vector<unsigned char> data);
 
+	static struct StartRoomRequest deserializeStartRoomRequest(std::vector<unsigned char> data);
+	static struct CloseRoomRequest deserializeCloseRoomRequest(std::vector<unsigned char> data);
+	static struct GetRoomStateRequest deserializeGetRoomStateRequest(std::vector<unsigned char> data);
+	static struct LeaveRoomRequest deserializeLeaveRoomRequest(std::vector<unsigned char> data);
 };
 
 struct LoginRequest
@@ -48,6 +52,26 @@ struct CreateRoomRequest
 	unsigned int maxUsers = 0;
 	unsigned int questionCount = 0;
 	unsigned int answerTimeout = 0;
+};
+
+struct StartRoomRequest
+{
+	unsigned int roomId;
+};
+
+struct CloseRoomRequest
+{
+	unsigned int roomId;
+};
+
+struct GetRoomStateRequest
+{
+	unsigned int roomId;
+};
+
+struct LeaveRoomRequest
+{
+	unsigned int roomId;
 };
 
 

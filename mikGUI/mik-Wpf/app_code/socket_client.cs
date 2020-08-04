@@ -16,15 +16,20 @@ namespace mik_Wpf.app_code
     {
         CLIENT_LOGIN = 200,
         CLIENT_SIGNUP = 204,
-        SERVER_ERROR = 500,
+        SERVER_ERROR = 50,
+        MAX_USERS_ERROR = 51,
         CLIENT_LOGOUT = 201,
-        ROOM_RESPONSE = 300,
-        ROOM_PLAYERS_RESPONSE = 301,
-        ROOM_LOGIN = 302,
-        ROOM_CREATE = 303,
-        ROOM_PLAYERS = 304,
-        ROOMS = 305,
-        STATISTICS = 400,
+        ROOM_RESPONSE = 100,
+        ROOM_PLAYERS_RESPONSE = 101,
+        ROOM_LOGIN = 102,
+        ROOM_LEAVE = 109,
+        ROOM_CREATE = 103,
+        ROOM_PLAYERS = 104,
+        ROOM_STATE = 106,
+        ROOM_START = 107,
+        ROOM_CLOSE = 108,
+        ROOMS = 105,
+        STATISTICS = 40,
     }
 
     public static class Socket_Extension
@@ -46,8 +51,6 @@ namespace mik_Wpf.app_code
 
             return buffer.ToArray();
         }
-
-
         public static string ToASCIIStr(this byte[] arr)
         {
             return Encoding.ASCII.GetString(arr);
@@ -60,9 +63,10 @@ namespace mik_Wpf.app_code
     {
         string ip = "";
         int port = 0;
+        public Socket socket;
 
-        Socket socket;
 
+        #region communication
         public socket_client(string ip, int port)
         {
             this.ip = ip;
@@ -71,8 +75,6 @@ namespace mik_Wpf.app_code
             //create a new connection to the server.
             socket = ConnectSocket();
         }
-
-
         public Socket ConnectSocket()
         {
             Socket s = null;
@@ -111,12 +113,10 @@ namespace mik_Wpf.app_code
             }
             return s;
         }
-
         public JObject SocketSendReceive(JObject request, int code)
         {
             return SocketSendReceive(request.ToString(), code);
         }
-
 
         /*this function gets a request and a code and returns the answer from the server in json form*/
         public JObject SocketSendReceive(string request, int code)
@@ -127,7 +127,13 @@ namespace mik_Wpf.app_code
 
             //the code part in the protocol is 1 byte
             byte[] code_part = new byte[1];
-            code_part[0] = BitConverter.GetBytes(code)[0]; //converting int to byte 
+            //code_part[0] = BitConverter.GetBytes(code)[0]; //converting int to byte 
+            code_part[0] = (byte)code; //converting int to byte 
+
+            Console.WriteLine(code);
+            Console.WriteLine((byte)code);
+            Console.WriteLine((char)code);
+
 
 
             byte[] length_part = BitConverter.GetBytes(request.Length);
@@ -154,9 +160,9 @@ namespace mik_Wpf.app_code
             return JObject.Parse(response);
 
         }
+        #endregion
 
-
-
+        #region auth
         public bool login(string name, string password)
         {
             var request = new JObject();
@@ -168,7 +174,6 @@ namespace mik_Wpf.app_code
             return d.status == 1;
 
         }
-
         public bool signup(string name, string password, string email)
         {
             var request = new JObject();
@@ -181,35 +186,80 @@ namespace mik_Wpf.app_code
             return d.status == 1;
 
         }
+        #endregion
 
-
-        public int CreateRoom(string RoomName, int QuetionCount = 5, int AnswerTimeout = 20)
+        #region game
+        public void startGameRequest(int RoomID)
         {
-            var request = new JObject();
-            request["roomName"] = RoomName;
-            request["maxUsers"] = 4; // GUI limitation
-            request["quetionCount"] = QuetionCount;
-            request["answerTimeout"] = AnswerTimeout;
-
-
-            dynamic d = SocketSendReceive(request, (int)CODES.CLIENT_SIGNUP);
-
-
-            return d.status == 1;
-        }
-
-        public int GetPlayersInRoom(int RoomID)
-        {
-
             var request = new JObject();
             request["roomId"] = RoomID;
 
-            dynamic d = SocketSendReceive(request, (int)CODES.ROOM_PLAYERS);
-
-            return d.players;
+            dynamic d = SocketSendReceive(request, (int)CODES.ROOM_START);
         }
 
+        #endregion
 
+        #region stats
+        public List<string> getStats()
+        {
+            dynamic d = SocketSendReceive("", (int)CODES.STATISTICS);
+
+            return d.statistics.ToObject<List<string>>();
+        }
+
+        #endregion
+
+        #region playersInRoom
+        public List<string> getRoomState(int RoomID)
+        {
+            var request = new JObject();
+            request["roomId"] = RoomID;
+
+            dynamic d = SocketSendReceive(request, (int)CODES.ROOM_STATE);
+            // {"status": 1, "hasGameBegun": 1/0, "players": [player1, player2....], "questionCount": numberOfQuestion, "answerTimeout": timeout
+
+            return d.players.ToObject<List<string>>();
+        }
+        public List<string> GetPlayersInRoom(int RoomID)
+        {
+            var request = new JObject();
+            request["roomId"] = RoomID;
+
+            try
+            {
+                dynamic d = SocketSendReceive(request, (int)CODES.ROOM_PLAYERS);
+                return d.players.ToObject<List<string>>();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+        }
+        #endregion
+
+        #region rooms
+        public List<List<string>> GetAllRooms()
+        {
+            dynamic d = SocketSendReceive("", (int)CODES.ROOMS);
+
+            return d.rooms.ToObject<List<List<string>>>();
+
+        }
+        public void closeRoom(int RoomID)
+        {
+            var request = new JObject();
+            request["roomId"] = RoomID;
+
+            dynamic d = SocketSendReceive(request, (int)CODES.ROOM_CLOSE);
+        }
+        public void leaveRoom(int RoomID)
+        {
+            var request = new JObject();
+            request["roomId"] = RoomID;
+
+            dynamic d = SocketSendReceive(request, (int)CODES.ROOM_LEAVE);
+        }
         public bool JoinRoom(int RoomID)
         {
             var request = new JObject();
@@ -219,15 +269,29 @@ namespace mik_Wpf.app_code
 
             return d.status == 1;
         }
-
-
-        public int GetAllRooms()
+        public int CreateRoom(string RoomName, int QuetionCount = 5, int AnswerTimeout = 20)
         {
+            var request = new JObject();
+            request["roomName"] = RoomName;
+            request["maxUsers"] = 0;
+            request["questionCount"] = QuetionCount;
+            request["answerTimeout"] = AnswerTimeout;
 
-            dynamic d = SocketSendReceive("", (int)CODES.ROOMS);
 
-            return d.players;
+            dynamic d = SocketSendReceive(request, (int)CODES.ROOM_CREATE);
+
+
+            return d.roomId;
         }
+        #endregion
+
+
+
+
+
+
+
+
 
 
 

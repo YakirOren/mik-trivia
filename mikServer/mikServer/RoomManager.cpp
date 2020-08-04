@@ -1,4 +1,7 @@
 #include "RoomManager.h"
+#include <iostream>
+
+RoomManager* RoomManager::m_instance = NULL;
 
 RoomManager::RoomManager(IDatabase* database)
 {
@@ -6,21 +9,40 @@ RoomManager::RoomManager(IDatabase* database)
 }
 
 /*
+	Returns an instance of the 
+*/
+RoomManager* RoomManager::getInstance(IDatabase* database)
+{
+	if (m_instance == NULL)
+	{
+		m_instance = new RoomManager(database);
+	}
+	std::cout << &m_instance << std::endl;
+	return m_instance;
+}
+
+/*
 	Creates a new room.
-	Input: 
+	Input:
 		The neccessery parameters for creating a room:
 			name		  - The name of the room.
 			maxUsers	  - The maximum amount of users the room can handle.
 			questionCount - The amount of question in the trivia.
 			answerTimeout - The time for each question.
 */
-
 int RoomManager::createRoom(std::string roomName, unsigned int maxUsers, unsigned int questionCount, unsigned int answerTimeout)
 {
 	unsigned int id = 0;
-	id = (*(--m_rooms.end())).first + 1; //Creating a new ID for the room, the new ID is the last room's ID + 1
-	Room newRoom = Room(id, roomName, maxUsers, questionCount, answerTimeout);
-	m_rooms.insert(std::pair<unsigned int, Room*>(id, &newRoom));
+	if (m_rooms.empty())
+	{
+		id = 1;
+	}
+	else
+	{
+		id = (*(--m_rooms.end())).first + 1; //Creating a new ID for the room, the new ID is the last room's ID + 1
+	}
+	auto newRoom = new Room(id, roomName, maxUsers, questionCount, answerTimeout);
+	m_rooms.insert(std::pair<unsigned int, Room*>(id, newRoom));
 	return id;
 }
 

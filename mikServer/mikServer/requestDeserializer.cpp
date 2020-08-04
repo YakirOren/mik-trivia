@@ -106,6 +106,8 @@ CreateRoomRequest requestDeserializer::deserializeCreateRoomRequest(std::vector<
 
 	json parsedData = json::parse(dataAsString);
 
+	std::cout << dataAsString << std::endl; 
+
 	request = {
 
 			parsedData["roomName"].get<std::string>(),
@@ -113,6 +115,70 @@ CreateRoomRequest requestDeserializer::deserializeCreateRoomRequest(std::vector<
 			parsedData["questionCount"].get<unsigned int>(),
 			parsedData["answerTimeout"].get<unsigned int>()
 	};
+
+	return request;
+}
+
+/*
+	This function deserializes the data from the client from std::vector<unsigned char> to a StartRoomRequest.
+*/
+StartRoomRequest requestDeserializer::deserializeStartRoomRequest(std::vector<unsigned char> data)
+{
+	StartRoomRequest request;
+
+	std::string dataAsString = Helper::vectorToString(data);
+
+	json parsedData = json::parse(dataAsString);
+
+	request = { parsedData["roomId"].get<unsigned int>() };
+
+	return request;
+}
+
+/*
+	This function deserializes the data from the client from std::vector<unsigned char> to a CloseRoomRequest.
+*/
+CloseRoomRequest requestDeserializer::deserializeCloseRoomRequest(std::vector<unsigned char> data)
+{
+	CloseRoomRequest request;
+
+	std::string dataAsString = Helper::vectorToString(data);
+
+	json parsedData = json::parse(dataAsString);
+
+	request = { parsedData["roomId"].get<unsigned int>() };
+
+	return request;
+}
+
+/*
+	This function deserializes the data from the client from std::vector<unsigned char> to a GetRoomStateRequest.
+*/
+GetRoomStateRequest requestDeserializer::deserializeGetRoomStateRequest(std::vector<unsigned char> data)
+{
+	GetRoomStateRequest request;
+
+	std::string dataAsString = Helper::vectorToString(data);
+
+	json parsedData = json::parse(dataAsString);
+
+	request = { parsedData["roomId"].get<unsigned int>() };
+
+	return request;
+}
+
+/*
+	This function deserializes the data from the client from std::vector<unsigned char> to a LeaveRoomRequest.
+*/
+LeaveRoomRequest requestDeserializer::deserializeLeaveRoomRequest(std::vector<unsigned char> data)
+{
+	LeaveRoomRequest request;
+
+	std::string dataAsString = Helper::vectorToString(data);
+
+	json parsedData = json::parse(dataAsString);
+
+	request = { parsedData["roomId"].get<unsigned int>() };
 
 	return request;
 }

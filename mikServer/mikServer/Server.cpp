@@ -5,10 +5,15 @@
 
 Server::Server() : _database(new sqlDatabase()), m_communicator(new Communicator(_database, _handlerFactory)), _handlerFactory(new RequestHandlerFactory(_database))
 {
+	if (!_database->open())
+	{
+		std::cout << "Error: Couldn't Open Database, Server Didn't Start" << std::endl;
+	}
 }
 
 Server::~Server()
 {
+	_database->close();
 	delete _database;
 	delete m_communicator;
 }

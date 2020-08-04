@@ -70,8 +70,14 @@ std::vector<unsigned char> ResponseSerializer::serializeResponse(LogoutResponse 
 std::vector<unsigned char> ResponseSerializer::serializeResponse(GetRoomsResponse response)
 {
 	json data;
+	std::vector<std::vector<std::string>> rooms;
 	data["status"] = response.status;
 	//data["rooms"] = response.rooms;
+	for (auto& i : response.rooms)
+	{
+		rooms.push_back(std::vector <std::string>{ i.name, std::to_string(i.id), std::to_string(i.isActive), std::to_string(i.maxPlayers), std::to_string(i.timePerQuestion) });
+	}
+	data["rooms"] = rooms;
 
 	return generatePacket(data, MessageType::ROOM_RESPONSE);
 }
@@ -141,6 +147,85 @@ std::vector<unsigned char> ResponseSerializer::serializeResponse(GetStatisticsRe
 }
 
 /*
+	Serializes the MaxUsersResponse using generatePacket
+	Input:
+		MaxUsersResponse res: The MaxUsersResponse the function serializes
+	Output:
+		a vector of unsigned char containing the serialized response
+*/
+std::vector<unsigned char> ResponseSerializer::serializeResponse(MaxUsersError response)
+{
+	json data;
+	data["message"] = response.message;
+
+	return generatePacket(data, MessageType::MAX_USERS_ERROR);
+}
+
+/*
+	Serializes the LeaveRoomResponse using generatePacket
+	Input:
+		LeaveRoomResponse res: The LeaveRoomResponse the function serializes
+	Output:
+		a vector of unsigned char containing the serialized response
+*/
+std::vector<unsigned char> ResponseSerializer::serializeResponse(LeaveRoomResponse response)
+{
+	json data;
+	data["status"] = response.status;
+
+	return generatePacket(data, MessageType::ROOM_LEAVE);
+}
+
+/*
+	Serializes the GetRoomStateResponse using generatePacket
+	Input:
+		GetRoomStateResponse res: The GetRoomStateResponse the function serializes
+	Output:
+		a vector of unsigned char containing the serialized response
+*/
+std::vector<unsigned char> ResponseSerializer::serializeResponse(GetRoomStateResponse response)
+{
+	json data;
+	data["status"] = response.status;
+	data["HasGameBegun"] = response.HasGameBegun;
+	data["players"] = response.players;
+	data["questionCount"] = response.questionCount;
+	data["answerTimeout"] = response.answerTimeout;
+
+	return generatePacket(data, MessageType::ROOM_STATE);
+}
+
+/*
+	Serializes the closeRoomResponse using generatePacket
+	Input:
+		CloseRoomResponse res: The CloseRoomResponse the function serializes
+	Output:
+		a vector of unsigned char containing the serialized response
+*/
+std::vector<unsigned char> ResponseSerializer::serializeResponse(CloseRoomResponse response)
+{
+	json data;
+	data["status"] = response.status;
+
+	return generatePacket(data, MessageType::ROOM_CLOSE);
+}
+
+/*
+	Serializes the StartGameResponse using generatePacket
+	Input:
+		StartGameResponse res: The StartGameResponse the function serializes
+	Output:
+		a vector of unsigned char containing the serialized response
+*/
+std::vector<unsigned char> ResponseSerializer::serializeResponse(StartGameResponse response)
+{
+	json data;
+	data["status"] = response.status;
+
+	return generatePacket(data, MessageType::ROOM_START);
+}
+
+/*
 	Generates the response that will be retured to the user.
 	Input:
 		json data: The data that we wish to send to the user.
@@ -157,7 +242,9 @@ std::vector<unsigned char> ResponseSerializer::generatePacket(json data, Message
 
 	unsigned char* sizeAsBytes = Helper::intToByte(messageSize);
 
-	printf("%d %d %d %d \n", sizeAsBytes[0], sizeAsBytes[1], sizeAsBytes[2], sizeAsBytes[3]);
+	//printf("%d %d %d %d \n", sizeAsBytes[0], sizeAsBytes[1], sizeAsBytes[2], sizeAsBytes[3]);
+
+	std::cout << "sending: " << type << std::endl;
 
 	std::vector<unsigned char> packet;
 

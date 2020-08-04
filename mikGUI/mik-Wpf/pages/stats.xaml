@@ -1,0 +1,41 @@
+﻿<Window x:Class="mik_Wpf.stats"
+        Loaded="Window_Loaded"
+        
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:mik_Wpf"
+        mc:Ignorable="d"
+        Title="stats" Height="360" Width="617.6" ResizeMode="NoResize">
+
+    <Grid RenderTransformOrigin="0.678,0.505" Style="{DynamicResource app_backgroud}">
+
+
+        <Border BorderBrush="White" BorderThickness="2.5" CornerRadius="8">
+            <Grid>
+                <Image Source="../images/texi_man.png" Margin="338,54,28.4,41.6"></Image>
+
+                <StackPanel Margin="50, 80 , 200 ,0">
+                    <StackPanel.Resources>
+                        <Style TargetType="{x:Type Label}">
+                            <Setter Property="Margin" Value="0,10,0,0"/>
+                        </Style>
+                    </StackPanel.Resources>
+
+                    <Label Height="35" Foreground="White" FontFamily="Yu Gothic UI Semibold" FontSize="20" Name="AvgAnswerTime" >AvgAnswerTime:
+                    </Label>
+
+                    <Label Foreground="White" FontFamily="Yu Gothic UI Semibold" FontSize="20" Name="TotalAnswers">TotalAnswers:</Label>
+                    <Label Foreground="White" FontFamily="Yu Gothic UI Semibold" FontSize="20" Name="TotalPlayedGames" >TotalPlayedGames:</Label>
+
+                    <Label Foreground="White" FontFamily="Yu Gothic UI Semibold" FontSize="20" Name="TotalCorrectAnswers">TotalCorrectAnswers:</Label>
+
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+
+
+
+</Window>

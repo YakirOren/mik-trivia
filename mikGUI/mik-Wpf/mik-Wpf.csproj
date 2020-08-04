@@ -92,6 +92,9 @@
     <Compile Include="pages\join_games.xaml.cs">
       <DependentUpon>join_games.xaml</DependentUpon>
     </Compile>
+    <Compile Include="pages\stats.xaml.cs">
+      <DependentUpon>stats.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SplashScreen.xaml.cs">
       <DependentUpon>SplashScreen.xaml</DependentUpon>
     </Compile>
@@ -140,6 +143,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="pages\stats.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SplashScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -242,6 +249,22 @@
   <ItemGroup>
     <Resource Include="images\answer.png" />
     <Resource Include="images\answer_select.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\stats.png" />
+    <Resource Include="images\wrong_info.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\stats_h.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\texi_man.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\refresh_h.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
