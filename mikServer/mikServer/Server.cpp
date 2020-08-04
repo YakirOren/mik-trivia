@@ -3,20 +3,20 @@
 #include <iostream>
 #include <string>
 
-Server::Server()
+Server::Server() : _database(new sqlDatabase()), m_communicator(new Communicator(_database, _handlerFactory)), _handlerFactory(new RequestHandlerFactory(_database))
 {
-	m_communicator = new Communicator();
 }
 
 Server::~Server()
 {
+	delete _database;
 	delete m_communicator;
 }
 
 void Server::run()
 {
 	std::thread t_connector(&Communicator::bindAndListen, m_communicator);
-	
+	t_connector.detach();
 	
 	////std::cin();
 	int userInput = 1;
@@ -43,9 +43,6 @@ void Server::run()
 		//}
 
 	}
-	t_connector.detach();
-
-
 }
 
 
